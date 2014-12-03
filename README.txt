@@ -1,1 +1,0 @@
-Hier stellen wir kurz unser Projekt vor.
