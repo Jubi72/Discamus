@@ -80,12 +80,17 @@ class GUI:
         """
         pass
 
-    def show_exit_menu(self):
+    def show_exitmenu(self):
         """
-        D
+        Diese Funktion zeigt das Exit-Menue
+        Voraussetzung: Menue muss existieren
         """
         pass
     
     def hide_exitmenu(self):
+        """
+        Diese Funktion versteckt das Exit-Menue
+        Voraussetzung: Menue muss existieren
+        """
         pass
     
