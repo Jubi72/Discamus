@@ -1,5 +1,14 @@
 from interface import *
 class GUI:
+<<<<<<< HEAD
+=======
+    #FENSTER
+    def create_window(self):
+        """
+        Das Fenster wird Erstellt (ohne inhalt, aber mit den ganzen Eigenschaften)
+        """
+        pass
+>>>>>>> origin/master
     
     def __init__(self, title, groesse, bgfarbe, schriftfarbe):
         self.__root = Tk()
@@ -29,6 +38,7 @@ class GUI:
         """
         self.__root.unpack()
     
+    #MAIN MENU
     def create_mainmenu(self):
         """
         Diese Funktion erstellt die Elemente des Hauptmenues
@@ -50,6 +60,7 @@ class GUI:
         """
         pass
     
+    #VOCABLE MENU
     def create_vocmenu(self):
         """
         Diese Funktion erstellt die Elemente des Menue, wo die ganzen Vokabeln angezeigt werden
@@ -70,3 +81,21 @@ class GUI:
         Voraussetzung: Erstellen muss erfolgt sein [create_vocmenu()]
         """
         pass
+
+    #EXIT MENU
+    def create_exitmenu(self):
+        """
+        Diese Funktion erstellt das Exit-Menue (mit Elementen)
+        Voraussetzung: Das Fenster muss erstellt sein.
+        """
+        pass
+
+    def show_exit_menu(self):
+        """
+        D
+        """
+        pass
+    
+    def hide_exitmenu(self):
+        pass
+    
