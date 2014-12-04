@@ -2,11 +2,24 @@ from interface import *
 from tkinter import *
 
 class GUI:
-    def __init__(self, title, groesse, bgfarbe, schriftfarbe):
+    def __init__(self, title, breite, hoehe, bgfarbe, schriftfarbe):
         self.__root = Tk()
         self.__root.title(title)
-        self.__root.geometry(groesse)
+        self.__breite = breite # Abspeichern wegen Standardgroesse
+        self.__hoehe = hoehe
+        self.__root.geometry(str(self.__breite) + "x" + str(self.__hoehe))
+        # self.__root.bind("<F11>", self.fullscreen) ### vielleicht gleich Fullscreen ???
+        # self.__root.bind("<Escape>", self.escape)
+        # self.__root.bind("<F1>",helpme)
         self.__root.configure(bg=bgfarbe)
+
+    """
+    def fullscreen(self):
+        root.attributes("-fullscreen", True)
+    def escape(self):
+        root.attributes("-fullscreen", False)
+        # self.__root.geometry(str(self.__breite) + "x" + str(self.__hoehe))
+    """
 
     def show_height(self):
         self.__root.update()
