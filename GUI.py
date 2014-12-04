@@ -1,22 +1,33 @@
 from interface import *
 class GUI:
-    def create_window(self):
-        """
-        Das Fenster wird Erstellt (ohne inhalt, aber mit den ganzen Eigenschaften)
-        """
-        pass
     
+    def __init__(self, title, groesse, bgfarbe, schriftfarbe):
+        self.__root = Tk()
+        self.__root.title(title)
+        self.__root.geometry(groesse)
+        self.__root.configure(bg=bgfarbe)
+
+    def show_height(self):
+        self.__root.update()
+        selfheight = self.root.winfo_height()
+        return height
+        
+    def show_width(self):
+        self.__root.update()
+        width = self.root.winfo_width()
+        return width
+
     def show_window(self):
         """
         Diese Funktion Zeigt (pack) das Fenster an.
         """
-        pass
+        self.__root.pack()
         
     def quit_window(self):
         """
         Diese Fenster entfert wieder das Programm.
         """
-        pass
+        self.__root.unpack()
     
     def create_mainmenu(self):
         """
