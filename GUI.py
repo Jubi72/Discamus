@@ -1,15 +1,5 @@
 from interface import *
 class GUI:
-<<<<<<< HEAD
-=======
-    #FENSTER
-    def create_window(self):
-        """
-        Das Fenster wird Erstellt (ohne inhalt, aber mit den ganzen Eigenschaften)
-        """
-        pass
->>>>>>> origin/master
-    
     def __init__(self, title, groesse, bgfarbe, schriftfarbe):
         self.__root = Tk()
         self.__root.title(title)
@@ -18,13 +8,13 @@ class GUI:
 
     def show_height(self):
         self.__root.update()
-        selfheight = self.root.winfo_height()
-        return height
+        self.__height = self.root.winfo_height()
+        return self.__height
         
     def show_width(self):
         self.__root.update()
-        width = self.root.winfo_width()
-        return width
+        self.__width = self.root.winfo_width()
+        return self.__width
 
     def show_window(self):
         """
