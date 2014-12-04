@@ -1,17 +1,17 @@
 from interface import *
-from tkinter import *
+import tkinter as tk
 
 class GUI:
     def __init__(self, title, breite, hoehe, bgfarbe, schriftfarbe):
-        self.__root = Tk()
-        self.__root.title(title)
+        self.__root = tk.Tk()
+        self.__root.tk.title(title)
         self.__breite = breite # Abspeichern wegen Standardgroesse
         self.__hoehe = hoehe
-        self.__root.geometry(str(self.__breite) + "x" + str(self.__hoehe))
-        # self.__root.bind("<F11>", self.fullscreen) ### vielleicht gleich Fullscreen ???
-        # self.__root.bind("<Escape>", self.escape)
-        # self.__root.bind("<F1>",helpme)
-        self.__root.configure(bg=bgfarbe)
+        self.__root.tk.geometry(str(self.__breite) + "x" + str(self.__hoehe))
+        # self.__root.tk.bind("<F11>", self.fullscreen) ### vielleicht gleich Fullscreen ???
+        # self.__root.tk.bind("<Escape>", self.escape)
+        # self.__root.tk.bind("<F1>",helpme)
+        self.__root.tk.configure(bg=bgfarbe)
 
     """
     def fullscreen(self):
@@ -22,26 +22,26 @@ class GUI:
     """
 
     def show_height(self):
-        self.__root.update()
-        self.__height = self.root.winfo_height()
+        self.__root.tk.update()
+        self.__height = self.root.tk.winfo_height()
         return self.__height
         
     def show_width(self):
-        self.__root.update()
-        self.__width = self.root.winfo_width()
+        self.__root.tk.update()
+        self.__width = self.root.tk.winfo_width()
         return self.__width
 
     def show_window(self):
         """
         Diese Funktion Zeigt (pack) das Fenster an.
         """
-        self.__root.pack()
+        self.__root.tk.pack()
         
     def quit_window(self):
         """
         Diese Fenster entfert wieder das Programm.
         """
-        self.__root.unpack()
+        self.__root.tk.unpack()
     
     #MAIN MENU
     def create_mainmenu(self):
