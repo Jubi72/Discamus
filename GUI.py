@@ -1,4 +1,6 @@
 from interface import *
+from tkinter import *
+
 class GUI:
     def __init__(self, title, groesse, bgfarbe, schriftfarbe):
         self.__root = Tk()
