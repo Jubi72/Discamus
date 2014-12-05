@@ -1,2 +1,2 @@
 from accesses import *
-from GUI import *
+from gui import *
