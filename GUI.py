@@ -1,32 +1,32 @@
 from interface import *
-import tkinter as tk
+import tkinter
 
 class GUI:
     def __init__(self, title, breite, hoehe, bgfarbe, schriftfarbe, fullscreen = True):
-        self.__root = tk.Tk()
-        self.__root.tk.title(title)
+        self.root = tkinter.Tk()
+        self.root.title(title)
         self.__breite = breite # Abspeichern wegen Standardgroesse
         self.__hoehe = hoehe
         self.__fullscreen = fullscreen
         if fullscreen:
-            self.root.tk.attributes("-fullscreen", True)
+            self.root.attributes("-fullscreen", True)
         else:
-            self.__root.tk.geometry(str(self.__breite) + "x" + str(self.__hoehe))
-        # self.__root.tk.bind("<F11>", self.fullscreen) ### vielleicht gleich Fullscreen ???
-        # self.__root.tk.bind("<Escape>", self.escape)
-        # self.__root.tk.bind("<F1>",helpme)
-        self.__root.tk.configure(bg=bgfarbe)
+            self.root.geometry(str(self.__breite) + "x" + str(self.__hoehe))
+        # self.__root.bind("<F11>", self.fullscreen) ### vielleicht gleich Fullscreen ???
+        # self.__root.bind("<Escape>", self.escape)
+        # self.__root.bind("<F1>",helpme)
+        self.root.config(bg=bgfarbe)
 
     
     def toogle_fullscreen(self):
         if self.__fullscreen:
             self.__fullscreen=False
-            self.root.tk.attributes("-fullscreen", False)
-            self.__root.geometry(str(self.__breite) + "x" + str(self.__hoehe))
+            self.root.attributes("-fullscreen", False)
+            self.root.geometry(str(self.__breite) + "x" + str(self.__hoehe))
         else:
             self.__fullscreen=True
-            self.__root.geometry(str(self.__breite) + "x" + str(self.__hoehe))
-            self.root.tk.attributes("-fullscreen", True)
+            self.root.geometry(str(self.__breite) + "x" + str(self.__hoehe))
+            self.root.attributes("-fullscreen", True)
 
     """
     def escape(self):
@@ -35,41 +35,60 @@ class GUI:
     """
 
     def show_height(self):
-        self.__root.tk.update()
-        self.__height = self.root.tk.winfo_height()
+        self.root.update()
+        self.__height = self.root.winfo_height()
         return self.__height
         
     def show_width(self):
-        self.__root.tk.update()
-        self.__width = self.root.tk.winfo_width()
+        self.root.update()
+        self.__width = self.root.winfo_width()
         return self.__width
 
     def show_window(self):
         """
         Diese Funktion zeigt (pack) das Fenster an.
         """
-        self.__root.tk.pack()
+        self.root.pack()
         
     def quit_window(self):
         """
         Dieses Fenster entfert wieder das Programm.
         """
-        self.__root.tk.unpack()
+        self.root.unpack()
     
     #MAIN MENU
-    def create_mainmenu(self):
+    def show_mainmenu(self):
         """
         Diese Funktion erstellt die Elemente des Hauptmenues.
         Voraussetzung: Fenster muss erstellt sein.
+        m1 usw. sind der Text der Angezeigt wird
         """
-        pass
-    
-    def show_mainmenu(self):
-        """
-        Diese Funktion zeigt die Elemente des Hauptmenues an.
-        Voraussetzung: Das Erstellen [create_mainmenu()] muss erfolgt sein.
-        """
-        pass
+        m1 = "ienfinwfneifnwief"
+        m2 = "wefefwf"
+        m3 = "wefwefwefwe"
+        m4 = "wfeefw"
+        m5 = "efffffffffffffffffefewfefwf"
+        m6 = "wfwefwefwefwf"
+        menu = tkinter.Frame(self.root)
+        menu1 = tkinter.Frame(menu)
+        menu.config(width= self.show_width()//3, height=self.show_height())
+        menu.config(bg="red")
+        menu.pack()
+        menu.place(x=self.show_width()//3, y=10)
+        m0 = tkinter.Label(menu, text="Mainmenu", font=("Comic Sans MS", 30), bg="red", width=self.show_width()//3)
+        m1 = tkinter.Button(menu, text=str(m1), font=("Comic Sans MS", 18), bg="white", width=self.show_width()//3)
+        m2 = tkinter.Button(menu, text=str(m2), font=("Comic Sans MS", 18), bg="white", width=self.show_width()//3)
+        m3 = tkinter.Button(menu, text=str(m3), font=("Comic Sans MS", 18), bg="white", width=self.show_width()//3)
+        m4 = tkinter.Button(menu, text=str(m4), font=("Comic Sans MS", 18), bg="white", width=self.show_width()//3)
+        m5 = tkinter.Button(menu, text=str(m5), font=("Comic Sans MS", 18), bg="white", width=self.show_width()//3)
+        m6 = tkinter.Button(menu, text=str(m6), font=("Comic Sans MS", 18), bg="white", width=self.show_width()//3)
+        m0.pack()
+        m1.pack()
+        m2.pack()
+        m3.pack()
+        m4.pack()
+        m5.pack()
+        m6.pack()
     
     def hide_mainmenu(self):
         """
@@ -122,3 +141,6 @@ class GUI:
         """
         pass
     
+test = GUI("Test", 500, 500, "orange", "black", False)
+test.show_mainmenu()
+tkinter.mainloop()
