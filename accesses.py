@@ -10,7 +10,7 @@ def pruefe_dateipfade():
     """
     pass
 
-def stapel_liste():
+def decks_list():
     """
     Funkion liesst alle Kartenstapel aus %APPDATA%\[PROGRAMMNAME]\stapel
     Die Stapel sind Dateien, dessen Dateinamen so aussen: *.rna
@@ -18,7 +18,7 @@ def stapel_liste():
     #return liste
     pass
 
-def stapel_info(stapelname):
+def deck_info(nameofdeck):
     """
     Diese Funktion gibt von einem Stapel die Infos zurueck
     return [name, letzterAufruf, AnzahlKarten, Lernstand]
@@ -26,7 +26,7 @@ def stapel_info(stapelname):
     #return infos
     pass
 
-def stapel_karten():
+def deck_cards():
     """
     Diese Funktion gibt aus der Stapeldatei die Karten als Liste/Dictionary zurueck
     Aufbau der Datei:
