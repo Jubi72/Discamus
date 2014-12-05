@@ -1,6 +1,7 @@
 from interface import *
 import tkinter
 
+<<<<<<< HEAD:GUI.py
 class GUI:
     def __init__(self, title, breite, hoehe, bgfarbe, schriftfarbe, fullscreen = True):
         self.root = tkinter.Tk()
@@ -16,11 +17,54 @@ class GUI:
         # self.__root.bind("<Escape>", self.escape)
         # self.__root.bind("<F1>",helpme)
         self.root.config(bg=bgfarbe)
-
+=======
+class gui:
+    def create_window(self):
+        """
+        Voraussetzung: folgende Variablen muessen gesetzt sein:
+                            - __fullscreen [true, false]
+                            - __breite
+                            - __hoehe
+                            - __titel
+        """
+        self.__root = tk.Tk()
+        if self.__fullscreen:
+            self.__root.tk.attributes("-fullscreen", True)
+        else:
+            self.__root.tk.geometry(str(self.__breite) + "x" + str(self.__hoehe))
+        
+    def show_window(self):
+        """
+        Diese Funktion zeigt (pack) das Fenster an.
+        """
+        self.__root.tk.pack()
+        
+    def quit_window(self):
+        """
+        Dieses Fenster entfert wieder das Programm.
+        """
+        self.__root.tk.destroy()
     
+    def __init__(self, titel, breite, hoehe, fullscreen = True):
+        #Abspeichern der Variablen
+        self.__breite = breite
+        self.__hoehe = hoehe
+        self.__fullscreen = fullscreen
+        self.__titel= titel
+        self.create_window()
+        # self.__root.tk.bind("<F11>", self.fullscreen) ### vielleicht gleich Fullscreen ???
+        # self.__root.tk.bind("<Escape>", self.escape)
+        # self.__root.tk.bind("<F1>",helpme)
+>>>>>>> origin/master:gui.py
+
     def toogle_fullscreen(self):
+        """
+        Funktion wechselt zwischen Vollbild und Fenster
+        Kommentar von Niko: besser wenn es zwei (weitere) Funktionen gäbe für Vollbild und "Normal"
+        """
         if self.__fullscreen:
             self.__fullscreen=False
+<<<<<<< HEAD:GUI.py
             self.root.attributes("-fullscreen", False)
             self.root.geometry(str(self.__breite) + "x" + str(self.__hoehe))
         else:
@@ -43,18 +87,40 @@ class GUI:
         self.root.update()
         self.__width = self.root.winfo_width()
         return self.__width
+=======
+            self.__root.tk.attributes("-fullscreen", False)
+            self.__root.geometry(str(self.__breite) + "x" + str(self.__hoehe))
+        else:
+            self.__fullscreen=True
+            self.__root.geometry(str(self.__breite) + "x" + str(self.__hoehe))
+            self.__root.tk.attributes("-fullscreen", True)
+>>>>>>> origin/master:gui.py
 
-    def show_window(self):
+    def width(self):
         """
-        Diese Funktion zeigt (pack) das Fenster an.
+        Funktion gibt die aktuelle Breite des Fensters zurueck
         """
+<<<<<<< HEAD:GUI.py
         self.root.pack()
         
     def quit_window(self):
+=======
+        self.__root.tk.update()
+        self.__weidth = self.__root.tk.winfo_weidth()
+        return self.__weidth
+
+    def height(self):
+>>>>>>> origin/master:gui.py
         """
-        Dieses Fenster entfert wieder das Programm.
+        Funktion gibt die aktuelle Hoehe des Fensters zurueck
         """
+<<<<<<< HEAD:GUI.py
         self.root.unpack()
+=======
+        self.__root.tk.update()
+        self.__height = self.__root.tk.winfo_height()
+        return self.__height
+>>>>>>> origin/master:gui.py
     
     #MAIN MENU
     def show_mainmenu(self):
