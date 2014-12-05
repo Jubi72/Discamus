@@ -1,7 +1,7 @@
 from interface import *
 import tkinter as tk
 
-class GUI:
+class gui:
     def create_window(self):
         """
         Voraussetzung: folgende Variablen muessen gesetzt sein:
