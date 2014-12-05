@@ -12,7 +12,7 @@ class GUI:
         """
         self.__root = tk.Tk()
         if self.__fullscreen:
-            self.root.tk.attributes("-fullscreen", True)
+            self.__root.tk.attributes("-fullscreen", True)
         else:
             self.__root.tk.geometry(str(self.__breite) + "x" + str(self.__hoehe))
         
@@ -46,19 +46,19 @@ class GUI:
         """
         if self.__fullscreen:
             self.__fullscreen=False
-            self.root.tk.attributes("-fullscreen", False)
+            self.__root.tk.attributes("-fullscreen", False)
             self.__root.geometry(str(self.__breite) + "x" + str(self.__hoehe))
         else:
             self.__fullscreen=True
             self.__root.geometry(str(self.__breite) + "x" + str(self.__hoehe))
-            self.root.tk.attributes("-fullscreen", True)
+            self.__root.tk.attributes("-fullscreen", True)
 
     def width(self):
         """
         Funktion gibt die aktuelle Breite des Fensters zurueck
         """
         self.__root.tk.update()
-        self.__weidth = self.root.tk.winfo_weidth()
+        self.__weidth = self.__root.tk.winfo_weidth()
         return self.__weidth
 
     def height(self):
@@ -66,7 +66,7 @@ class GUI:
         Funktion gibt die aktuelle Hoehe des Fensters zurueck
         """
         self.__root.tk.update()
-        self.__height = self.root.tk.winfo_height()
+        self.__height = self.__root.tk.winfo_height()
         return self.__height
     
     #MAIN MENU
