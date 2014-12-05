@@ -42,6 +42,7 @@ class GUI:
     def toogle_fullscreen(self):
         """
         Funktion wechselt zwischen Vollbild und Fenster
+        Kommentar von Niko: besser wenn es zwei (weitere) Funktionen gäbe für Vollbild und "Normal"
         """
         if self.__fullscreen:
             self.__fullscreen=False
