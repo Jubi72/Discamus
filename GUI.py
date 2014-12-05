@@ -2,20 +2,33 @@ from interface import *
 import tkinter as tk
 
 class GUI:
-    def __init__(self, title, breite, hoehe, bgfarbe, schriftfarbe):
+    def __init__(self, title, breite, hoehe, bgfarbe, schriftfarbe, fullscreen = True):
         self.__root = tk.Tk()
         self.__root.tk.title(title)
         self.__breite = breite # Abspeichern wegen Standardgroesse
         self.__hoehe = hoehe
-        self.__root.tk.geometry(str(self.__breite) + "x" + str(self.__hoehe))
+        self.__fullscreen = fullscreen
+        if fullscreen:
+            self.root.tk.attributes("-fullscreen", True)
+        else:
+            self.__root.tk.geometry(str(self.__breite) + "x" + str(self.__hoehe))
         # self.__root.tk.bind("<F11>", self.fullscreen) ### vielleicht gleich Fullscreen ???
         # self.__root.tk.bind("<Escape>", self.escape)
         # self.__root.tk.bind("<F1>",helpme)
         self.__root.tk.configure(bg=bgfarbe)
 
+    
+    def toogle_fullscreen(self):
+        if self.__fullscreen:
+            self.__fullscreen=False
+            self.root.tk.attributes("-fullscreen", False)
+            self.__root.geometry(str(self.__breite) + "x" + str(self.__hoehe))
+        else:
+            self.__fullscreen=True
+            self.__root.geometry(str(self.__breite) + "x" + str(self.__hoehe))
+            self.root.tk.attributes("-fullscreen", True)
+
     """
-    def fullscreen(self):
-        root.attributes("-fullscreen", True)
     def escape(self):
         root.attributes("-fullscreen", False)
         # self.__root.geometry(str(self.__breite) + "x" + str(self.__hoehe))
