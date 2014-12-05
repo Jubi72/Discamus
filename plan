@@ -1,0 +1,101 @@
+Julius Bittner:			Accesses
+Edwin Brüseke:		Graphical User Interface
+Manuel Bucher:		Accesses
+Niko Lockenvitz:		Interface
+
+
+lernen		(Hilfe-Button)
+testen
+	–-> aus Liste Dateien auswählen
+
+
+Editor
+	neue Dateien erstellen (vielleicht per try-except überprüfen, ob Datei vorhanden; wegen 		überschreiben)
+Statistiken
+	Übersicht je Lernpaket
+Optionen
+	Grafik, …
+
+
+
+{„A“:“Schl.“, „B“:“Meck-Pom“}
+[„0/0“, „0/0“]
+[„1/1“, „1/3“]
+
+
+
+
+
+txt
+Name						BundesländerDE
+schlüssel;wert					A;Schleswig-Holstein
+						B;Mecklenburg-Vorpommern
+
+
+
+
+-----------------------------------------------
+
+Frage
+Antwort
+Lösung
+
+Frage
+Antwort
+Lösung
+
+
+
+
+----------------------------------------------------
+
+
+
+Name des Programms (z.B. Discamus)
+
+lernen
+testen
+Editor
+Statistiken
+
+Optionen
+Hilfe
+Beenden
+
+
+
+
+
+
+Hilfe:
+
+Erklärung des Programms
+
+paket.log
+
+
+
+readme.txt
+Benutzung des programms erlaubt, aber 
+
+© Niko Lockenvitz, Edwin Brüseke, Manuel Bucher, Julius Bittner
+
+
+Kartenstapel:
+schlüssel = [„a“, „b“, „c“, „d“, …]
+wert = [„1“, „2“, „3“, „4“, …]
+ergebnis = [„1/4“, „3/3“, „2/3“, „0/3“]
+
+paket.lern
+a|1|1/4
+b|2|3/3
+c|3|2/3
+d|4|0/3
+
+Ordnerstruktur
+discamus
+	bin
+		gui, interface, accesses
+	data
+		paket1.lern
+		paket2.lern
