@@ -10,7 +10,7 @@ class funktion:
         """
         pass
     
-    def decks_list(self):
+    def deck_list(self):
         """
         Funkion liesst alle Kartenstapel aus %APPDATA%\[PROGRAMMNAME]\stapel
         Die Stapel sind Dateien, dessen Dateinamen so aussen: *.rna
@@ -18,7 +18,7 @@ class funktion:
         #return liste
         pass
     
-    def deck_info(self, nameofdeck):
+    def deck_info(self, name_deck):
         """
         Diese Funktion gibt von einem Stapel die Infos zurueck
         return [name, letzterAufruf, AnzahlKarten, Lernstand]
@@ -26,7 +26,7 @@ class funktion:
         #return infos
         pass
     
-    def deck_cards(self):
+    def deck_cards(self, name_deck):
         """
         Diese Funktion gibt aus der Stapeldatei die Karten als Liste/Dictionary zurueck
         Aufbau der Datei:
