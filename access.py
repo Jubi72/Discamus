@@ -3,11 +3,13 @@ import time
 
 class funktion:
     def __init__(self):
-        self.__deck_list = self.deck_list_update() #
-        self.__deck = str()
-        self.__deck_info = list()
-        self.__deck_cards = list()
-        self.__last_card=""
+        self.__deck_list = self.deck_list_update()  #Deckliste wird am Anfang geladen
+        self.__deck = str() #Dieser String wird fuer das aktuelle Deck verwendet
+        self.__deck_info = list() #Diese Liste beinhaltet die Inforamtionen ueber das aktuelle Deck
+        self.__deck_cards = list() #Diese Liste beinhaltet die Karten des aktuellen Deckes
+        self.__deck_cards_learning = list() #Diese Liste beinhaltet die Karten des aktuellen Deckes ohne die gelernten
+        self.__last_card= str() #Dieser String Beinhaltet die letzte Karte, falls beim Lernen diese nochmal benoetigt wird
+        self.__deck_cards_learned = list() #Diese Liste beinhaltet die gelernten Karten und ob sie Richtig oder Falsch beim ersten Versuch angegeben wurden.
         
     #Grundfunktionen, noetig fuer das Programm:
     def str_valid(self, String, max_len=0):
@@ -15,7 +17,13 @@ class funktion:
         Diese Funktion prueft, ob der uebergebene String nur Zahlen, Buchstaben (gross, klein),
         einige spezielle (deutsche) sonderzeichen enthaelt, und ob die laenge des Strings stimmt.
         (Bei lenge 0 darf der String beliebig lang sein)
-        """    
+        """
+        if(0<max_len<len(String)):
+            return False
+        for character in String:
+            if not 32<=ord(character)<=122:
+                return False
+        return True
         pass
     
     #Funktionen fuer mehrere Kartenstapel
@@ -75,7 +83,7 @@ class funktion:
         """
         Diese Funktion gibt die Karten des Decks zurueck und fuegt es einer privaten Liste zurueck
         Voraussetzung: Deck muss geldaden sein (deck_load())
-        -Speichert es in zwei variablen fuer random-card()
+        -Speichert es in zwei variablen fuer random_card()
         """
         return self.__deck_cards
     
@@ -84,6 +92,7 @@ class funktion:
         Diese Funktion waehlt aus dem aktuellen Deck eine zufaellige Karte aus,
         speichert sie (als letzte Karte) und loescht diese aus der __deck_card_learn sund gibt diese aus.
         """
+        pass
     
     def last_card(self):
         """
