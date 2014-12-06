@@ -1,54 +1,29 @@
-Julius Bittner:			Accesses
+Julius Bittner:		Accesses
 Edwin Brüseke:		Graphical User Interface
 Manuel Bucher:		Accesses
-Niko Lockenvitz:		Interface
+Niko Lockenvitz:	Interface
 
 
-lernen		(Hilfe-Button)
+lernen		(eventuell Hilfe-Button)
 testen
 	–-> aus Liste Dateien auswählen
 
-
 Editor
-	neue Dateien erstellen (vielleicht per try-except überprüfen, ob Datei vorhanden; wegen 		überschreiben)
+	neue Dateien erstellen (vielleicht per try-except überprüfen, ob Datei vorhanden; wegen überschreiben)
 Statistiken
+	erst mal allgemeine Übersicht
 	Übersicht je Lernpaket
 Optionen
 	Grafik, …
-
-
 
 {„A“:“Schl.“, „B“:“Meck-Pom“}
 [„0/0“, „0/0“]
 [„1/1“, „1/3“]
 
-
-
-
-
 txt
 Name						BundesländerDE
 schlüssel;wert					A;Schleswig-Holstein
 						B;Mecklenburg-Vorpommern
-
-
-
-
------------------------------------------------
-
-Frage
-Antwort
-Lösung
-
-Frage
-Antwort
-Lösung
-
-
-
-
-----------------------------------------------------
-
 
 
 Name des Programms (z.B. Discamus)
@@ -63,20 +38,12 @@ Hilfe
 Beenden
 
 
-
-
-
-
 Hilfe:
-
-Erklärung des Programms
-
-paket.log
-
+	Erklärung des Programms
 
 
 readme.txt
-Benutzung des programms erlaubt, aber 
+	siehe readme
 
 © Niko Lockenvitz, Edwin Brüseke, Manuel Bucher, Julius Bittner
 
@@ -91,6 +58,7 @@ a|1|1/4
 b|2|3/3
 c|3|2/3
 d|4|0/3
+oder so
 
 Ordnerstruktur
 discamus
@@ -99,3 +67,21 @@ discamus
 	data
 		paket1.lern
 		paket2.lern
+
+
+"Bildschirme":
+Lernen			Testen			Editor			Statistik		Lernstapelübersicht
+------------------	------------------	------------------	------------------	------------------
+| Frage          |	| Frage          |	|        _____   |	| Name | Leistung|	| Lernstapel     |
+|  ________      |	|  ________      |	| Frage |_____|  |	| frz1 |    42 % |	| frz1           |
+| |________|     |	| |________|     |	|        _____   |	| frz2 |    56 % |	| frz2           |
+| (Lösung)       |	|                |      | Lsg.  |_____|  |	| eng1 |    71 % |	| eng1           |
+|                |	|                |	|                |	| lat1 |    99 % |	| lat1           |
+------------------	------------------	------------------	------------------	------------------
+
+
+idee: unten rechts Pfeil für weiter und bei Editor noch Häkchen für fertig
+	außerdem unten links schaltfläche für das menü
+
+
+
