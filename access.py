@@ -7,6 +7,7 @@ class funktion:
         self.__deck = str()
         self.__deck_info = list()
         self.__deck_cards = list()
+        self.__last_card=""
         
     #Grundfunktionen, noetig fuer das Programm:
     def str_valid(self, String, max_len=0):
@@ -39,6 +40,12 @@ class funktion:
         name|timestamp|kategorie|beschreibung
         """
     
+    def deck_delet(self, dateiname):
+        """
+        Diese Funktion löscht das angegebene Deck
+        """
+        pass
+    
     def deck_load_info(self, dateiname):
         #diese Funktion nur beim nicht_laden verwenden
         """
@@ -66,9 +73,23 @@ class funktion:
     
     def deck_cards(self):
         """
-        Diese Funktion gibt die Karten des Decks zurueck
+        Diese Funktion gibt die Karten des Decks zurueck und fuegt es einer privaten Liste zurueck
+        Voraussetzung: Deck muss geldaden sein (deck_load())
+        -Speichert es in zwei variablen fuer random-card()
         """
         return self.__deck_cards
+    
+    def random_card(self):
+        """
+        Diese Funktion waehlt aus dem aktuellen Deck eine zufaellige Karte aus,
+        speichert sie (als letzte Karte) und loescht diese aus der __deck_card_learn sund gibt diese aus.
+        """
+    
+    def last_card(self):
+        """
+        Diese Funktion gibt die letzte Karte, die Variable wurde in random_card erstellt
+        """
+        return self.__lastcard
     
     def deck_info(self):
         """
