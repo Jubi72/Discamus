@@ -3,7 +3,11 @@ import tkinter
 
 
 class gui:
-    def __init__(self, title, breite, hoehe, bgfarbe, schriftfarbe, fullscreen = True):
+    def __init__(self, title, breite, hoehe,schriftfarbe, fullscreen = True):
+        self.label_width = 40        #gib die Größe für die Labels an
+        self.label_color = "#6e6e6e" #Label Hintergrund
+        self.text_color = "white"    #Label Text Farbe
+        self.bg_color = "#4d4d4d"
         self.root = tkinter.Tk()
         self.root.title(title)
         self.__breite = breite # Abspeichern wegen Standardgroesse
@@ -16,7 +20,7 @@ class gui:
         # self.__root.bind("<F11>", self.fullscreen) ### vielleicht gleich Fullscreen ???
         # self.__root.bind("<Escape>", self.escape)
         # self.__root.bind("<F1>",helpme)
-        self.root.config(bg=bgfarbe)
+        self.root.config(bg=self.bg_color)
         
         
     def show_window(self):
@@ -25,27 +29,6 @@ class gui:
         """
         self.root.pack()
         
-    def check_quit_window(self):
-        self.m7.config(text="Sicher?")
-        self.m8.config(text="Ja", command=self.quit_window)
-        self.m9 = tkinter.Button(self.menu2, text="Nein", font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width=self.label_width, command=self.dont_quit_window)
-        self.m9.pack()
-        self.root.update()
-
-    def quit_window(self):
-        """
-        Dieses Fenster entfert wieder das Programm.
-        """
-        self.root.destroy()
-
-    def dont_quit_window(self):
-        self.m9.destroy()
-        self.m7.config(text="Optionen")
-        self.m8.config(text="Verlassen", command=self.check_quit_window)
-        self.root.update()
-        
-    
-
     def toogle_fullscreen(self):
         """
         Funktion wechselt zwischen Vollbild und Fenster
@@ -80,15 +63,12 @@ class gui:
 
     
     #MAIN MENU
-    def show_mainmenu(self):
+    def create_mainmenu(self):
         """
         Diese Funktion erstellt die Elemente des Hauptmenues.
         Voraussetzung: Fenster muss erstellt sein.
         m1 usw. sind der Text der Angezeigt wird
         """
-        self.label_width = 40      #gib die Größe für die Labels an
-        self.label_color = "#6e6e6e"
-        self.text_color = "white"
         m1 = "Auswahl 1"
         m2 = "Auswahl 2"
         m3 = "Auswahl 3"
@@ -110,7 +90,7 @@ class gui:
         self.m4 = tkinter.Button(self.menu1, text=str(m4), font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width)
         self.m5 = tkinter.Button(self.menu1, text=str(m5), font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width)
         self.m6 = tkinter.Button(self.menu1, text=str(m6), font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width)
-        self.m7 = tkinter.Button(self.menu2, text="Optionen", font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width)
+        self.m7 = tkinter.Button(self.menu2, text="Optionen", font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width, command=self.create_options_menu)
         self.m8 = tkinter.Button(self.menu2, text="Verlassen", font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width, command=self.check_quit_window)
         self.m0.pack()
         self.m1.pack()
@@ -121,26 +101,128 @@ class gui:
         self.m6.pack()
         self.m7.pack()
         self.m8.pack()
-    
+        
+
     def hide_mainmenu(self):
         """
         Diese Funktion versteckt die Elemente des Hauptmenues.
         Voraussetzung: Das ertellen muss erfolgt sein.
         """
-        pass
+        self.m0.destroy()
+        self.m1.destroy()
+        self.m2.destroy()
+        self.m3.destroy()
+        self.m4.destroy()
+        self.m5.destroy()
+        self.m6.destroy()
+        self.m7.destroy()
+        self.m8.destroy()
+        self.menu1.destroy()
+        self.menu2.destroy()
+        self.root.update()
+
+    #OPTIONS MENU
+    def create_options_menu(self):
+        """
+        zeigt Menue für Optionen an
+        """
+        self.hide_mainmenu()
+        o1 = "Design 1 (Grau-Weiß)"
+        o2 = "Design 2 (Weiß-Schwarz)"
+        o3 = "Design 3 (Blau-Orange)"
+        o4 = "Design 4 (Orange-Blau)"
+        self.option1 = tkinter.Frame(self.root)
+        self.option1.config(bg=self.label_color)
+        self.option1.config(bd = 5, relief = "ridge")
+        self.option1.pack(side="top")
+        self.option2 = tkinter.Frame(self.root)
+        self.option2.config(bg=self.label_color)
+        self.option2.config(bd = 5, relief = "ridge")
+        self.option2.pack(side="bottom")
+        self.o0 = tkinter.Label(self.option1, text="Optionen", font=("Comic Sans MS", 30), fg=self.text_color, bg=self.label_color)
+        self.o1 = tkinter.Button(self.option1, text=str(o1), font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width, command = self.change_design1)
+        self.o2 = tkinter.Button(self.option1, text=str(o2), font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width, command = self.change_design2)
+        self.o3 = tkinter.Button(self.option1, text=str(o3), font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width, command = self.change_design3)
+        self.o4 = tkinter.Button(self.option1, text=str(o4), font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width, command = self.change_design4)
+        self.o5 = tkinter.Button(self.option2, text="Verlassen", font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width, command=self.hide_options_menu)
+        self.o0.pack()
+        self.o1.pack()
+        self.o2.pack()
+        self.o3.pack()
+        self.o4.pack()
+        self.o5.pack()
+        self.root.update()
+
+
+    def change_design1(self):
+        """
+        Menue Design 1
+        """
+        self.label_color = "#6e6e6e" #Label Hintergrund
+        self.text_color = "white"    #Label Text Farbe
+        self.bg_color =  "#4d4d4d"
+        self.hide_options_menu()
+        self.create_options_menu()
+        self.root.config(bg=self.bg_color)
+        self.root.update()
+
+    def change_design2(self):
+        """
+        Menue Design 2
+        """
+        self.label_color = "white" #Label Hintergrund
+        self.text_color = "black"    #Label Text Farbe
+        self.bg_color = "#e8e8e8"
+        self.hide_options_menu()
+        self.create_options_menu()
+        self.root.config(bg=self.bg_color)
+        self.root.update()
+
+    def change_design3(self):
+        """
+        Menue Design 3
+        """
+        self.label_color = "orange" #Label Hintergrund
+        self.text_color = "blue"    #Label Text Farbe
+        self.bg_color = "#d65a00"
+        self.hide_options_menu()
+        self.create_options_menu()
+        self.root.config(bg=self.bg_color)
+        self.root.update()
+
+    def change_design4(self):
+        """
+        Menue Design 4
+        """
+        self.label_color = "blue" #Label Hintergrund
+        self.text_color = "orange"    #Label Text Farbe
+        self.bg_color = "#000066"
+        self.hide_options_menu()
+        self.create_options_menu()
+        self.root.config(bg=self.bg_color)
+        self.root.update()
+
+    def hide_options_menu(self):
+        """
+        Versteckt Option Menue
+        """
+        self.o0.destroy()
+        self.o1.destroy()
+        self.o2.destroy()
+        self.o3.destroy()
+        self.o4.destroy()
+        self.o5.destroy()
+        self.option1.destroy()
+        self.option2.destroy()
+        self.create_mainmenu()
+        self.root.update()
+
     
     #VOCABLE MENU
     def create_vocmenu(self):
         """
         Diese Funktion erstellt die Elemente des Menue, wo die ganzen Vokabeln angezeigt werden.
         Voraussetzung: Das Fenster muss erstellt sein.
-        """
-        pass
-    
-    def show_vocmenu(self):
-        """
-        Diese Funktion zeigt die Elemente des Hauptmenues an.
-        Voraussetzung: Erstellen muss erfolgt sein [create_vocmenu()].
         """
         pass
     
@@ -152,27 +234,35 @@ class gui:
         pass
 
     #EXIT MENU
-    def create_exitmenu(self):
+    
+    def check_quit_window(self):
         """
-        Diese Funktion erstellt das Exit-Menue (mit Elementen).
-        Voraussetzung: Das Fenster muss erstellt sein.
+        Überprüfen ob wirklich beendet werden soll
         """
-        pass
+        self.m7.config(text="Wirklich Verlassen?")
+        self.m8.config(text="Ja", command=self.quit_window)
+        self.m9 = tkinter.Button(self.menu2, text="Nein", font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width=self.label_width, command=self.dont_quit_window)
+        self.m9.pack()
+        self.root.update()
 
-    def show_exitmenu(self):
+    def quit_window(self):
         """
-        Diese Funktion zeigt das Exit-Menue.
-        Voraussetzung: Menue muss existieren.
+        Schließen das Programms
         """
-        pass
+        self.root.destroy()
+
+    def dont_quit_window(self):
+        """
+        Zeigt Hauptmenue an
+        """
+        self.m9.destroy()
+        self.hide_mainmenu()
+        self.create_mainmenu()
+        self.root.update()
+        
     
-    def hide_exitmenu(self):
-        """
-        Diese Funktion versteckt das Exit-Menue.
-        Voraussetzung: Menue muss existieren.
-        """
-        pass
+
     
-test = gui("Test", 500, 500, "#4d4d4d", "black", True)
-test.show_mainmenu()
+test = gui("Test", 500, 500, "black", True)
+test.create_mainmenu()
 tkinter.mainloop()
