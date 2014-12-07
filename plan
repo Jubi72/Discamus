@@ -6,7 +6,7 @@ Niko Lockenvitz:	Interface
 
 lernen		(eventuell Hilfe-Button)
 testen
-	–-> aus Liste Dateien auswählen
+	--> aus Liste Dateien auswählen
 
 Editor
 	neue Dateien erstellen (vielleicht per try-except überprüfen, ob Datei vorhanden; wegen überschreiben)
@@ -49,16 +49,18 @@ readme.txt
 
 
 Kartenstapel:
-schlüssel = [„a“, „b“, „c“, „d“, …]
-wert = [„1“, „2“, „3“, „4“, …]
-ergebnis = [„1/4“, „3/3“, „2/3“, „0/3“]
+stapel = [Kartenstapel1, Kartenstapel2, Kartenstapel3, ...]
+karten = [[Karte1_Seite1, Karte1_Seite2], [Karte2_Seite1, Karte2_Seite2], ...]
+random_card =[KarteX_Seite1, KarteX_Seite2] <- Funktion random_card löscht dann diese Karte und Fürt es zu last_card hinzu
 
 paket.lern
-a|1|1/4
-b|2|3/3
-c|3|2/3
-d|4|0/3
-oder so
+Name|letzterAufruf|AnzahlKarten|Lernstand[0-100]
+id|Seite1|Seite2|Einseiteig(0)/Zweiseitig(1)|lernstand (AnzahlRichtg:AnzahlGesamt)
+id|Seite1|Seite2|Einseiteig(0)/Zweiseitig(1)|lernstand (AnzahlRichtg:AnzahlGesamt)
+id|Seite1|Seite2|Einseiteig(0)/Zweiseitig(1)|lernstand (AnzahlRichtg:AnzahlGesamt)
+id|Seite1|Seite2|Einseiteig(0)/Zweiseitig(1)|lernstand (AnzahlRichtg:AnzahlGesamt)
+
+id:1, 2, 3, ... damit Karten doppelt vorkommen können und dann die richtige gelöscht wird
 
 Ordnerstruktur
 discamus
