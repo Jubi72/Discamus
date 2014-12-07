@@ -2,9 +2,9 @@ from accesses import *
 from gui import *
 
 # # # # # Todo # # # # #
-# - mainmenu                     #
-# - statistik                    #
-# # # # # #    # # # # # #
+# - mainmenu           #
+# - statistik          #
+# # # # # #  # # # # # #
 
 ### initialisieren
 gui = GUI("discamus", 600, 400, "black", "orange", True)
