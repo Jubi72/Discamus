@@ -26,7 +26,6 @@ class funktion:
             if not 32<=ord(character)<=122:
                 return False
         return True
-        pass
     
     #Funktionen fuer mehrere Kartenstapel
     def deck_list(self):
@@ -59,12 +58,38 @@ class funktion:
  
  
     #Funktionen fuer jeweils ein Kartenstapel
+    def __einrueckenZahl(self, zahl, laenge):
+        """
+        Diese Funktion schreibt in einem String vor die eingegebene Zahl so viele Nullen,
+        dass die laenge erreicht wird.
+        """
+        anzahlLeerzeichen = laenge-len(str(zahl))
+        return min(0, anzahlLeerzeichen)*"0"+str(zahl)
+        
     def deck_create(self, name, kategorie, description):
         """
         Diese Funktion erstellt eine Datei, mit dem namen "name.rna" her, fals noetig: "name_x.rna"
         und dem Inhalt:
         name|timestamp|kategorie|beschreibung
         """
+        self.deck_list_update()
+        dateiname = name+".rna"
+        if dateiname in self.__deck_list:
+            i=2
+            dateiname = name+"_"+str(i)+".rna" in self.__deck_list
+            while dateiname in self.__deck_list:
+                i+=1
+                dateiname = name+"_"+str(i)+".rna" in self.__deck_list
+        datei = os.open(dateiname, "r")
+        lk=time.localtime()
+        timestamp =self.__einrueckenZahl(lk[0],4) #Jahre (laenge 4)
+        timestamp+=self.__einrueckenZahl(lk[1],2) #Monate (laenge 2)
+        timestamp+=self.__einrueckenZahl(lk[2],2) #Tage (laenge 2)
+        timestamp+=self.__einrueckenZahl(lk[3],2) #Stunden (laenge 2)
+        timestamp+=self.__einrueckenZahl(lk[4],2) #Minuten (laenge 2)
+        timestamp+=self.__einrueckenZahl(lk[5],2) #Sekunden (laenge 2)
+        datei.write(name+"|"+kategorie+"|"+timestamp+"|"+kategorie+"|"+description)
+        datei.close()
     
     def deck_delete(self, dateiname):
         """
