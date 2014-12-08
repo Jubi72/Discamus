@@ -1,14 +1,16 @@
 import os
 import time
 
+# -*- coding: utf-8 -*-
 class funktion:
     def __init__(self):
-        self.__deck_list = self.deck_list_update()  #Deckliste wird am Anfang geladen
+        self.__deck_list = list() #liste der Decks
+        self.__deck_list_info = list() #liste der Decks mit Infos
         self.__deck = str() #Dieser String wird fuer das aktuelle Deck verwendet
         self.__deck_info = list() #Diese Liste beinhaltet die Inforamtionen ueber das aktuelle Deck
         self.__deck_cards = list() #Diese Liste beinhaltet die Karten des aktuellen Deckes
         self.__deck_cards_learning = list() #Diese Liste beinhaltet die Karten des aktuellen Deckes ohne die gelernten
-        self.__last_card= str() #Dieser String Beinhaltet die letzte Karte, falls beim Lernen diese nochmal benoetigt wird
+        self.__last_card = str() #Dieser String Beinhaltet die letzte Karte, falls beim Lernen diese nochmal benoetigt wird
         self.__deck_cards_learned = list() #Diese Liste beinhaltet die gelernten Karten und ob sie Richtig oder Falsch beim ersten Versuch angegeben wurden.
         
     #Grundfunktionen, noetig fuer das Programm:
@@ -31,15 +33,31 @@ class funktion:
         """
         Diese Funktion gibt die Liste aller Kartenstapel zurueck
         Voraussetzung: falls schon laenger nicht getan: deck_list_update noetig.
-        """
+        """      
         return self.__deck_list
+    
+    def deck_list_info(self):
+        """
+        Diese Funktion gibt die Liste aller Kartenstapel mit Infos zurueck
+        Keine Voraussetzungen
+        Liste: [[dateiname, name, fortschritt, ...],[]
+        """
+        self.deck_list_update()
+        self.__deck_list_info=[]
+        for deck in self.__deck_list:
+            self.__deck_list_info.append([deck]+self.deck_load_info(deck))
+        return self.__deck_list_info
     
     def deck_list_update(self):
         """
         Diese Funktion liesst alle Kartenstapel aus und schreibt sie in die Variable self.deck_list
         """
-        pass
-        
+        self.__deck_list=[]
+        for datei in os.listdir("stapel"):
+            if len(datei)>4 and datei[-4:-1]+datei[-1]==".rna":
+                self.__deck_list.append(datei)
+ 
+ 
     #Funktionen fuer jeweils ein Kartenstapel
     def deck_create(self, name, kategorie, description):
         """
@@ -48,9 +66,9 @@ class funktion:
         name|timestamp|kategorie|beschreibung
         """
     
-    def deck_delet(self, dateiname):
+    def deck_delete(self, dateiname):
         """
-        Diese Funktion löscht das angegebene Deck
+        Diese Funktion loescht das angegebene Deck
         """
         pass
     
@@ -60,7 +78,11 @@ class funktion:
         Diese Funktion laed nur die Infos, 
         damit beim Auflisten der Dateien nur diese Funktion aufgerufen werden muss.
         """
-        pass
+        datei = os.open(dateiname, "r")
+        inhalt = datei.readlines()[0]
+        info = inhalt.split("|")
+        datei.close()
+        return info
     
     def deck_load(self, name):
         #Wenn man mit einem Kartenstapel arbeiten moechte, muss mand diese Funktion aufrufen
@@ -72,8 +94,8 @@ class funktion:
         Aufbau der Datei:
         + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +
         | Name|letzterAufruf|AnzahlKarten|Lernstand[0-100] ::infos ueber den Stapel |
-        | Vorderseite|Rueckseite|Einseiteig(0)/Zweiseitig(1)|lernstand ::Kartenifos |
-        | Vorderseite|Rueckseite|Einseiteig(0)/Zweiseitig(1)|lernstand ::Kartenifos |
+        | id|Seite1|Seite2|Einseiteig(0)/Zweiseitig(1)|lernstand ::Kartenifos       |
+        | id|Seite1|Seite2|Einseiteig(0)/Zweiseitig(1)|lernstand ::Kartenifos       |
         | ...                                                                       |
         + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +
         """
@@ -116,3 +138,4 @@ class funktion:
         %APPDATA%\Rena\einstellungen
         """
         pass
+
