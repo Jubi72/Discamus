@@ -13,6 +13,13 @@ class funktion:
         self.__last_card = str() #Dieser String Beinhaltet die letzte Karte, falls beim Lernen diese nochmal benoetigt wird
         self.__deck_cards_learned = list() #Diese Liste beinhaltet die gelernten Karten und ob sie Richtig oder Falsch beim ersten Versuch angegeben wurden.
         
+        #Dateinamen, ordnernamen, etc
+        self.__data_dir = "data\\"
+        self.__config_dir = self.data_dir + "config\\"
+        self.__config_file = "general.cfg"
+        self.__deck_dir = self.data_dir + "stapel\\"
+        self.__card_suffix = ".rna"
+        
     #Grundfunktionen, noetig fuer das Programm:
     def str_valid(self, String, max_len=0):
         """
@@ -52,8 +59,8 @@ class funktion:
         Diese Funktion liesst alle Kartenstapel aus und schreibt sie in die Variable self.deck_list
         """
         self.__deck_list=[]
-        for datei in os.listdir("stapel"):
-            if len(datei)>4 and datei[-4:-1]+datei[-1]==".rna":
+        for datei in os.listdir(self.__deck_dir):
+            if len(datei)>4 and datei[-len(self.__card_suffix):-1]+datei[-1]==self.__card_suffix:
                 self.__deck_list.append(datei)
  
  
@@ -65,22 +72,8 @@ class funktion:
         """
         anzahlLeerzeichen = laenge-len(str(zahl))
         return min(0, anzahlLeerzeichen)*"0"+str(zahl)
-        
-    def deck_create(self, name, kategorie, description):
-        """
-        Diese Funktion erstellt eine Datei, mit dem namen "name.rna" her, fals noetig: "name_x.rna"
-        und dem Inhalt:
-        name|timestamp|kategorie|beschreibung
-        """
-        self.deck_list_update()
-        dateiname = name+".rna"
-        if dateiname in self.__deck_list:
-            i=2
-            dateiname = name+"_"+str(i)+".rna" in self.__deck_list
-            while dateiname in self.__deck_list:
-                i+=1
-                dateiname = name+"_"+str(i)+".rna" in self.__deck_list
-        datei = os.open(dateiname, "r")
+    
+    def timestamp(self):
         lk=time.localtime()
         timestamp =self.__einrueckenZahl(lk[0],4) #Jahre (laenge 4)
         timestamp+=self.__einrueckenZahl(lk[1],2) #Monate (laenge 2)
@@ -88,14 +81,37 @@ class funktion:
         timestamp+=self.__einrueckenZahl(lk[3],2) #Stunden (laenge 2)
         timestamp+=self.__einrueckenZahl(lk[4],2) #Minuten (laenge 2)
         timestamp+=self.__einrueckenZahl(lk[5],2) #Sekunden (laenge 2)
+        return timestamp
+        
+    def deck_create(self, name, kategorie, description):
+        """
+        Diese Funktion erstellt eine Datei, mit dem namen "name.rna" her, fals noetig: "name_x.rna"
+        und dem Inhalt:
+        name|timestamp|kategorie|beschreibung
+        und updatet die Deck-Liste
+        """
+        self.deck_list_update()
+        dateiname = name+self.__card_suffix
+        if dateiname in self.__deck_list:
+            i=2
+            dateiname = name+"_"+str(i)+self.__card_suffix in self.__deck_list
+            while dateiname in self.__deck_list:
+                i+=1
+                dateiname = name+"_"+str(i)+self.__card_suffix in self.__deck_list
+        datei = os.open(self.__deck_dir+dateiname, "r")
+        timestamp =self.timestamp()
         datei.write(name+"|"+kategorie+"|"+timestamp+"|"+kategorie+"|"+description)
         datei.close()
+        self.deck_list_update()
     
     def deck_delete(self, dateiname):
         """
-        Diese Funktion loescht das angegebene Deck
+        Diese Funktion loescht das angegebene Deck und updatet die Deck-Liste
         """
-        pass
+        self.deck_list_update()
+        if dateiname in self.__deck_list:
+            os.remove(self.__deck_dir+dateiname)
+        self.deck_list_update()
     
     def deck_load_info(self, dateiname):
         #diese Funktion nur beim nicht_laden verwenden
@@ -103,7 +119,7 @@ class funktion:
         Diese Funktion laed nur die Infos, 
         damit beim Auflisten der Dateien nur diese Funktion aufgerufen werden muss.
         """
-        datei = os.open(dateiname, "r")
+        datei = os.open(self.__deck_dir+dateiname, "r")
         inhalt = datei.readlines()[0]
         info = inhalt.split("|")
         datei.close()
@@ -158,9 +174,6 @@ class funktion:
         """
         Diese Funktion prueft, ob alle noetigen Dateipfade existieren, wenn nicht, werden diese hier erstllt
         noetige Dateipfade:
-        %APPDATA%\Rena\
-        %APPDATA%\Rena\stapel
-        %APPDATA%\Rena\einstellungen
         """
         pass
 
