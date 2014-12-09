@@ -162,7 +162,6 @@ class gui:
         self.text_color = "white"    #Label Text Farbe
         self.bg_color =  "#4d4d4d"
         self.hide_options_menu()
-        self.create_options_menu()
         self.root.config(bg=self.bg_color)
         self.root.update()
 
@@ -172,9 +171,8 @@ class gui:
         """
         self.label_color = "white" #Label Hintergrund
         self.text_color = "black"    #Label Text Farbe
-        self.bg_color = "#e8e8e8"
+        self.bg_color = "#D0D0D0"
         self.hide_options_menu()
-        self.create_options_menu()
         self.root.config(bg=self.bg_color)
         self.root.update()
 
@@ -186,7 +184,6 @@ class gui:
         self.text_color = "blue"    #Label Text Farbe
         self.bg_color = "#d65a00"
         self.hide_options_menu()
-        self.create_options_menu()
         self.root.config(bg=self.bg_color)
         self.root.update()
 
@@ -198,7 +195,6 @@ class gui:
         self.text_color = "orange"    #Label Text Farbe
         self.bg_color = "#000066"
         self.hide_options_menu()
-        self.create_options_menu()
         self.root.config(bg=self.bg_color)
         self.root.update()
 
