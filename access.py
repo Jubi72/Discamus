@@ -125,8 +125,8 @@ class funktion:
         datei.close()
         return info
     
-    def deck_load(self, name):
-        #Wenn man mit einem Kartenstapel arbeiten moechte, muss mand diese Funktion aufrufen
+    def deck_load(self, dateiname):
+        #Wenn man mit einem Kartenstapel arbeiten moechte, muss man diese Funktion aufrufen
         """
         Der Deckname (self.__deck) wird auf "name" geaendert und die informationen werden aus der Datei gelesen.
         self.__deck = "Dateiname"
@@ -140,6 +140,9 @@ class funktion:
         | ...                                                                       |
         + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +
         """
+        self.__deck=dateiname
+        self.deck_load_info(dateiname)
+        #...
         pass
     
     def deck_cards(self):
