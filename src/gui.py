@@ -63,6 +63,61 @@ class gui:
 
     
     #MAIN MENU
+    def enterm1(self, event):
+        self.m1.config(bg="white", fg="black")
+        
+    def leavem1(self, event):
+        self.m1.config(bg=self.label_color, fg=self.text_color)
+
+    def enterm2(self, event):
+        self.m2.config(bg="white", fg="black")
+        
+    def leavem2(self, event):
+        self.m2.config(bg=self.label_color, fg=self.text_color)
+
+    def enterm3(self, event):
+        self.m3.config(bg="white", fg="black")
+        
+    def leavem3(self, event):
+        self.m3.config(bg=self.label_color, fg=self.text_color)
+
+    def enterm4(self, event):
+        self.m4.config(bg="white", fg="black")
+        
+    def leavem4(self, event):
+        self.m4.config(bg=self.label_color, fg=self.text_color)
+
+
+    def enterm5(self, event):
+        self.m5.config(bg="white", fg="black")
+        
+    def leavem5(self, event):
+        self.m5.config(bg=self.label_color, fg=self.text_color)
+
+
+    def enterm6(self, event):
+        self.m6.config(bg="white", fg="black")
+        
+    def leavem6(self, event):
+        self.m6.config(bg=self.label_color, fg=self.text_color)
+
+
+    def enterm7(self, event):
+        self.m7.config(bg="white", fg="black")
+        
+    def leavem7(self, event):
+        self.m7.config(bg=self.label_color, fg=self.text_color)
+
+
+    def enterm8(self, event):
+        self.m8.config(bg="white", fg="black")
+        
+    def leavem8(self, event):
+        self.m8.config(bg=self.label_color, fg=self.text_color)
+
+        
+
+
     def create_mainmenu(self):
         """
         Diese Funktion erstellt die Elemente des Hauptmenues.
@@ -101,8 +156,24 @@ class gui:
         self.m6.pack()
         self.m7.pack()
         self.m8.pack()
-        
+        self.m1.bind('<Enter>', self.enterm1)
+        self.m1.bind('<Leave>', self.leavem1)
+        self.m2.bind('<Enter>', self.enterm2)
+        self.m2.bind('<Leave>', self.leavem2)
+        self.m3.bind('<Enter>', self.enterm3)
+        self.m3.bind('<Leave>', self.leavem3)
+        self.m4.bind('<Enter>', self.enterm4)
+        self.m4.bind('<Leave>', self.leavem4)
+        self.m5.bind('<Enter>', self.enterm5)
+        self.m5.bind('<Leave>', self.leavem5)
+        self.m6.bind('<Enter>', self.enterm6)
+        self.m6.bind('<Leave>', self.leavem6)
+        self.m7.bind('<Enter>', self.enterm7)
+        self.m7.bind('<Leave>', self.leavem7)
+        self.m8.bind('<Enter>', self.enterm8)
+        self.m8.bind('<Leave>', self.leavem8)
 
+        
     def hide_mainmenu(self):
         """
         Diese Funktion versteckt die Elemente des Hauptmenues.
@@ -122,6 +193,40 @@ class gui:
         self.root.update()
 
     #OPTIONS MENU
+    def entero1(self, event):
+        self.o1.config(bg="white", fg="black")
+        
+    def leaveo1(self, event):
+        self.o1.config(bg=self.label_color, fg=self.text_color)
+
+    def entero2(self, event):
+        self.o2.config(bg="white", fg="black")
+        
+    def leaveo2(self, event):
+        self.o2.config(bg=self.label_color, fg=self.text_color)
+
+    def entero3(self, event):
+        self.o3.config(bg="white", fg="black")
+        
+    def leaveo3(self, event):
+        self.o3.config(bg=self.label_color, fg=self.text_color)
+
+    def entero4(self, event):
+        self.o4.config(bg="white", fg="black")
+        
+    def leaveo4(self, event):
+        self.o4.config(bg=self.label_color, fg=self.text_color)
+
+
+    def entero5(self, event):
+        self.o5.config(bg="white", fg="black")
+        
+    def leaveo5(self, event):
+        self.o5.config(bg=self.label_color, fg=self.text_color)
+
+
+
+
     def create_options_menu(self):
         """
         zeigt Menue für Optionen an
@@ -151,6 +256,16 @@ class gui:
         self.o3.pack()
         self.o4.pack()
         self.o5.pack()
+        self.o1.bind('<Enter>', self.entero1)
+        self.o1.bind('<Leave>', self.leaveo1)
+        self.o2.bind('<Enter>', self.entero2)
+        self.o2.bind('<Leave>', self.leaveo2)
+        self.o3.bind('<Enter>', self.entero3)
+        self.o3.bind('<Leave>', self.leaveo3)
+        self.o4.bind('<Enter>', self.entero4)
+        self.o4.bind('<Leave>', self.leaveo4)
+        self.o5.bind('<Enter>', self.entero5)
+        self.o5.bind('<Leave>', self.leaveo5) 
         self.root.update()
 
 
@@ -230,7 +345,27 @@ class gui:
         pass
 
     #EXIT MENU
-    
+
+    def entere1(self, event):
+        self.e1.config(bg="white", fg="black")
+        
+    def leavee1(self, event):
+        self.e1.config(bg=self.label_color, fg=self.text_color)
+
+    def entere2(self, event):
+        self.e2.config(bg="white", fg="black")
+        
+    def leavee2(self, event):
+        self.e2.config(bg=self.label_color, fg=self.text_color)
+
+    def entere3(self, event):
+        self.e3.config(bg="white", fg="black")
+        
+    def leavee3(self, event):
+        self.e3.config(bg=self.label_color, fg=self.text_color)
+
+
+
     def show_exit_menu(self):
         """
         Überprüfen ob wirklich beendet werden soll
@@ -246,7 +381,13 @@ class gui:
         self.e1.pack()
         self.e2.pack()
         self.e3.pack()
-        
+        self.e1.bind('<Enter>', self.entere1)
+        self.e1.bind('<Leave>', self.leavee1)
+        self.e2.bind('<Enter>', self.entere2)
+        self.e2.bind('<Leave>', self.leavee2)
+        self.e3.bind('<Enter>', self.entere3)
+        self.e3.bind('<Leave>', self.leavee3)
+        self.root.update()
         
 
     def quit_window(self):
@@ -260,6 +401,7 @@ class gui:
         Zeigt Hauptmenue an
         """
         
+        self.hide_exit_menu()
         self.create_mainmenu()
         self.root.update()
 
@@ -268,7 +410,6 @@ class gui:
         self.e1.destroy()
         self.e2.destroy()
         self.e3.destroy()
-        self.show_mainmenu()
         
     
 
