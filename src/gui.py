@@ -91,7 +91,7 @@ class gui:
         self.m5 = tkinter.Button(self.menu1, text=str(m5), font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width)
         self.m6 = tkinter.Button(self.menu1, text=str(m6), font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width)
         self.m7 = tkinter.Button(self.menu2, text="Optionen", font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width, command=self.create_options_menu)
-        self.m8 = tkinter.Button(self.menu2, text="Verlassen", font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width, command=self.check_quit_window)
+        self.m8 = tkinter.Button(self.menu2, text="Verlassen", font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width, command=self.show_exit_menu)
         self.m0.pack()
         self.m1.pack()
         self.m2.pack()
@@ -144,7 +144,7 @@ class gui:
         self.o2 = tkinter.Button(self.option1, text=str(o2), font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width, command = self.change_design2)
         self.o3 = tkinter.Button(self.option1, text=str(o3), font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width, command = self.change_design3)
         self.o4 = tkinter.Button(self.option1, text=str(o4), font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width, command = self.change_design4)
-        self.o5 = tkinter.Button(self.option2, text="Verlassen", font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width, command=self.hide_options_menu)
+        self.o5 = tkinter.Button(self.option2, text="Zurueck", font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width, command=self.hide_options_menu)
         self.o0.pack()
         self.o1.pack()
         self.o2.pack()
@@ -231,15 +231,23 @@ class gui:
 
     #EXIT MENU
     
-    def check_quit_window(self):
+    def show_exit_menu(self):
         """
         Überprüfen ob wirklich beendet werden soll
         """
-        self.m7.config(text="Wirklich Verlassen?")
-        self.m8.config(text="Ja", command=self.quit_window)
-        self.m9 = tkinter.Button(self.menu2, text="Nein", font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width=self.label_width, command=self.dont_quit_window)
-        self.m9.pack()
-        self.root.update()
+        self.hide_mainmenu()
+        self.exit = tkinter.Frame(self.root)
+        self.exit.config(bg=self.label_color)
+        self.exit.config(bd = 5, relief = "ridge")
+        self.exit.pack()
+        self.e1 = tkinter.Label(self.exit, text= "Wirklich Verlassen?", font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width)
+        self.e2 = tkinter.Button(self.exit, text="Ja", font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width, command = self.quit_window)
+        self.e3 = tkinter.Button(self.exit, text="Nein", font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width, command = self.dont_quit_window)
+        self.e1.pack()
+        self.e2.pack()
+        self.e3.pack()
+        
+        
 
     def quit_window(self):
         """
@@ -251,10 +259,16 @@ class gui:
         """
         Zeigt Hauptmenue an
         """
-        self.m9.destroy()
-        self.hide_mainmenu()
+        
         self.create_mainmenu()
         self.root.update()
+
+    def hide_exit_menu(self):
+        self.exit.destroy()
+        self.e1.destroy()
+        self.e2.destroy()
+        self.e3.destroy()
+        self.show_mainmenu()
         
     
 
