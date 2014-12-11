@@ -314,11 +314,12 @@ class gui:
         self.root.update()
 
     #LEARN MENU
-    def create_learnmenu(self):
+    def create_learnmenu(self, liste):
         """
         Diese Funktion erstellt ein Menu zum lernen
         """
-        pass
+        for i in range(len(liste)):
+            pass
 
 
     #VOCABLE MENU
