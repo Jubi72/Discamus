@@ -16,7 +16,7 @@ lern_oder_test = "lern"
 
 ### Hauptmenu anzeigen
 gui.show_mainmenu()
-
+"""
 def start_lernen(deck):
     # Deck eingelesen, das Lernen kann beginnen
     gui.show_lernmenu()
@@ -40,15 +40,41 @@ def start_lernen(deck):
         if(x == True):
             # delete card
     # Lernen fertig
-        
+"""        
+def lernen_a(deck, x):
+    if(acc.deck_info[1] == 0):
+        if(x):
+            frage_lsg = acc.random_card()
+        else:
+            frage_lsg = acc.last_card()
+        richtung = 1 # vielleicht durch GUI abfragen lassen
+        if(richtung == 1):
+            frage = frage_lsg[0]
+            loesung = frage_lsg[1]
+        else:
+            frage = frage_lsg[1]
+            loesung = frage_lsg[0]
+        gui.show_lernmenu_a(frage)
 
-def start_testen(deck):
-    # Deck eingelesen, das Lernen kann beginnen
-    gui.show_testmenu()
-    acc.deck_load(deck)
-    while(acc.deck_info[1] != 0):
-        # Funktion sollte eine Liste [frage, loesgun] zurueckgeben
-        frage_lsg = acc.frage(deck)
+def lernen_b(antwort):
+    # Funktion soll fuer sich exakten Wert (z.B. "3/7") abspeichern (fuer Statistik),
+    # aber True oder False returnen (kompelett richtig o. nicht)
+    x = acc.richtig_falsch(loesung,antwort)
+    gui.gib_loesung(loesung,x)
+    #gui.show_lernmenu_b()
+
+
+
+def start_testen(deck, antwort):
+    if(antwort != "erste Runde"):
+        # Funktion soll fuer sich exakten Wert (z.B. "3/7") abspeichern (fuer Statistik),
+        # aber True oder False returnen (kompelett richtig o. nicht)
+        x = acc.richtig_falsch(loesung,antwort)
+        gui.gib_loesung(loesung,x)
+        # delete card
+    if(acc.deck_info[1] != 0):
+        # Funktion sollte eine Liste [frage, loesung] zurueckgeben
+        frage_lsg = acc.random_card(deck)
         richtung = 1 # irgendwie noch die Richtung per GUI abfragen lassen
         if(richtung == 1):
             frage = frage_lsg[0]
@@ -56,13 +82,8 @@ def start_testen(deck):
         else:
             frage = frage_lsg[1]
             loesung = frage_lsg[0]
+        gui.show_testmenu(frage)
         # Funktion soll User-Antwort returnen
-        antwort = gui.frage(frage) # sozusagen warten bis Antwort kommt
-        # Funktion soll fuer sich exakten Wert (z.B. "3/7") abspeichern (fuer Statistik),
-        # aber True oder False returnen (kompelett richtig o. nicht)
-        x = richtig_falsch(loesung,antwort)
-        gui.gib_loesung(loesung,x)
-        # delete card
     # Testen fertig
 
 def decks_ansicht_test():
@@ -81,9 +102,11 @@ def deck_ausgewaehlt(deck):
     # Deck ausgewählt, Lernen bzw. Testen kann beginnen
     if(lern_oder_test == "lern"):
         gui.hide_deckmenu()
-        start_lernen(deck)
+        acc.deck_load(deck)
+        lernen_a(deck, True)
     else:
         gui.hide_deckmenu()
+        acc.deck_load(deck)
         start_testen(deck)
 
 def editor_quit():
