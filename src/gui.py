@@ -19,7 +19,7 @@ class gui:
             self.root.geometry(str(self.__breite) + "x" + str(self.__hoehe))
         # self.__root.bind("<F11>", self.fullscreen) ### vielleicht gleich Fullscreen ???
         # self.__root.bind("<Escape>", self.escape)
-        # self.__root.bind("<F1>",helpme)
+        # self.__root.bind("<F1>",self.helpme)
         self.root.config(bg=self.bg_color)
         
         
@@ -107,14 +107,6 @@ class gui:
         
     def leavem7(self, event):
         self.m7.config(bg=self.label_color, fg=self.text_color)
-
-
-    def enterm8(self, event):
-        self.m8.config(bg="white", fg="black")
-        
-    def leavem8(self, event):
-        self.m8.config(bg=self.label_color, fg=self.text_color)
-
         
 
 
@@ -124,12 +116,10 @@ class gui:
         Voraussetzung: Fenster muss erstellt sein.
         m1 usw. sind der Text der Angezeigt wird
         """
-        m1 = "Auswahl 1"
-        m2 = "Auswahl 2"
-        m3 = "Auswahl 3"
-        m4 = "Auswahl 4"
-        m5 = "Auswahl 5"
-        m6 = "Auswahl 6"
+        m1 = "Lernen"
+        m2 = "Testen"
+        m3 = "Editor"
+        m4 = "Statistiken"
         self.menu1 = tkinter.Frame(self.root)
         self.menu1.config(bg=self.label_color)
         self.menu1.config(bd = 5, relief = "ridge")
@@ -143,10 +133,9 @@ class gui:
         self.m2 = tkinter.Button(self.menu1, text=str(m2), font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width)
         self.m3 = tkinter.Button(self.menu1, text=str(m3), font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width)
         self.m4 = tkinter.Button(self.menu1, text=str(m4), font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width)
-        self.m5 = tkinter.Button(self.menu1, text=str(m5), font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width)
-        self.m6 = tkinter.Button(self.menu1, text=str(m6), font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width)
-        self.m7 = tkinter.Button(self.menu2, text="Optionen", font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width, command=self.create_options_menu)
-        self.m8 = tkinter.Button(self.menu2, text="Verlassen", font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width, command=self.show_exit_menu)
+        self.m5 = tkinter.Button(self.menu2, text="Optionen", font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width, command=self.create_options_menu)
+        self.m6 = tkinter.Button(self.menu2, text="Hilfe", font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width)
+        self.m7 = tkinter.Button(self.menu2, text="Verlassen", font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width, command=self.show_exit_menu)
         self.m0.pack()
         self.m1.pack()
         self.m2.pack()
@@ -155,7 +144,6 @@ class gui:
         self.m5.pack()
         self.m6.pack()
         self.m7.pack()
-        self.m8.pack()
         self.m1.bind('<Enter>', self.enterm1)
         self.m1.bind('<Leave>', self.leavem1)
         self.m2.bind('<Enter>', self.enterm2)
@@ -170,8 +158,6 @@ class gui:
         self.m6.bind('<Leave>', self.leavem6)
         self.m7.bind('<Enter>', self.enterm7)
         self.m7.bind('<Leave>', self.leavem7)
-        self.m8.bind('<Enter>', self.enterm8)
-        self.m8.bind('<Leave>', self.leavem8)
 
         
     def hide_mainmenu(self):
@@ -187,7 +173,6 @@ class gui:
         self.m5.destroy()
         self.m6.destroy()
         self.m7.destroy()
-        self.m8.destroy()
         self.menu1.destroy()
         self.menu2.destroy()
         self.root.update()
@@ -249,7 +234,7 @@ class gui:
         self.o2 = tkinter.Button(self.option1, text=str(o2), font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width, command = self.change_design2)
         self.o3 = tkinter.Button(self.option1, text=str(o3), font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width, command = self.change_design3)
         self.o4 = tkinter.Button(self.option1, text=str(o4), font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width, command = self.change_design4)
-        self.o5 = tkinter.Button(self.option2, text="Zurueck", font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width, command=self.hide_options_menu)
+        self.o5 = tkinter.Button(self.option2, text="Zurück", font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width, command=self.hide_options_menu)
         self.o0.pack()
         self.o1.pack()
         self.o2.pack()
@@ -328,7 +313,14 @@ class gui:
         self.create_mainmenu()
         self.root.update()
 
-    
+    #LEARN MENU
+    def create_learnmenu(self):
+        """
+        Diese Funktion erstellt ein Menu zum lernen
+        """
+        pass
+
+
     #VOCABLE MENU
     def create_vocmenu(self):
         """
