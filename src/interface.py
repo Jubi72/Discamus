@@ -55,6 +55,10 @@ def lernen_a(deck, x):
             frage = frage_lsg[1]
             loesung = frage_lsg[0]
         gui.show_lernmenu_a(frage)
+    else:
+        # Deck "leer"
+        gui.hide_lernmenu_a()
+        gui.show_auswertung(acc.erfolg())
 
 def lernen_b(antwort):
     # Funktion soll fuer sich exakten Wert (z.B. "3/7") abspeichern (fuer Statistik),
@@ -69,8 +73,7 @@ def start_testen(deck, antwort):
     if(antwort != "erste Runde"):
         # Funktion soll fuer sich exakten Wert (z.B. "3/7") abspeichern (fuer Statistik),
         # aber True oder False returnen (kompelett richtig o. nicht)
-        x = acc.richtig_falsch(loesung,antwort)
-        gui.gib_loesung(loesung,x)
+        acc.richtig_falsch(loesung,antwort)
         # delete card
     if(acc.deck_info[1] != 0):
         # Funktion sollte eine Liste [frage, loesung] zurueckgeben
@@ -84,7 +87,10 @@ def start_testen(deck, antwort):
             loesung = frage_lsg[0]
         gui.show_testmenu(frage)
         # Funktion soll User-Antwort returnen
-    # Testen fertig
+    else:
+        # Deck "leer"
+        gui.hide_testmenu()
+        gui.show_auswertung(acc.erfolg())
 
 def decks_ansicht_test():
     gui.hide_mainmenu()
