@@ -14,10 +14,17 @@ class funktion:
         self.__deck_cards_learned = list() #Diese Liste beinhaltet die gelernten Karten und ob sie Richtig oder Falsch beim ersten Versuch angegeben wurden.
         
         #Dateinamen, ordnernamen, etc
-        self.__data_dir = "data\\"
-        self.__config_dir = self.data_dir + "config\\"
-        self.__config_file = "general.cfg"
+        #Stammverzeichnis
+        self.__root_dir = ""
+        #    unterverzeichnisse
+        self.__data_dir = self.__root_dir + "data\\"
+        #        unterverzeicnhisse von "data"
         self.__deck_dir = self.data_dir + "stapel\\"
+        self.__config_dir = self.data_dir + "config\\"
+        #            dateien unter config
+        self.__config_file = self.__config_dir + "general.cfg"
+        
+        #Dateiendungen
         self.__card_suffix = ".rna"
         
     #Grundfunktionen, noetig fuer das Programm:
