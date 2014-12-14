@@ -120,15 +120,19 @@ class gui:
         m2 = "Testen"
         m3 = "Editor"
         m4 = "Statistiken"
+        self.head = tkinter.Frame(self.root)
+        self.head.config(bg=self.label_color)
+        self.head.config(bd = 5, relief = "ridge")
+        self.head.pack(side="top")
         self.menu1 = tkinter.Frame(self.root)
         self.menu1.config(bg=self.label_color)
         self.menu1.config(bd = 5, relief = "ridge")
-        self.menu1.pack(side="top")
+        self.menu1.pack(side="left")
         self.menu2 = tkinter.Frame(self.root)
         self.menu2.config(bg=self.label_color)
         self.menu2.config(bd = 5, relief = "ridge")
-        self.menu2.pack(side="bottom")
-        self.m0 = tkinter.Label(self.menu1, text="Hauptmenü", font=("Comic Sans MS", 30), fg=self.text_color, bg=self.label_color)
+        self.menu2.pack(side="left")
+        self.m0 = tkinter.Label(self.head, text="Hauptmenü", font=("Comic Sans MS", 30), fg=self.text_color, bg=self.label_color)
         self.m1 = tkinter.Button(self.menu1, text=str(m1), font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width)
         self.m2 = tkinter.Button(self.menu1, text=str(m2), font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width)
         self.m3 = tkinter.Button(self.menu1, text=str(m3), font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width)
