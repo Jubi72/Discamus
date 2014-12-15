@@ -78,16 +78,16 @@ class funktion:
         dass die laenge erreicht wird.
         """
         anzahlLeerzeichen = laenge-len(str(zahl))
-        return min(0, anzahlLeerzeichen)*"0"+str(zahl)
+        return max(0, anzahlLeerzeichen)*"0"+str(zahl)
     
     def timestamp(self):
-        lk=time.localtime()
-        timestamp =self.__einrueckenZahl(lk[0],4) #Jahre (laenge 4)
-        timestamp+=self.__einrueckenZahl(lk[1],2) #Monate (laenge 2)
-        timestamp+=self.__einrueckenZahl(lk[2],2) #Tage (laenge 2)
-        timestamp+=self.__einrueckenZahl(lk[3],2) #Stunden (laenge 2)
-        timestamp+=self.__einrueckenZahl(lk[4],2) #Minuten (laenge 2)
-        timestamp+=self.__einrueckenZahl(lk[5],2) #Sekunden (laenge 2)
+        lk = time.localtime()
+        timestamp  = self.__einrueckenZahl(lk[0],4) #Jahre (laenge 4)
+        timestamp += self.__einrueckenZahl(lk[1],2) #Monate (laenge 2)
+        timestamp += self.__einrueckenZahl(lk[2],2) #Tage (laenge 2)
+        timestamp += self.__einrueckenZahl(lk[3],2) #Stunden (laenge 2)
+        timestamp += self.__einrueckenZahl(lk[4],2) #Minuten (laenge 2)
+        timestamp += self.__einrueckenZahl(lk[5],2) #Sekunden (laenge 2)
         return timestamp
         
     def deck_create(self, name, kategorie, description):
@@ -158,7 +158,14 @@ class funktion:
         Voraussetzung: Deck muss geldaden sein (deck_load())
         -Speichert es in zwei variablen fuer random_card()
         """
+        
         return self.__deck_cards
+    
+    def load_deck_cards(self):
+        """
+        Diese Funktion laed die Karten aus der Datei
+        Voraussetzung: deck_load muss erfolgt sein
+        """
     
     def random_card(self):
         """
@@ -186,4 +193,3 @@ class funktion:
         noetige Dateipfade:
         """
         pass
-
