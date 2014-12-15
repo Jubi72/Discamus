@@ -6,16 +6,18 @@ import time
  | Anleitung, fuer die Nutzung der Funktionen der Klasse                                         |
  | Autor: Manuel                                                                                 |
  + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +
+ | config() :: gibt die Kofigationen, die in der config.cfg gespeichert sind zurueck             | TODO
  | deck_list() :: gibt alle Decks zurueck                                                        |
  | deck_list_info() :: gibt alle Decks mit den Infos zurueck                                     |
  | deck_create(str:name, str:kategorie, str:description) :: erstellt ein Kartenstapel            |
  | deck_delete(str:dateiname) :: loescht ein Kartenstapel                                        |
  | deck_load(str:dateiname) :: Laden eines Kartenstapels, notwendig um dieses zu nutzen          |
- |  deck_info() :: gibt die Infos des aktuellen Kartenstapels zurueck                            |
- |  card_create(str:seite1, str:seite2) :: fuegt zum aktuellen Kartestapel eine Karte hinzu      |
- |  card_delete(str:id) :: loescht eine Karte                                                    |
- |  random_card() :: gibt eine zufaellige Karte aus dem geladenen Deck zurueck und loescht diese |
- |  last_card() :: gibt die zuletzt ausgegebene Karte zurueck                                    |
+ |  deck_info() :: gibt die Infos des aktuellen Kartenstapels zurueck                            | TODO
+ |  deck_cards() :: gibt alle Karten eines Deckes zurueck                                        | TODO
+ |  card_create(str:seite1, str:seite2) :: fuegt zum aktuellen Kartestapel eine Karte hinzu      | TODO
+ |  card_delete(str:id) :: loescht eine Karte                                                    | TODO
+ |  random_card() :: gibt eine zufaellige Karte aus dem geladenen Deck zurueck und loescht diese | TODO
+ |  last_card() :: gibt die zuletzt ausgegebene Karte zurueck                                    | TODO
  + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +
 """
 
@@ -26,8 +28,8 @@ class funktion:
         self.__deck_list_info = list() #liste der Decks mit Infos
         self.__deck = str() #Dieser String wird fuer das aktuelle Deck verwendet
         self.__deck_info = list() #Diese Liste beinhaltet die Inforamtionen ueber das aktuelle Deck
-        self.__deck_cards = list() #Diese Liste beinhaltet die Karten des aktuellen Deckes
-        self.__deck_cards_learning = list() #Diese Liste beinhaltet die Karten des aktuellen Deckes ohne die gelernten
+        self.__deck_cards = list() #Diese Liste beinhaltet die Karten des aktuellen Deckes mit ids
+        self.__deck_cards_learn = list() #Diese Liste beinhaltet die Karten des aktuellen Deckes ohne die gelernten
         self.__last_card = str() #Dieser String Beinhaltet die letzte Karte, falls beim Lernen diese nochmal benoetigt wird
         self.__deck_cards_learned = list() #Diese Liste beinhaltet die gelernten Karten und ob sie Richtig oder Falsch beim ersten Versuch angegeben wurden.
         
@@ -137,6 +139,7 @@ class funktion:
             os.remove(self.__deck_dir+dateiname)
         self.__deck_list_update()
     
+    #Laden des Deckes
     def __deck_load_info(self, dateiname):
         """
         Diese Funktion laed nur die Infos, 
@@ -147,6 +150,13 @@ class funktion:
         info = inhalt.split("|")
         datei.close()
         return info
+    
+    def __deck_cards_load(self):
+        """
+        Diese Funktion laed die Karten aus der Datei
+        Voraussetzung: deck_load muss erfolgt sein
+        """
+        pass
     
     def deck_load(self, dateiname):
         #Wenn man mit einem Kartenstapel arbeiten moechte, muss man diese Funktion aufrufen
@@ -168,20 +178,6 @@ class funktion:
         #...
         pass
     
-    def deck_cards(self):
-        """
-        Diese Funktion gibt die Karten des Decks zurueck und fuegt es einer privaten Liste zurueck
-        Voraussetzung: Deck muss geldaden sein (deck_load())
-        -Speichert es in zwei variablen fuer random_card()
-        """
-        return self.__deck_cards
-    
-    def load_deck_cards(self):
-        """
-        Diese Funktion laed die Karten aus der Datei
-        Voraussetzung: deck_load muss erfolgt sein
-        """
-    
     def random_card(self):
         """
         Diese Funktion waehlt aus dem aktuellen Deck eine zufaellige Karte aus,
@@ -201,6 +197,28 @@ class funktion:
         Voraussetzung: Deck muss geladen sein (deck_load oder deck_load_info)
         """
         return self.__deck_info
+    
+    def deck_cards(self):
+        """
+        Diese Funktion gibt alle Karen eines Decks mit ids zurueck.
+        [id,[Seite1, Seite2], id2, [Seite1, Seite2],...]
+        """
+        pass
+        return self.__deck_cards
+    
+    def create_card(self, Seite1, Seite2):
+        """
+        Diese Funktion fuegt die Karte hinzu
+        """
+        
+    def delete_card(self, card_id):
+        """
+        Diese Funktion loescht die Karte
+        """
+    def config(self):
+        """
+        Diese Funktion gibt die Konfigationen aus der config datei zurueck oder die Standardeistellungen
+        """
     
     def pruefe_dateipfade(self):
         """
