@@ -2,23 +2,23 @@ import os
 import time
 
 """
- + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +
- | Anleitung, fuer die Nutzung der Funktionen der Klasse                                         |
- | Autor: Manuel                                                                                 |
- + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +
- | config() :: gibt die Kofigationen, die in der config.cfg gespeichert sind zurueck             | TODO
- | deck_list() :: gibt alle Decks zurueck                                                        |
- | deck_list_info() :: gibt alle Decks mit den Infos zurueck                                     |
- | deck_create(str:name, str:kategorie, str:description) :: erstellt ein Kartenstapel            |
- | deck_delete(str:dateiname) :: loescht ein Kartenstapel                                        |
- | deck_load(str:dateiname) :: Laden eines Kartenstapels, notwendig um dieses zu nutzen          |
- |  deck_info() :: gibt die Infos des aktuellen Kartenstapels zurueck                            | TODO
- |  deck_cards() :: gibt alle Karten eines Deckes zurueck                                        | TODO
- |  card_create(str:seite1, str:seite2) :: fuegt zum aktuellen Kartestapel eine Karte hinzu      | TODO
- |  card_delete(str:id) :: loescht eine Karte                                                    | TODO
- |  random_card() :: gibt eine zufaellige Karte aus dem geladenen Deck zurueck und loescht diese | TODO
- |  last_card() :: gibt die zuletzt ausgegebene Karte zurueck                                    | TODO
- + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +
+ + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - + - - - - - - +
+ | Anleitung, fuer die Nutzung der Funktionen der Klasse                                         | Fortschritt |
+ | Autor: Manuel                                                                                 |             |
+ + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - + - - - - - - +
+ | config() :: gibt die Kofigationen, die in der config.cfg gespeichert sind zurueck             | TODO 7      |
+ | deck_list() :: gibt alle Decks zurueck                                                        | Fertig      |
+ | deck_list_info() :: gibt alle Decks mit den Infos zurueck                                     | Fertig      |
+ | deck_create(str:name, str:kategorie, str:description) :: erstellt ein Kartenstapel            | Fertig      |
+ | deck_delete(str:dateiname) :: loescht ein Kartenstapel                                        | Fertig      |
+ | deck_load(str:dateiname) :: Laden eines Kartenstapels, notwendig um dieses zu nutzen          | Fertig      |
+ |  deck_info() :: gibt die Infos des aktuellen Kartenstapels zurueck (mit id)                   | TODO 1      |
+ |  deck_cards() :: gibt alle Karten eines Deckes zurueck                                        | TODO 2      |
+ |  card_create(str:seite1, str:seite2) :: fuegt zum aktuellen Kartestapel eine Karte hinzu      | TODO 5      |
+ |  card_delete(str:id) :: loescht eine Karte                                                    | TODO 6      |
+ |  random_card() :: gibt eine zufaellige Karte aus dem geladenen Deck zurueck und loescht diese | TODO 3      |
+ |  last_card() :: gibt die zuletzt ausgegebene Karte zurueck                                    | TODO 4      |
+ + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - + - - - - - - +
 """
 
 # -*- coding: utf-8 -*-
