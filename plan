@@ -1,4 +1,4 @@
-Julius Bittner:		Accesses
+﻿Julius Bittner:		Accesses
 Edwin Brüseke:		Graphical User Interface
 Manuel Bucher:		Accesses
 Niko Lockenvitz:	Interface
@@ -77,7 +77,7 @@ Lernen				Testen				Editor				Statistik			Lernstapelübersicht
 | Frage          |	| Frage          |	|        _____   |	| Name | Leistung|	| Lernstapel     |
 |  ________      |	|  ________      |	| Frage |_____|  |	| frz1 |    42 % |	| frz1           |
 | |________|     |	| |________|     |	|        _____   |	| frz2 |    56 % |	| frz2           |
-| (Lösung)       |	|                |  | Lsg.  |_____|  |	| eng1 |    71 % |	| eng1           |
+| (Lösung)       |	|                |      | Lsg.  |_____|  |	| eng1 |    71 % |	| eng1           |
 |                |	|                |	|                |	| lat1 |    99 % |	| lat1           |
 ------------------	------------------	------------------	------------------	------------------
 
