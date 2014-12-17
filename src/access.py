@@ -25,7 +25,6 @@ import time
 class funktion:
     def __init__(self):
         self.__deck_list = list() #liste der Decks
-        self.__deck_list_info = list() #liste der Decks mit Infos
         self.__deck = str() #Dieser String wird fuer das aktuelle Deck verwendet
         self.__deck_info = list() #Diese Liste beinhaltet die Inforamtionen ueber das aktuelle Deck
         self.__deck_cards = list() #Diese Liste beinhaltet die Karten des aktuellen Deckes mit ids
@@ -35,12 +34,12 @@ class funktion:
         
         #Dateinamen, ordnernamen, etc
         #Stammverzeichnis
-        self.__root_dir = ""
+        self.__root_dir = "..\\"
         #    unterverzeichnisse
         self.__data_dir = self.__root_dir + "data\\"
         #        unterverzeicnhisse von "data"
-        self.__deck_dir = self.data_dir + "stapel\\"
-        self.__config_dir = self.data_dir + "config\\"
+        self.__deck_dir = self.__data_dir + "stapel\\"
+        self.__config_dir = self.__data_dir + "config\\"
         #            dateien unter config
         self.__config_file = self.__config_dir + "general.cfg"
         
@@ -87,6 +86,25 @@ class funktion:
         timestamp += self.__einrueckenZahl(lk[4],2) #Minuten (laenge 2)
         timestamp += self.__einrueckenZahl(lk[5],2) #Sekunden (laenge 2)
         return timestamp
+    
+    def __deck_load_info(self, dateiname):
+        """
+        Diese Funktion laed nur die Infos, 
+        damit beim Auflisten der Dateien nur diese Funktion aufgerufen werden muss.
+        """
+        datei = open(self.__deck_dir+dateiname, "r")
+        inhalt = datei.readlines()[0]
+        info = inhalt.split("|")
+        datei.close()
+        info[-1]=info[-1].replace("\n", "")
+        return info
+    
+    def __deck_cards_load(self):
+        """
+        Diese Funktion laed die Karten aus der Datei
+        Voraussetzung: deck_load muss erfolgt sein
+        """
+        pass
 
     def deck_list(self):
         """
@@ -140,23 +158,7 @@ class funktion:
         self.__deck_list_update()
     
     #Laden des Deckes
-    def __deck_load_info(self, dateiname):
-        """
-        Diese Funktion laed nur die Infos, 
-        damit beim Auflisten der Dateien nur diese Funktion aufgerufen werden muss.
-        """
-        datei = os.open(self.__deck_dir+dateiname, "r")
-        inhalt = datei.readlines()[0]
-        info = inhalt.split("|")
-        datei.close()
-        return info
     
-    def __deck_cards_load(self):
-        """
-        Diese Funktion laed die Karten aus der Datei
-        Voraussetzung: deck_load muss erfolgt sein
-        """
-        pass
     
     def deck_load(self, dateiname):
         #Wenn man mit einem Kartenstapel arbeiten moechte, muss man diese Funktion aufrufen
@@ -174,8 +176,6 @@ class funktion:
         + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +
         """
         self.__deck=dateiname
-        self.__deck_load_info(dateiname)
-        #...
         pass
     
     def deck_info(self):
@@ -183,11 +183,8 @@ class funktion:
         Diese Funktion gibt die Infos des Decks zurueck
         Voraussetzung: Deck muss geladen sein (deck_load oder deck_load_info)
         """
-        datei = os.open(self.__deck_dir+self.__deck, "r")
-        inhalt = datei.readlines()[0]
-        info = inhalt.split("|")
-        datei.close()
-        return info
+        return self.__deck_load_info(self.__deck) 
+        
     
     def deck_cards(self):
         """
@@ -232,3 +229,13 @@ class funktion:
         noetige Dateipfade:
         """
         pass
+
+if __name__=="__main__":
+    f = funktion()
+    deck_list = f.deck_list()
+    print(deck_list)
+    deck_list_info = f.deck_list_info()
+    print(deck_list_info)
+    print(deck_list[0])
+    f.deck_load(deck_list[0])
+    print(f.deck_info())
