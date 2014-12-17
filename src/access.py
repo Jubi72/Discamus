@@ -2,24 +2,26 @@ import os
 import time
 
 """
- + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - + - - - - - - +
- | Anleitung, fuer die Nutzung der Funktionen der Klasse                                         | Fortschritt |
- | Autor: Manuel                                                                                 |             |
- + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - + - - - - - - +
- | config() :: gibt die Kofigationen, die in der config.cfg gespeichert sind zurueck             | TODO 5      |
- | deck_list() :: gibt alle Decks zurueck                                                        | Fertig      |
- | deck_list_info() :: gibt alle Decks mit den Infos zurueck                                     | Fertig      |
- | deck_create(str:name, str:kategorie, str:description) :: erstellt ein Kartenstapel            | Fertig      |
- | deck_delete(str:dateiname) :: loescht ein Kartenstapel                                        | Fertig      |
- | deck_load(str:dateiname) :: Laden eines Kartenstapels, notwendig um dieses zu nutzen          | Fertig      |
- |  deck_info() :: gibt die Infos des aktuellen Kartenstapels zurueck                            | Fertig      |
- |  deck_cards() :: gibt alle Karten eines Deckes zurueck (mit id)                               | TODO 1      |
- |  card_create(str:seite1, str:seite2) :: fuegt zum aktuellen Kartestapel eine Karte hinzu      | TODO 4      |
- |  card_delete(str:id) :: loescht eine Karte                                                    | TODO 5      |
- |  random_card() :: gibt eine zufaellige Karte aus dem geladenen Deck zurueck und loescht diese | TODO 2      |
- |  last_card() :: gibt die zuletzt ausgegebene Karte zurueck                                    | TODO 3      |
- |  card_correct(str:answer) :: gibt zuruck, ob die Anwort richtig ist                           | TODO 6      |
- + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - + - - - - - - +
+ + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - + - - - - - - +
+ | Anleitung, fuer die Nutzung der Funktionen der Klasse                                                 | Fortschritt |
+ | Autor: Manuel                                                                                         |             |
+ + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - + - - - - - - +
+ | config() :: gibt die Kofigationen, die in der config.cfg gespeichert sind zurueck                     | TODO 6      |
+ | deck_list() :: gibt alle Decks zurueck                                                                | Fertig      |
+ | deck_list_info() :: gibt alle Decks mit den Infos zurueck                                             | Fertig      |
+ | deck_create(str:name, str:kategorie, str:description) :: erstellt ein Kartenstapel                    | Fertig      |
+ | deck_delete(str:dateiname) :: loescht ein Kartenstapel                                                | Fertig      |
+ | deck_rename(str:dateiname, str:newName) :: benennt ein Kartenstapel um                                | TODO 1      |
+ | deck_load(str:dateiname) :: Laden eines Kartenstapels, notwendig um dieses zu nutzen                  | Fertig      |
+ |  deck_info() :: gibt die Infos des aktuellen Kartenstapels zurueck                                    | Fertig      |
+ |  deck_hascard() :: gibt zurueck (true/false), ob das aktuelle Kartendeck noch zulernende Karten hat   | TODO
+ |  deck_cards() :: gibt alle Karten eines Deckes zurueck (mit id)                                       | TODO 2      |
+ |  card_create(str:seite1, str:seite2) :: fuegt zum aktuellen Kartestapel eine Karte hinzu              | TODO 5      |
+ |  card_delete(str:id) :: loescht eine Karte                                                            | TODO 6      |
+ |  random_card() :: gibt eine zufaellige Karte aus dem geladenen Deck zurueck und loescht diese         | TODO 3      |
+ |  last_card() :: gibt die zuletzt ausgegebene Karte zurueck                                            | TODO 4      |
+ |  card_correct(str:answer) :: gibt zuruck, ob die Anwort richtig ist                                   | TODO 7      |
+ + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - + - - - - - - +
 """
 
 # -*- coding: utf-8 -*-
@@ -135,18 +137,14 @@ class funktion:
         """
         self.__deck_list_update()
         dateiname = name+self.__card_suffix
-        print(dateiname)
         #Erstellen des Dateinamens
         if self.__deck_list.count(dateiname)>0:
-            print(dateiname)
             i=2
             dateiname = name+"_"+str(i)+self.__card_suffix
             while self.__deck_list.count(dateiname)>0:
                 i+=1
                 dateiname = name+"_"+str(i)+self.__card_suffix
         #Schreiben in die Datei
-        print(self.__deck_dir)
-        print(dateiname)
         datei = open(self.__deck_dir+dateiname, "w")
         timestamp =self.__timestamp()
         datei.write(name+"|"+kategorie+"|"+timestamp+"|"+kategorie+"|"+description)
@@ -186,9 +184,19 @@ class funktion:
     def deck_info(self):
         """
         Diese Funktion gibt die Infos des Decks zurueck
-        Voraussetzung: Deck muss geladen sein (deck_load oder deck_load_info)
+        Voraussetzung: Deck muss geladen sein (deck_load)
         """
         return self.__deck_load_info(self.__deck) 
+    
+    def deck_hascards(self):
+        """
+        Diese Funktion gibt zurueck, ob es noch zulernende Karten gibt
+        Voraussetzung: Deck muss geladen sein
+        """
+        if len(self.__deck_cards_learn)>0:
+            return True
+        else:
+            return False
     
     def deck_cards(self):
         """
