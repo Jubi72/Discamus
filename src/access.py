@@ -6,7 +6,7 @@ import time
  | Anleitung, fuer die Nutzung der Funktionen der Klasse                                         | Fortschritt |
  | Autor: Manuel                                                                                 |             |
  + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - + - - - - - - +
- | config() :: gibt die Kofigationen, die in der config.cfg gespeichert sind zurueck             | TODO 6      |
+ | config() :: gibt die Kofigationen, die in der config.cfg gespeichert sind zurueck             | TODO 5      |
  | deck_list() :: gibt alle Decks zurueck                                                        | Fertig      |
  | deck_list_info() :: gibt alle Decks mit den Infos zurueck                                     | Fertig      |
  | deck_create(str:name, str:kategorie, str:description) :: erstellt ein Kartenstapel            | Fertig      |
@@ -18,19 +18,19 @@ import time
  |  card_delete(str:id) :: loescht eine Karte                                                    | TODO 5      |
  |  random_card() :: gibt eine zufaellige Karte aus dem geladenen Deck zurueck und loescht diese | TODO 2      |
  |  last_card() :: gibt die zuletzt ausgegebene Karte zurueck                                    | TODO 3      |
+ |  card_correct(str:answer) :: gibt zuruck, ob die Anwort richtig ist                           | TODO 6      |
  + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - + - - - - - - +
 """
 
 # -*- coding: utf-8 -*-
 class funktion:
     def __init__(self):
-        self.__deck_list = list() #liste der Decks
-        self.__deck = str() #Dieser String wird fuer das aktuelle Deck verwendet
-        self.__deck_info = list() #Diese Liste beinhaltet die Inforamtionen ueber das aktuelle Deck
-        self.__deck_cards = list() #Diese Liste beinhaltet die Karten des aktuellen Deckes mit ids
-        self.__deck_cards_learn = list() #Diese Liste beinhaltet die Karten des aktuellen Deckes ohne die gelernten
-        self.__last_card = str() #Dieser String Beinhaltet die letzte Karte, falls beim Lernen diese nochmal benoetigt wird
-        self.__deck_cards_learned = list() #Diese Liste beinhaltet die gelernten Karten und ob sie Richtig oder Falsch beim ersten Versuch angegeben wurden.
+        self.__deck = str() #Name der Datei des geladenden Decks
+        self.__deck_list = list() #Liste der Decks
+        self.__deck_cards = list() #Liste aller Karten des Decks (mit ids)
+        self.__deck_cards_learn = list() #Liste aller Karten (ohne ids|ohne die gelernten)
+        self.__last_card = str() #letzte gelernte Karte
+        self.__deck_cards_learned = list() #Liste gelernter Karten mit angabe, ob diese richtig oder falsch geloest wurde
         
         #Dateinamen, ordnernamen, etc
         #Stammverzeichnis
@@ -49,8 +49,7 @@ class funktion:
     #Grundfunktionen, noetig fuer das Programm:
     def __str_valid(self, String, max_len=0):
         """
-        Diese Funktion prueft, ob der uebergebene String nur Zahlen, Buchstaben (gross, klein),
-        einige spezielle (deutsche) sonderzeichen enthaelt, und ob die laenge des Strings stimmt.
+        Diese Funktion prueft, ob der uebergebene String nur aus zulaessigen Zeichen besteht
         (Bei lenge 0 darf der String beliebig lang sein)
         """
         if(0<max_len<len(String)):
@@ -72,12 +71,15 @@ class funktion:
     def __einrueckenZahl(self, zahl, laenge):
         """
         Diese Funktion schreibt in einem String vor die eingegebene Zahl so viele Nullen,
-        dass die laenge erreicht wird.
+        dass die laenge erreicht wird. (ein String wird zurueckgegeben)
         """
         anzahlLeerzeichen = laenge-len(str(zahl))
         return max(0, anzahlLeerzeichen)*"0"+str(zahl)
     
     def __timestamp(self):
+        """
+        Gibt den aktuellen Zeitstempel zurueck
+        """
         lk = time.localtime()
         timestamp  = self.__einrueckenZahl(lk[0],4) #Jahre (laenge 4)
         timestamp += self.__einrueckenZahl(lk[1],2) #Monate (laenge 2)
@@ -89,8 +91,7 @@ class funktion:
     
     def __deck_load_info(self, dateiname):
         """
-        Diese Funktion laed nur die Infos, 
-        damit beim Auflisten der Dateien nur diese Funktion aufgerufen werden muss.
+        Diese Funktion laed die Infos aus der uebergebenen Datei
         """
         datei = open(self.__deck_dir+dateiname, "r")
         inhalt = datei.readlines()[0]
@@ -116,8 +117,7 @@ class funktion:
     def deck_list_info(self):
         """
         Diese Funktion gibt die Liste aller Kartenstapel mit Infos zurueck
-        Keine Voraussetzungen
-        Liste: [[dateiname, name, fortschritt, ...],[]
+        Liste: [[dateiname, [name, timestamp, kategorie, AnzahlKarten], ...]
         """
         self.__deck_list_update()
         self.__deck_list_info=[]
@@ -126,6 +126,7 @@ class funktion:
         return self.__deck_list_info    
         
     def deck_create(self, name, kategorie, description):
+        #TODO: String auf funktionsfaehigkeit ueberpruefen
         """
         Diese Funktion erstellt eine Datei, mit dem namen "name.rna" her, fals noetig: "name_x.rna"
         und dem Inhalt:
@@ -134,15 +135,19 @@ class funktion:
         """
         self.__deck_list_update()
         dateiname = name+self.__card_suffix
+        print(dateiname)
         #Erstellen des Dateinamens
-        if dateiname in self.__deck_list:
+        if self.__deck_list.count(dateiname)>0:
+            print(dateiname)
             i=2
-            dateiname = name+"_"+str(i)+self.__card_suffix in self.__deck_list
-            while dateiname in self.__deck_list:
+            dateiname = name+"_"+str(i)+self.__card_suffix
+            while self.__deck_list.count(dateiname)>0:
                 i+=1
-                dateiname = name+"_"+str(i)+self.__card_suffix in self.__deck_list
+                dateiname = name+"_"+str(i)+self.__card_suffix
         #Schreiben in die Datei
-        datei = os.open(self.__deck_dir+dateiname, "r")
+        print(self.__deck_dir)
+        print(dateiname)
+        datei = open(self.__deck_dir+dateiname, "w")
         timestamp =self.__timestamp()
         datei.write(name+"|"+kategorie+"|"+timestamp+"|"+kategorie+"|"+description)
         datei.close()
@@ -163,17 +168,17 @@ class funktion:
     def deck_load(self, dateiname):
         #Wenn man mit einem Kartenstapel arbeiten moechte, muss man diese Funktion aufrufen
         """
-        Der Deckname (self.__deck) wird auf "name" geaendert und die informationen werden aus der Datei gelesen.
-        self.__deck = "Dateiname"
-        self.__deck_cards = [[Karte1Vorderseite,Karte1Rueckseite],[Karte2Vorderseite,Karte2Rueckseite],...]
-        self.__deck_info = [name, kategorie, letzterAufruf, anzahlKarten, Lernstand]
+        Der Deckname (self.__deck) wird auf "dateiname" geaendert und die informationen werden aus der Datei gelesen.
+        self.__deck_cards = [[1,[Karte1Vorderseite,Karte1Rueckseite]],[2,[Karte2Vorderseite,Karte2Rueckseite]],...]
+        self.__deck_list_learn = [[Karte1Vorderseite,Karte1Rueckseite],...]
+        self.__deck_info = [Name, letzterAufruf, Kategorie, anzahlKarten, Lernstand]
         Aufbau der Datei:
-        + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +
-        | Name|letzterAufruf|AnzahlKarten|Lernstand[0-100] ::infos ueber den Stapel |
-        | id|Seite1|Seite2|Einseiteig(0)/Zweiseitig(1)|lernstand ::Kartenifos       |
-        | id|Seite1|Seite2|Einseiteig(0)/Zweiseitig(1)|lernstand ::Kartenifos       |
-        | ...                                                                       |
-        + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +
+        + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +
+        | Name|letzterAufruf|Kategorie|AnzahlKarten|Lernstand[0-100] ::infos ueber den Stapel |
+        | id|Seite1|Seite2|Einseiteig(0)/Zweiseitig(1)|lernstand ::Kartenifos                 |
+        | id|Seite1|Seite2|Einseiteig(0)/Zweiseitig(1)|lernstand ::Kartenifos                 |
+        | ...                                                                                 |
+        + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +
         """
         self.__deck=dateiname
         pass
@@ -184,7 +189,6 @@ class funktion:
         Voraussetzung: Deck muss geladen sein (deck_load oder deck_load_info)
         """
         return self.__deck_load_info(self.__deck) 
-        
     
     def deck_cards(self):
         """
@@ -197,17 +201,21 @@ class funktion:
     def card_create(self, Seite1, Seite2):
         """
         Diese Funktion fuegt die Karte hinzu
+        Voraussetzung: Deck muss geladen sein
         """
+        pass
         
     def card_delete(self, card_id):
         """
         Diese Funktion loescht die Karte
+        Voraussetzung: Deck muss geladen sein
         """
+        pass
     
     def random_card(self):
         """
         Diese Funktion waehlt aus dem aktuellen Deck eine zufaellige Karte aus,
-        speichert sie (als letzte Karte) und loescht diese aus der __deck_card_learn sund gibt diese aus.
+        speichert sie (als letzte Karte) und loescht diese aus der __deck_card_learn und gibt diese aus.
         """
         pass
     
@@ -217,11 +225,18 @@ class funktion:
         """
         return self.__lastcard
     
+    def card_correct(self, answer):
+        """
+        Diese Funktion prueft die Antwort auf die Korrektheit (True oder False)
+        und speicher sich das erste Ergebnis
+        """
+        pass
     
     def config(self):
         """
         Diese Funktion gibt die Konfigationen aus der config datei zurueck oder die Standardeistellungen
         """
+        pass
     
     def pruefe_dateipfade(self):
         """
@@ -239,3 +254,13 @@ if __name__=="__main__":
     print(deck_list[0])
     f.deck_load(deck_list[0])
     print(f.deck_info())
+    
+    f.deck_create("Test", "Test", "Test Deck")
+    deck_list = f.deck_list()
+    print(deck_list)
+    deck_list_info = f.deck_list_info()
+    print(deck_list_info)
+    f.deck_delete("Test.rna")
+    deck_list = f.deck_list()
+    print(deck_list)
+    
