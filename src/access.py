@@ -6,18 +6,18 @@ import time
  | Anleitung, fuer die Nutzung der Funktionen der Klasse                                         | Fortschritt |
  | Autor: Manuel                                                                                 |             |
  + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - + - - - - - - +
- | config() :: gibt die Kofigationen, die in der config.cfg gespeichert sind zurueck             | TODO 7      |
+ | config() :: gibt die Kofigationen, die in der config.cfg gespeichert sind zurueck             | TODO 6      |
  | deck_list() :: gibt alle Decks zurueck                                                        | Fertig      |
  | deck_list_info() :: gibt alle Decks mit den Infos zurueck                                     | Fertig      |
  | deck_create(str:name, str:kategorie, str:description) :: erstellt ein Kartenstapel            | Fertig      |
  | deck_delete(str:dateiname) :: loescht ein Kartenstapel                                        | Fertig      |
  | deck_load(str:dateiname) :: Laden eines Kartenstapels, notwendig um dieses zu nutzen          | Fertig      |
- |  deck_info() :: gibt die Infos des aktuellen Kartenstapels zurueck (mit id)                   | TODO 1      |
- |  deck_cards() :: gibt alle Karten eines Deckes zurueck                                        | TODO 2      |
- |  card_create(str:seite1, str:seite2) :: fuegt zum aktuellen Kartestapel eine Karte hinzu      | TODO 5      |
- |  card_delete(str:id) :: loescht eine Karte                                                    | TODO 6      |
- |  random_card() :: gibt eine zufaellige Karte aus dem geladenen Deck zurueck und loescht diese | TODO 3      |
- |  last_card() :: gibt die zuletzt ausgegebene Karte zurueck                                    | TODO 4      |
+ |  deck_info() :: gibt die Infos des aktuellen Kartenstapels zurueck                            | Fertig      |
+ |  deck_cards() :: gibt alle Karten eines Deckes zurueck (mit id)                               | TODO 1      |
+ |  card_create(str:seite1, str:seite2) :: fuegt zum aktuellen Kartestapel eine Karte hinzu      | TODO 4      |
+ |  card_delete(str:id) :: loescht eine Karte                                                    | TODO 5      |
+ |  random_card() :: gibt eine zufaellige Karte aus dem geladenen Deck zurueck und loescht diese | TODO 2      |
+ |  last_card() :: gibt die zuletzt ausgegebene Karte zurueck                                    | TODO 3      |
  + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - + - - - - - - +
 """
 
@@ -178,6 +178,35 @@ class funktion:
         #...
         pass
     
+    def deck_info(self):
+        """
+        Diese Funktion gibt die Infos des Decks zurueck
+        Voraussetzung: Deck muss geladen sein (deck_load oder deck_load_info)
+        """
+        datei = os.open(self.__deck_dir+self.__deck, "r")
+        inhalt = datei.readlines()[0]
+        info = inhalt.split("|")
+        datei.close()
+        return info
+    
+    def deck_cards(self):
+        """
+        Diese Funktion gibt alle Karen eines Decks mit ids zurueck.
+        [id,[Seite1, Seite2], id2, [Seite1, Seite2],...]
+        """
+        pass
+        return self.__deck_cards
+    
+    def card_create(self, Seite1, Seite2):
+        """
+        Diese Funktion fuegt die Karte hinzu
+        """
+        
+    def card_delete(self, card_id):
+        """
+        Diese Funktion loescht die Karte
+        """
+    
     def random_card(self):
         """
         Diese Funktion waehlt aus dem aktuellen Deck eine zufaellige Karte aus,
@@ -191,30 +220,7 @@ class funktion:
         """
         return self.__lastcard
     
-    def deck_info(self):
-        """
-        Diese Funktion gibt die Infos des Decks zurueck
-        Voraussetzung: Deck muss geladen sein (deck_load oder deck_load_info)
-        """
-        return self.__deck_info
     
-    def deck_cards(self):
-        """
-        Diese Funktion gibt alle Karen eines Decks mit ids zurueck.
-        [id,[Seite1, Seite2], id2, [Seite1, Seite2],...]
-        """
-        pass
-        return self.__deck_cards
-    
-    def create_card(self, Seite1, Seite2):
-        """
-        Diese Funktion fuegt die Karte hinzu
-        """
-        
-    def delete_card(self, card_id):
-        """
-        Diese Funktion loescht die Karte
-        """
     def config(self):
         """
         Diese Funktion gibt die Konfigationen aus der config datei zurueck oder die Standardeistellungen
