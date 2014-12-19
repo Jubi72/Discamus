@@ -6,17 +6,17 @@ import time
  | Anleitung, fuer die Nutzung der Funktionen der Klasse                                                 | Fortschritt |
  | Autor: Manuel                                                                                         |             |
  + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - + - - - - - - +
- | config() :: gibt die Kofigationen, die in der config.cfg gespeichert sind zurueck                     | TODO 6      |
+ | config() :: gibt die Konfigationen, die in der config.cfg gespeichert sind zurueck                    | TODO 6      |
  | deck_list() :: gibt alle Decks zurueck                                                                | Fertig      |
  | deck_list_info() :: gibt alle Decks mit den Infos zurueck                                             | Fertig      |
  | deck_create(str:name, str:kategorie, str:description) :: erstellt ein Kartenstapel                    | Fertig      |
  | deck_delete(str:dateiname) :: loescht ein Kartenstapel                                                | Fertig      |
- | deck_rename(str:dateiname, str:newName) :: benennt ein Kartenstapel um                                | Fertig      |
- | deck_change_kategorie(str:dateiname, str:newKategorie)                                                | Fertig      |
- | deck_change_description(str:dateiname, str:newDescription)                                            | TODO        |
- | deck_statistik_()                                                                                     | TODO        |
- | deck_statistik_reset()                                                                                | TODO        |
  | deck_load(str:dateiname) :: Laden eines Kartenstapels, notwendig um dieses zu nutzen                  | Fertig      |
+ | deck_rename(str:newName) :: benennt ein Kartenstapel um                                               | Fertig      |
+ |  deck_change_kategorie(str:newKategorie)                                                              | Fertig      |
+ |  deck_change_description(str:newDescription)                                                          | Fertig      |
+ |  deck_statistik()                                                                                     | TODO        |
+ |  deck_statistik_reset()                                                                               | TODO        |
  |  deck_info() :: gibt die Infos des aktuellen Kartenstapels zurueck                                    | Fertig      |
  |  deck_hascard() :: gibt zurueck (true/false), ob das aktuelle Kartendeck noch zulernende Karten hat   | TODO        |
  |  deck_cards() :: gibt alle Karten eines Deckes zurueck (mit id)                                       | TODO 2      |
@@ -53,6 +53,7 @@ class funktion:
         self.__card_suffix = ".rna"
         
     #Grundfunktionen, noetig fuer das Programm:
+    
     def __str_valid(self, String, max_len=0):
         """
         Diese Funktion prueft, ob der uebergebene String nur aus zulaessigen Zeichen besteht
@@ -163,65 +164,7 @@ class funktion:
         if dateiname in self.__deck_list:
             os.remove(self.__deck_dir+dateiname)
         self.__deck_list_update()
-    
-    def deck_rename(self, dateiname, newName):
-        """
-        Bennent das gegebene Deck zu dem neuen Namen um.
-        """
-        if not dateiname == newName+self.__card_suffix:
-            self.__deck_list_update()
-            name = newName
-            newName += self.__card_suffix
-            #Erstellen des Dateinamens
-            if self.__deck_list.count(newName)>0:
-                i=2
-                newName = name+"_" + str(i) + self.__card_suffix
-                while self.__deck_list.count(newName)>0:
-                    i+=1
-                    newName = name+"_" + str(i) + self.__card_suffix
-            os.rename(self.__deck_dir + dateiname, self.__deck_dir + newName)
-            datei=open(self.__deck_dir + newName, "r")
-            inhalt = datei.readlines()
-            datei.close()
-            inhalt[0]= name + inhalt[0][inhalt[0].find("|"):]
-            datei = open(self.__deck_dir + newName,"w")
-            datei.writelines(inhalt)
-            datei.close()
-            self.__deck_list_update()
 
-    #Laden des Deckes
-    
-    def deck_change_kategorie(self, dateiname, newKategorie):
-        datei=open(self.__deck_dir + dateiname, "r")
-        inhalt = datei.readlines()
-        datei.close()
-        inhalt[0]= inhalt[0][:inhalt[0].find("|")+1] + newKategorie + inhalt[0][inhalt[0].find("|",inhalt[0].find("|")+1):]
-        datei = open(self.__deck_dir + dateiname,"w")
-        datei.writelines(inhalt)
-        datei.close()
-    
-    def __deck_new_timestamp(self, dateiname):
-        datei=open(self.__deck_dir + dateiname + self.__card_suffix, "r")
-        inhalt = datei.readlines()
-        datei.close()
-        inhalt[0] =   inhalt[0][:inhalt[0].find("|", inhalt[0].find("|")+1)+1] \
-                    + self.__timestamp() \
-                    + inhalt[0][ inhalt[0].find("|", inhalt[0].find("|", inhalt[0].find("|")+1)+1):]
-        datei = open(self.__deck_dir + dateiname + self.__card_suffix,"w")
-        datei.writelines(inhalt)
-        datei.close()
-        
-    def deck_change_description(self, dateiname, newKategorie):
-        datei=open(self.__deck_dir + dateiname + self.__card_suffix, "r")
-        inhalt = datei.readlines()
-        datei.close()
-        inhalt[0] =   inhalt[0][:inhalt[0].find("|", inhalt[0].find("|", inhalt[0].find("|")+1)+1)+1] \
-                    + newKategorie \
-                    + inhalt[0][inhalt[0].find("|", inhalt[0].find("|", inhalt[0].find("|", inhalt[0].find("|")+1)+1)+1):]
-        datei = open(self.__deck_dir + dateiname + self.__card_suffix,"w")
-        datei.writelines(inhalt)
-        datei.close()
-    
     def deck_load(self, dateiname):
         #Wenn man mit einem Kartenstapel arbeiten moechte, muss man diese Funktion aufrufen
         """
@@ -239,6 +182,65 @@ class funktion:
         """
         self.__deck=dateiname
         pass
+    
+    def deck_rename(self, newName):
+        """
+        Benennt das geladene Deck um.
+        Voraussetzung: Deck muss geladen sein.
+        """
+        if not self.__deck == newName+self.__card_suffix:
+            self.__deck_list_update()
+            name = newName
+            newName += self.__card_suffix
+            #Erstellen des Dateinamens
+            if self.__deck_list.count(newName)>0:
+                i=2
+                newName = name+"_" + str(i) + self.__card_suffix
+                while self.__deck_list.count(newName)>0:
+                    i+=1
+                    newName = name+"_" + str(i) + self.__card_suffix
+            os.rename(self.__deck_dir + self.__deck, self.__deck_dir + newName)
+            datei=open(self.__deck_dir + newName, "r")
+            inhalt = datei.readlines()
+            datei.close()
+            inhalt[0]= name + inhalt[0][inhalt[0].find("|"):]
+            datei = open(self.__deck_dir + newName,"w")
+            datei.writelines(inhalt)
+            datei.close()
+            self.__deck_list_update()
+
+    #Laden des Deckes
+    
+    def deck_change_kategorie(self, newKategorie):
+        datei=open(self.__deck_dir + self.__deck, "r")
+        inhalt = datei.readlines()
+        datei.close()
+        inhalt[0]= inhalt[0][:inhalt[0].find("|")+1] + newKategorie + inhalt[0][inhalt[0].find("|",inhalt[0].find("|")+1):]
+        datei = open(self.__deck_dir + self.__deck,"w")
+        datei.writelines(inhalt)
+        datei.close()
+    
+    def __deck_new_timestamp(self):
+        datei=open(self.__deck_dir + self.__deck + self.__card_suffix, "r")
+        inhalt = datei.readlines()
+        datei.close()
+        inhalt[0] =   inhalt[0][:inhalt[0].find("|", inhalt[0].find("|")+1)+1] \
+                    + self.__timestamp() \
+                    + inhalt[0][ inhalt[0].find("|", inhalt[0].find("|", inhalt[0].find("|")+1)+1):]
+        datei = open(self.__deck_dir + self.__deck + self.__card_suffix,"w")
+        datei.writelines(inhalt)
+        datei.close()
+        
+    def deck_change_description(self, newKategorie):
+        datei=open(self.__deck_dir + self.__deck + self.__card_suffix, "r")
+        inhalt = datei.readlines()
+        datei.close()
+        inhalt[0] =   inhalt[0][:inhalt[0].find("|", inhalt[0].find("|", inhalt[0].find("|")+1)+1)+1] \
+                    + newKategorie \
+                    + inhalt[0][inhalt[0].find("|", inhalt[0].find("|", inhalt[0].find("|", inhalt[0].find("|")+1)+1)+1):]
+        datei = open(self.__deck_dir + self.__deck + self.__card_suffix,"w")
+        datei.writelines(inhalt)
+        datei.close()
     
     def deck_info(self):
         """
@@ -312,6 +314,9 @@ class funktion:
         """
         pass
 
+
+
+
 if __name__=="__main__":
     #Klasse initialisieren
     f = funktion()
@@ -328,8 +333,8 @@ if __name__=="__main__":
     f.deck_change_kategorie(f.deck_list()[-1], "Echt tolles Deck")
     f.deck_new_timestamp("Tolles Testdeck")
     print(f.deck_list())
-    #f.deck_delete(f.deck_list()[-1])
-    #f.deck_delete(f.deck_list()[-1])
+    f.deck_delete(f.deck_list()[-1])
+    f.deck_delete(f.deck_list()[-1])
     print(f.deck_list())
     
     
