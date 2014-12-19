@@ -4,7 +4,7 @@ import tkinter
 
 class gui:
     def __init__(self, title, breite, hoehe,schriftfarbe, fullscreen = True):
-        self.label_width = 40        #gib die Größe für die Labels an
+        self.label_width = 25        #gib die Größe für die Labels an
         self.label_color = "#6e6e6e" #Label Hintergrund
         self.text_color = "white"    #Label Text Farbe
         self.bg_color = "#4d4d4d"
@@ -124,22 +124,28 @@ class gui:
         self.head.config(bg=self.label_color)
         self.head.config(bd = 5, relief = "ridge")
         self.head.pack(side="top")
-        self.menu1 = tkinter.Frame(self.root)
+        self.menu = tkinter.Frame(self.root)
+        self.menu.config(bg=self.label_color)
+        self.menu.config(bd = 5, relief = "ridge")
+        self.menu.pack()
+        self.menu1 = tkinter.Frame(self.menu)
         self.menu1.config(bg=self.label_color)
         self.menu1.config(bd = 5, relief = "ridge")
         self.menu1.pack(side="left")
-        self.menu2 = tkinter.Frame(self.root)
+        self.menu2 = tkinter.Frame(self.menu)
         self.menu2.config(bg=self.label_color)
         self.menu2.config(bd = 5, relief = "ridge")
         self.menu2.pack(side="left")
         self.menu3 = tkinter.Frame(self.root)
         self.menu3.config(bg=self.label_color)
         self.menu3.config(bd = 5, relief = "ridge")
-        self.menu3.pack()
-        #listbox = tkinter.Listbox(self.menu1, yscrollcommand=tkinter.scrollbar.set, width = 20, font=("Comic Sans MS", 18))
-        #listbox.pack()
-        self.m0 = tkinter.Label(self.head, text="Hauptmenü", font=("Comic Sans MS", 30), fg=self.text_color, bg=self.label_color)
-        self.m1 = tkinter.Button(self.menu1, text=str(m1), font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width)
+        self.menu3.pack(side="bottom")
+        self.listbox = tkinter.Listbox(self.menu1, font=("Comic Sans MS", 18), fg = self.text_color, bg=self.bg_color)
+        self.listbox.config(selectbackground = "white",selectforeground="black")
+        self.listbox.pack()
+        self.listbox.insert("end", "Kategorie " + "Name " + "Anz. " + "Datum " + "Fortschr.")
+        self.m0 = tkinter.Label(self.head, text="Discamus", font=("Comic Sans MS", 30), fg=self.text_color, bg=self.label_color, width = self.label_width*2)
+        self.m1 = tkinter.Button(self.menu2, text=str(m1), font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width)
         self.m2 = tkinter.Button(self.menu2, text=str(m2), font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width)
         self.m3 = tkinter.Button(self.menu2, text=str(m3), font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width)
         self.m4 = tkinter.Button(self.menu2, text=str(m4), font=("Comic Sans MS", 18), fg=self.text_color, bg=self.label_color, width = self.label_width)
@@ -175,7 +181,6 @@ class gui:
         Diese Funktion versteckt die Elemente des Hauptmenues.
         Voraussetzung: Das ertellen muss erfolgt sein.
         """
-        self.m0.destroy()
         self.m1.destroy()
         self.m2.destroy()
         self.m3.destroy()
@@ -183,8 +188,11 @@ class gui:
         self.m5.destroy()
         self.m6.destroy()
         self.m7.destroy()
+        self.menu.destroy()
         self.menu1.destroy()
         self.menu2.destroy()
+        self.menu3.destroy()
+        self.listbox.destroy()
         self.root.update()
 
     #OPTIONS MENU
