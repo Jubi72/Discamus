@@ -11,8 +11,9 @@ import time
  | deck_list_info() :: gibt alle Decks mit den Infos zurueck                                             | Fertig      |
  | deck_create(str:name, str:kategorie, str:description) :: erstellt ein Kartenstapel                    | Fertig      |
  | deck_delete(str:dateiname) :: loescht ein Kartenstapel                                                | Fertig      |
- | deck_rename(str:dateiname, str:newName) :: benennt ein Kartenstapel um                                | TODO 1      |
- | deck_change_description()                                                                             | TODO        |
+ | deck_rename(str:dateiname, str:newName) :: benennt ein Kartenstapel um                                | Fertig      |
+ | deck_change_kategorie(str:dateiname, str:newKategorie)                                                | Fertig      |
+ | deck_change_description(str:dateiname, str:newDescription)                                            | TODO        |
  | deck_statistik_()                                                                                     | TODO        |
  | deck_statistik_reset()                                                                                | TODO        |
  | deck_load(str:dateiname) :: Laden eines Kartenstapels, notwendig um dieses zu nutzen                  | Fertig      |
@@ -190,6 +191,36 @@ class funktion:
 
     #Laden des Deckes
     
+    def deck_change_kategorie(self, dateiname, newKategorie):
+        datei=open(self.__deck_dir + dateiname, "r")
+        inhalt = datei.readlines()
+        datei.close()
+        inhalt[0]= inhalt[0][:inhalt[0].find("|")+1] + newKategorie + inhalt[0][inhalt[0].find("|",inhalt[0].find("|")+1):]
+        datei = open(self.__deck_dir + dateiname,"w")
+        datei.writelines(inhalt)
+        datei.close()
+    
+    def __deck_new_timestamp(self, dateiname):
+        datei=open(self.__deck_dir + dateiname + self.__card_suffix, "r")
+        inhalt = datei.readlines()
+        datei.close()
+        inhalt[0] =   inhalt[0][:inhalt[0].find("|", inhalt[0].find("|")+1)+1] \
+                    + self.__timestamp() \
+                    + inhalt[0][ inhalt[0].find("|", inhalt[0].find("|", inhalt[0].find("|")+1)+1):]
+        datei = open(self.__deck_dir + dateiname + self.__card_suffix,"w")
+        datei.writelines(inhalt)
+        datei.close()
+        
+    def deck_change_description(self, dateiname, newKategorie):
+        datei=open(self.__deck_dir + dateiname + self.__card_suffix, "r")
+        inhalt = datei.readlines()
+        datei.close()
+        inhalt[0] =   inhalt[0][:inhalt[0].find("|", inhalt[0].find("|", inhalt[0].find("|")+1)+1)+1] \
+                    + newKategorie \
+                    + inhalt[0][inhalt[0].find("|", inhalt[0].find("|", inhalt[0].find("|", inhalt[0].find("|")+1)+1)+1):]
+        datei = open(self.__deck_dir + dateiname + self.__card_suffix,"w")
+        datei.writelines(inhalt)
+        datei.close()
     
     def deck_load(self, dateiname):
         #Wenn man mit einem Kartenstapel arbeiten moechte, muss man diese Funktion aufrufen
@@ -294,9 +325,11 @@ if __name__=="__main__":
     f.deck_create("Test", "Testdecke", "Testdeck")
     print(f.deck_list())
     f.deck_rename(f.deck_list()[-1], "Tolles Testdeck")
+    f.deck_change_kategorie(f.deck_list()[-1], "Echt tolles Deck")
+    f.deck_new_timestamp("Tolles Testdeck")
     print(f.deck_list())
-    f.deck_delete(f.deck_list()[-1])
-    f.deck_delete(f.deck_list()[-1])
+    #f.deck_delete(f.deck_list()[-1])
+    #f.deck_delete(f.deck_list()[-1])
     print(f.deck_list())
     
     
