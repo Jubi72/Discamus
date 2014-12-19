@@ -5,16 +5,19 @@ import time
  + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - + - - - - - - +
  | Anleitung, fuer die Nutzung der Funktionen der Klasse                                                 | Fortschritt |
  | Autor: Manuel                                                                                         |             |
- + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - + - - - - - - +
+ + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - + - - - - - - +
  | config() :: gibt die Kofigationen, die in der config.cfg gespeichert sind zurueck                     | TODO 6      |
  | deck_list() :: gibt alle Decks zurueck                                                                | Fertig      |
  | deck_list_info() :: gibt alle Decks mit den Infos zurueck                                             | Fertig      |
  | deck_create(str:name, str:kategorie, str:description) :: erstellt ein Kartenstapel                    | Fertig      |
  | deck_delete(str:dateiname) :: loescht ein Kartenstapel                                                | Fertig      |
  | deck_rename(str:dateiname, str:newName) :: benennt ein Kartenstapel um                                | TODO 1      |
+ | deck_change_description()                                                                             | TODO        |
+ | deck_statistik_()                                                                                     | TODO        |
+ | deck_statistik_reset()                                                                                | TODO        |
  | deck_load(str:dateiname) :: Laden eines Kartenstapels, notwendig um dieses zu nutzen                  | Fertig      |
  |  deck_info() :: gibt die Infos des aktuellen Kartenstapels zurueck                                    | Fertig      |
- |  deck_hascard() :: gibt zurueck (true/false), ob das aktuelle Kartendeck noch zulernende Karten hat   | TODO
+ |  deck_hascard() :: gibt zurueck (true/false), ob das aktuelle Kartendeck noch zulernende Karten hat   | TODO        |
  |  deck_cards() :: gibt alle Karten eines Deckes zurueck (mit id)                                       | TODO 2      |
  |  card_create(str:seite1, str:seite2) :: fuegt zum aktuellen Kartestapel eine Karte hinzu              | TODO 5      |
  |  card_delete(str:id) :: loescht eine Karte                                                            | TODO 6      |
@@ -160,6 +163,31 @@ class funktion:
             os.remove(self.__deck_dir+dateiname)
         self.__deck_list_update()
     
+    def deck_rename(self, dateiname, newName):
+        """
+        Bennent das gegebene Deck zu dem neuen Namen um.
+        """
+        if not dateiname == newName+self.__card_suffix:
+            self.__deck_list_update()
+            name = newName
+            newName += self.__card_suffix
+            #Erstellen des Dateinamens
+            if self.__deck_list.count(newName)>0:
+                i=2
+                newName = name+"_" + str(i) + self.__card_suffix
+                while self.__deck_list.count(newName)>0:
+                    i+=1
+                    newName = name+"_" + str(i) + self.__card_suffix
+            os.rename(self.__deck_dir + dateiname, self.__deck_dir + newName)
+            datei=open(self.__deck_dir + newName, "r")
+            inhalt = datei.readlines()
+            datei.close()
+            inhalt[0]= name + inhalt[0][inhalt[0].find("|"):]
+            datei = open(self.__deck_dir + newName,"w")
+            datei.writelines(inhalt)
+            datei.close()
+            self.__deck_list_update()
+
     #Laden des Deckes
     
     
@@ -173,8 +201,8 @@ class funktion:
         Aufbau der Datei:
         + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +
         | Name|letzterAufruf|Kategorie|AnzahlKarten|Lernstand[0-100] ::infos ueber den Stapel |
-        | id|Seite1|Seite2|Einseiteig(0)/Zweiseitig(1)|lernstand ::Kartenifos                 |
-        | id|Seite1|Seite2|Einseiteig(0)/Zweiseitig(1)|lernstand ::Kartenifos                 |
+        | Seite1|Seite2|Einseiteig(0)/Zweiseitig(1)|lernstand                                 |
+        | Seite1|Seite2|Einseiteig(0)/Zweiseitig(1)|lernstand                                 |
         | ...                                                                                 |
         + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +
         """
@@ -254,21 +282,23 @@ class funktion:
         pass
 
 if __name__=="__main__":
+    #Klasse initialisieren
     f = funktion()
-    deck_list = f.deck_list()
-    print(deck_list)
-    deck_list_info = f.deck_list_info()
-    print(deck_list_info)
-    print(deck_list[0])
-    f.deck_load(deck_list[0])
+    
+    #Decklisten aufrufen
+    print(f.deck_list())
+    print(f.deck_list_info())
+    
+    #erstellen, umbenennen und loeschen von Kartenstapel
+    f.deck_create("Test", "Testdecke", "Testdeck")
+    f.deck_create("Test", "Testdecke", "Testdeck")
+    print(f.deck_list())
+    f.deck_rename(f.deck_list()[-1], "Tolles Testdeck")
+    print(f.deck_list())
+    f.deck_delete(f.deck_list()[-1])
+    f.deck_delete(f.deck_list()[-1])
+    print(f.deck_list())
+    
+    
+    f.deck_load(f.deck_list()[0])
     print(f.deck_info())
-    
-    f.deck_create("Test", "Test", "Test Deck")
-    deck_list = f.deck_list()
-    print(deck_list)
-    deck_list_info = f.deck_list_info()
-    print(deck_list_info)
-    f.deck_delete("Test.rna")
-    deck_list = f.deck_list()
-    print(deck_list)
-    
