@@ -123,11 +123,13 @@ class funktion:
         self.__deck_cards_learned = list()
         self.__deck_cards_loaded = True
         for i in range(len(karten)):
-            karte = karten.split("|")
-            self.__deck_cards.append([i,karte])
+            karte = karten[i].split("|")
+            karte[-1]=karte[-1][:-2]
+            self.__deck_cards.append([i+1,karte[:-1]])
+            self.__deck_cards_learned.append([0,i+1,karte])
             self.__deck_cards_learn.append(karte[0:2])
             if karte[2]=="1":
-                self.__deck_cards_learn.append([karte[1],karte[0]])
+                self.__deck_cards_learn.append([i+1,karte[1],karte[0]])
             
 
     def deck_list(self):
@@ -167,7 +169,7 @@ class funktion:
                 dateiname = name+"_"+str(i)+self.__card_suffix
         #Schreiben in die Datei
         datei = open(self.__deck_dir+dateiname, "w")
-        timestamp =self.__timestamp()
+        timestamp = self.__timestamp()
         datei.write(name+"|"+kategorie+"|"+timestamp+"|"+kategorie+"|"+description)
         datei.close()
         self.__deck_list_update()
@@ -258,6 +260,24 @@ class funktion:
         datei.writelines(inhalt)
         datei.close()
     
+    def deck_statistik(self):
+        """
+        Diese Funktion gibt die Statistik des Deckes zurueck
+        """
+        pass
+    
+    def deck_statistik_reset(self):
+        """
+        Diese Funktion resetet die Statistik des aktuellen Decks
+        """
+        pass
+    
+    def __deck_statistik_generate(self):
+        """
+        Diese Funktion generiert eine Neue Statistik aus der Liste self.__deck_cards_learne.
+        """
+        pass
+    
     def deck_info(self):
         """
         Diese Funktion gibt die Infos des Decks zurueck
@@ -281,6 +301,7 @@ class funktion:
         Diese Funktion gibt alle Karten eines Decks mit ids zurueck.
         [id,[Seite1, Seite2], id2, [Seite1, Seite2],...]
         """
+        self.__deck_cards_load()
         return self.__deck_cards
     
     def card_create(self, Seite1, Seite2):
@@ -307,27 +328,32 @@ class funktion:
         self.__deck_card_answered = False
         self.__last_card = random.choice(self.__deck_cards_learn)
         self.__deck_cards_learn.remove(self.__last_card)
-        return self.__last_card
+        return self.__last_card[1:]
 
     def last_card(self):
         """
         Diese Funktion gibt die letzte Karte
         """
-        return self.__last_card
+        return self.__last_card[1:]
     
     def card_correct(self, answer):
         """
         Diese Funktion prueft die Antwort auf die Korrektheit (True oder False)
         und speichert sich das erste Ergebnis
         """
+        if answer == self.__last_card[2]:
+            answer_correct = True
+        else:
+            answer_correct = False
         if not self.__deck_card_answered:
             self.__deck_card_answered = True
-            #TODO:Speichern des Ergebnisses
-            #pass
-        if answer == self.__last_card[1]:
-            return True
-        else:
-            return False
+            if answer_correct:
+                self.__deck_cards_learned[self.last_card(0)][-1] += ":1"
+            else:
+                self.__deck_cards_learned[self.last_card(0)][-1] += ":0"
+        return answer_correct
+            
+        
         
     
     def config(self):
@@ -355,17 +381,18 @@ if __name__=="__main__":
     print(f.deck_list_info())
     
     #erstellen, umbenennen und loeschen von Kartenstapel
-    f.deck_create("Test", "Testdecke", "Testdeck")
-    f.deck_create("Test", "Testdecke", "Testdeck")
-    print(f.deck_list())
-    f.deck_rename(f.deck_list()[-1], "Tolles Testdeck")
-    f.deck_change_kategorie(f.deck_list()[-1], "Echt tolles Deck")
-    f.deck_new_timestamp("Tolles Testdeck")
-    print(f.deck_list())
-    f.deck_delete(f.deck_list()[-1])
-    f.deck_delete(f.deck_list()[-1])
-    print(f.deck_list())
-    
+    #f.deck_create("Test", "Testdecke", "Testdeck")
+    #f.deck_create("Test", "Testdecke", "Testdeck")
+    #print(f.deck_list())
+    #f.deck_rename(f.deck_list()[-1], "Tolles Testdeck")
+    #f.deck_change_kategorie(f.deck_list()[-1], "Echt tolles Deck")
+    #f.deck_new_timestamp("Tolles Testdeck")
+    #print(f.deck_list())
+    #f.deck_delete(f.deck_list()[-1])
+    #f.deck_delete(f.deck_list()[-1])
+    #print(f.deck_list())
     
     f.deck_load(f.deck_list()[0])
     print(f.deck_info())
+    print(f.deck_cards())
+    
