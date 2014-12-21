@@ -41,6 +41,8 @@ class funktion:
         self.__last_card = str() #letzte gelernte Karte
         self.__deck_cards_learned = list() #Liste gelernter Karten mit Angabe, ob diese richtig oder falsch geloest wurde
         
+        self.__file_separator = "||" #der Separator in den Dateien
+        
         #Dateinamen, Ordnernamen, etc
         #Stammverzeichnis
         self.__root_dir = "..\\"
@@ -55,6 +57,7 @@ class funktion:
         #Dateiendungen
         self.__card_suffix = ".rna"
         
+
     #Grundfunktionen, noetig fuer das Programm:
     
     def __str_valid(self, String, max_len=0):
@@ -105,7 +108,7 @@ class funktion:
         """
         datei = open(self.__deck_dir+dateiname, "r")
         inhalt = datei.readlines()[0]
-        info = inhalt.split("|")
+        info = inhalt.split(self.__file_separator)
         datei.close()
         info[-1]=info[-1].replace("\n", "")
         return info
@@ -123,8 +126,8 @@ class funktion:
         self.__deck_cards_learned = list()
         self.__deck_cards_loaded = True
         for i in range(len(karten)):
-            karte = karten[i].split("|")
-            karte[-1]=karte[-1][:-2]
+            karte = karten[i].split(self.__file_separator)
+            karte[-1]=karte[-1][:-1] #Entfernen des \n am Ende des Strings
             self.__deck_cards.append([i+1,karte[:-1]])
             self.__deck_cards_learned.append([0,i+1,karte])
             self.__deck_cards_learn.append(karte[0:2])
@@ -170,7 +173,7 @@ class funktion:
         #Schreiben in die Datei
         datei = open(self.__deck_dir+dateiname, "w")
         timestamp = self.__timestamp()
-        datei.write(name+"|"+kategorie+"|"+timestamp+"|"+kategorie+"|"+description)
+        datei.write(name+self.__file_separator+kategorie+self.__file_separator+timestamp+self.__file_separator+kategorie+self.__file_separator+description)
         datei.close()
         self.__deck_list_update()
     
@@ -221,7 +224,7 @@ class funktion:
             datei=open(self.__deck_dir + newName, "r")
             inhalt = datei.readlines()
             datei.close()
-            inhalt[0]= name + inhalt[0][inhalt[0].find("|"):]
+            inhalt[0]= name + inhalt[0][inhalt[0].find(self.__file_separator):]
             datei = open(self.__deck_dir + newName,"w")
             datei.writelines(inhalt)
             datei.close()
@@ -233,18 +236,18 @@ class funktion:
         datei=open(self.__deck_dir + self.__deck, "r")
         inhalt = datei.readlines()
         datei.close()
-        inhalt[0]= inhalt[0][:inhalt[0].find("|")+1] + newKategorie + inhalt[0][inhalt[0].find("|",inhalt[0].find("|")+1):]
+        inhalt[0]= inhalt[0][:inhalt[0].find(self.__file_separator)+1] + newKategorie + inhalt[0][inhalt[0].find(self.__file_separator,inhalt[0].find(self.__file_separator)+1):]
         datei = open(self.__deck_dir + self.__deck,"w")
         datei.writelines(inhalt)
         datei.close()
     
-    def __deck_new_timestamp(self):
+    def deck_new_timestamp(self):
         datei=open(self.__deck_dir + self.__deck + self.__card_suffix, "r")
         inhalt = datei.readlines()
         datei.close()
-        inhalt[0] =   inhalt[0][:inhalt[0].find("|", inhalt[0].find("|")+1)+1] \
+        inhalt[0] =   inhalt[0][:inhalt[0].find(self.__file_separator, inhalt[0].find(self.__file_separator)+1)+1] \
                     + self.__timestamp() \
-                    + inhalt[0][ inhalt[0].find("|", inhalt[0].find("|", inhalt[0].find("|")+1)+1):]
+                    + inhalt[0][ inhalt[0].find(self.__file_separator, inhalt[0].find(self.__file_separator, inhalt[0].find(self.__file_separator)+1)+1):]
         datei = open(self.__deck_dir + self.__deck + self.__card_suffix,"w")
         datei.writelines(inhalt)
         datei.close()
@@ -253,9 +256,9 @@ class funktion:
         datei=open(self.__deck_dir + self.__deck + self.__card_suffix, "r")
         inhalt = datei.readlines()
         datei.close()
-        inhalt[0] =   inhalt[0][:inhalt[0].find("|", inhalt[0].find("|", inhalt[0].find("|")+1)+1)+1] \
+        inhalt[0] =   inhalt[0][:inhalt[0].find(self.__file_separator, inhalt[0].find(self.__file_separator, inhalt[0].find(self.__file_separator)+1)+1)+1] \
                     + newKategorie \
-                    + inhalt[0][inhalt[0].find("|", inhalt[0].find("|", inhalt[0].find("|", inhalt[0].find("|")+1)+1)+1):]
+                    + inhalt[0][inhalt[0].find(self.__file_separator, inhalt[0].find(self.__file_separator, inhalt[0].find(self.__file_separator, inhalt[0].find(self.__file_separator)+1)+1)+1):]
         datei = open(self.__deck_dir + self.__deck + self.__card_suffix,"w")
         datei.writelines(inhalt)
         datei.close()
@@ -302,6 +305,8 @@ class funktion:
         [id,[Seite1, Seite2], id2, [Seite1, Seite2],...]
         """
         self.__deck_cards_load()
+        print(self.__deck_cards_learn)
+        print(self.__deck_cards_learned)
         return self.__deck_cards
     
     def card_create(self, Seite1, Seite2):
