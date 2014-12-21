@@ -3,30 +3,30 @@ import time
 import random
 
 """
- + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - + - - - - - - +
- | Anleitung, fuer die Nutzung der Funktionen der Klasse                                                 | Fortschritt |
- | Autor: Manuel                                                                                         |             |
- + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - + - - - - - - +
- | config() :: gibt die Einstellung, die in der config.cfg gespeichert sind zurueck                      | TODO 6      |
- | deck_list() :: gibt alle Decks zurueck                                                                | Fertig      |
- | deck_list_info() :: gibt alle Decks mit den Infos zurueck                                             | Fertig      |
- | deck_create(str:name, str:kategorie, str:description) :: erstellt ein Kartenstapel                    | Fertig      |
- | deck_delete(str:dateiname) :: loescht ein Kartenstapel                                                | Fertig      |
- | deck_load(str:dateiname) :: Laden eines Kartenstapels, notwendig um dieses zu nutzen                  | Fertig      |
- | deck_rename(str:newName) :: benennt ein Kartenstapel um                                               | Fertig      |
- |  deck_change_kategorie(str:newKategorie)                                                              | Fertig      |
- |  deck_change_description(str:newDescription)                                                          | Fertig      |
- |  deck_statistik()                                                                                     | TODO        |
- |  deck_statistik_reset()                                                                               | TODO        |
- |  deck_info() :: gibt die Infos des aktuellen Kartenstapels zurueck                                    | Fertig      |
- |  deck_hascard() :: gibt zurueck (true/false), ob das aktuelle Kartendeck noch zulernende Karten hat   | TODO        |
- |  deck_cards() :: gibt alle Karten eines Kartenstapels zurueck (mit id)                                | TODO 2      |
- |  card_create(str:seite1, str:seite2) :: fuegt zum aktuellen Kartestapel eine Karte hinzu              | TODO 5      |
- |  card_delete(str:id) :: loescht eine Karte                                                            | TODO 6      |
- |  random_card() :: gibt eine zufaellige Karte aus dem geladenen Kartenstapel zurueck und loescht diese | TODO 3      |
- |  last_card() :: gibt die zuletzt ausgegebene Karte zurueck                                            | TODO 4      |
- |  card_correct(str:answer) :: gibt zuruck, ob die Anwort richtig ist                                   | TODO 7      |
- + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - + - - - - - - +
+ + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +
+ | Anleitung, fuer die Nutzung der Funktionen der Klasse                                                 |
+ | Autor: Manuel                                                                                         |
+ + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - + - - - - +
+ | config() :: gibt die Einstellung, die in der config.cfg gespeichert sind zurueck                      | TODO 3  |
+ | deck_list() :: gibt alle Decks zurueck                                                                | -       |
+ | deck_list_info() :: gibt alle Decks mit den Infos zurueck                                             | -       |
+ | deck_create(str:name, str:kategorie, str:description) :: erstellt ein Kartenstapel                    | -       |
+ | deck_delete(str:dateiname) :: loescht ein Kartenstapel                                                | -       |
+ | deck_load(str:dateiname) :: Laden eines Kartenstapels, notwendig um dieses zu nutzen                  | -       |
+ | deck_rename(str:newName) :: benennt ein Kartenstapel um                                               | -       |
+ |  deck_change_kategorie(str:newKategorie)                                                              | -       |
+ |  deck_change_description(str:newDescription)                                                          | -       |
+ |  deck_statistik()                                                                                     | TODO 1  |
+ |  deck_statistik_reset()                                                                               | TODO 2  |
+ |  deck_info() :: gibt die Infos des aktuellen Kartenstapels zurueck                                    | -       |
+ |  deck_hascard() :: gibt zurueck (true/false), ob das aktuelle Kartendeck noch zulernende Karten hat   | -       |
+ |  deck_cards() :: gibt alle Karten eines Kartenstapels zurueck (mit id)                                | -       |
+ |  card_create(str:seite1, str:seite2) :: fuegt zum aktuellen Kartestapel eine Karte hinzu              | -       |
+ |  card_delete(str:id) :: loescht eine Karte                                                            | -       |
+ |  random_card() :: gibt eine zufaellige Karte aus dem geladenen Kartenstapel zurueck und loescht diese | -       |
+ |  last_card() :: gibt die zuletzt ausgegebene Karte zurueck                                            | -       |
+ |  card_correct(str:answer) :: gibt zuruck, ob die Anwort richtig ist                                   | -       |
+ + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - + - - - - +
 """
 
 # -*- coding: utf-8 -*-
@@ -42,6 +42,7 @@ class funktion:
         self.__deck_cards_learned = list() #Liste gelernter Karten mit Angabe, ob diese richtig oder falsch geloest wurde
         
         self.__file_separator = "||" #der Separator in den Dateien
+        self.__deck_begin_statistik = "00" #Mit welcher Statistik die einzelenen Karten beginnen
         
         #Dateinamen, Ordnernamen, etc
         #Stammverzeichnis
@@ -173,7 +174,14 @@ class funktion:
         #Schreiben in die Datei
         datei = open(self.__deck_dir+dateiname, "w")
         timestamp = self.__timestamp()
-        datei.write(name+self.__file_separator+kategorie+self.__file_separator+timestamp+self.__file_separator+kategorie+self.__file_separator+description)
+        datei.write(                         name\
+                    +self.__file_separator + kategorie\
+                    +self.__file_separator + timestamp\
+                    +self.__file_separator + kategorie\
+                    +self.__file_separator + description\
+                    +self.__file_separator + "0"\
+                    +self.__file_separator + "0"\
+                    +"\n")
         datei.close()
         self.__deck_list_update()
     
@@ -309,19 +317,35 @@ class funktion:
         print(self.__deck_cards_learned)
         return self.__deck_cards
     
-    def card_create(self, Seite1, Seite2):
+    def __deck_count_cards(self):
+        """
+        Diese Funktion prueft, ob die richtige Anzahl an Karten vorhanden ist, ansonsten wird diese Zahl Korrigiert
+        """
+        pass #TODO: count_cards
+    
+    def card_create(self, Seite1, Seite2, doppelseitig = 1):
         """
         Diese Funktion fuegt die Karte hinzu
         Voraussetzung: Deck muss geladen sein
         """
-        pass
+        datei = open(self.__deck_dir + self.__deck, "a")
+        datei.write(Seite1 + self.__file_separator + Seite2 + self.__file_separator + str(doppelseitig) + self.__file_separator + self.__deck_begin_statistik + "\n")
+        datei.close()
+        self.__deck_count_cards()
         
     def card_delete(self, card_id):
         """
         Diese Funktion loescht die Karte
         Voraussetzung: Deck muss geladen sein
         """
-        pass
+        datei = open(self.__deck_dir + self.__deck, "r")
+        inhalt = datei.readlines()
+        inhalt = inhalt[:card_id]+ inhalt[card_id+1:]
+        datei.close()
+        datei = open(self.__deck_dir + self.__deck, "w")
+        datei.writelines(inhalt)
+        datei.close()
+        self.__deck_count_cards
     
     def random_card(self):
         """
@@ -353,9 +377,9 @@ class funktion:
         if not self.__deck_card_answered:
             self.__deck_card_answered = True
             if answer_correct:
-                self.__deck_cards_learned[self.last_card(0)][-1] += ":1"
+                self.__deck_cards_learned[self.last_card(0)][-1] += "1"
             else:
-                self.__deck_cards_learned[self.last_card(0)][-1] += ":0"
+                self.__deck_cards_learned[self.last_card(0)][-1] += "0"
         return answer_correct
             
         
@@ -400,4 +424,5 @@ if __name__=="__main__":
     f.deck_load(f.deck_list()[0])
     print(f.deck_info())
     print(f.deck_cards())
+    f.card_create("Test1", "Test2")
     
