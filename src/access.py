@@ -107,7 +107,7 @@ class funktion:
         """
         Diese Funktion laed die Infos aus der uebergebenen Datei
         """
-        datei = open(self.__deck_dir+dateiname, "r")
+        datei = open(self.__deck_dir+dateiname, "r", encoding='utf8')
         inhalt = datei.readlines()[0]
         info = inhalt.split(self.__file_separator)
         datei.close()
@@ -120,7 +120,7 @@ class funktion:
         und setzt die Variable self.__deck_cards_loaded auf True
         Voraussetzung: deck_load muss erfolgt sein
         """
-        datei = open(self.__deck_dir + self.__deck)
+        datei = open(self.__deck_dir + self.__deck, encoding='utf8')
         karten = datei.readlines()[1:]
         self.__deck_cards = list()
         self.__deck_cards_learn = list()
@@ -131,7 +131,7 @@ class funktion:
             karte[-1]=karte[-1][:-1] #Entfernen des \n am Ende des Strings
             self.__deck_cards.append([i+1,karte[:-1]])
             self.__deck_cards_learned.append([0,i+1,karte])
-            self.__deck_cards_learn.append(karte[0:2])
+            self.__deck_cards_learn.append([i+1, karte[0],karte[1]])
             if karte[2]=="1":
                 self.__deck_cards_learn.append([i+1,karte[1],karte[0]])
             
@@ -172,7 +172,7 @@ class funktion:
                 i+=1
                 dateiname = name+"_"+str(i)+self.__card_suffix
         #Schreiben in die Datei
-        datei = open(self.__deck_dir+dateiname, "w")
+        datei = open(self.__deck_dir+dateiname, "w", encoding='utf8')
         timestamp = self.__timestamp()
         datei.write(                         name\
                     +self.__file_separator + kategorie\
@@ -229,11 +229,11 @@ class funktion:
                     i+=1
                     newName = name+"_" + str(i) + self.__card_suffix
             os.rename(self.__deck_dir + self.__deck, self.__deck_dir + newName)
-            datei=open(self.__deck_dir + newName, "r")
+            datei=open(self.__deck_dir + newName, "r", encoding='utf8')
             inhalt = datei.readlines()
             datei.close()
             inhalt[0]= name + inhalt[0][inhalt[0].find(self.__file_separator):]
-            datei = open(self.__deck_dir + newName,"w")
+            datei = open(self.__deck_dir + newName,"w", encoding='utf8')
             datei.writelines(inhalt)
             datei.close()
             self.__deck_list_update()
@@ -241,33 +241,33 @@ class funktion:
     #Laden des Deckes
     
     def deck_change_kategorie(self, newKategorie):
-        datei=open(self.__deck_dir + self.__deck, "r")
+        datei=open(self.__deck_dir + self.__deck, "r", encoding='utf8')
         inhalt = datei.readlines()
         datei.close()
         inhalt[0]= inhalt[0][:inhalt[0].find(self.__file_separator)+1] + newKategorie + inhalt[0][inhalt[0].find(self.__file_separator,inhalt[0].find(self.__file_separator)+1):]
-        datei = open(self.__deck_dir + self.__deck,"w")
+        datei = open(self.__deck_dir + self.__deck,"w", encoding='utf8')
         datei.writelines(inhalt)
         datei.close()
     
     def deck_new_timestamp(self):
-        datei=open(self.__deck_dir + self.__deck + self.__card_suffix, "r")
+        datei=open(self.__deck_dir + self.__deck + self.__card_suffix, "r", encoding='utf8')
         inhalt = datei.readlines()
         datei.close()
         inhalt[0] =   inhalt[0][:inhalt[0].find(self.__file_separator, inhalt[0].find(self.__file_separator)+1)+1] \
                     + self.__timestamp() \
                     + inhalt[0][ inhalt[0].find(self.__file_separator, inhalt[0].find(self.__file_separator, inhalt[0].find(self.__file_separator)+1)+1):]
-        datei = open(self.__deck_dir + self.__deck + self.__card_suffix,"w")
+        datei = open(self.__deck_dir + self.__deck + self.__card_suffix,"w", encoding='utf8')
         datei.writelines(inhalt)
         datei.close()
         
     def deck_change_description(self, newKategorie):
-        datei=open(self.__deck_dir + self.__deck + self.__card_suffix, "r")
+        datei=open(self.__deck_dir + self.__deck + self.__card_suffix, "r", encoding='utf8')
         inhalt = datei.readlines()
         datei.close()
         inhalt[0] =   inhalt[0][:inhalt[0].find(self.__file_separator, inhalt[0].find(self.__file_separator, inhalt[0].find(self.__file_separator)+1)+1)+1] \
                     + newKategorie \
                     + inhalt[0][inhalt[0].find(self.__file_separator, inhalt[0].find(self.__file_separator, inhalt[0].find(self.__file_separator, inhalt[0].find(self.__file_separator)+1)+1)+1):]
-        datei = open(self.__deck_dir + self.__deck + self.__card_suffix,"w")
+        datei = open(self.__deck_dir + self.__deck + self.__card_suffix,"w", encoding='utf8')
         datei.writelines(inhalt)
         datei.close()
     
@@ -313,22 +313,31 @@ class funktion:
         [id,[Seite1, Seite2], id2, [Seite1, Seite2],...]
         """
         self.__deck_cards_load()
-        print(self.__deck_cards_learn)
-        print(self.__deck_cards_learned)
         return self.__deck_cards
     
     def __deck_count_cards(self):
         """
-        Diese Funktion prueft, ob die richtige Anzahl an Karten vorhanden ist, ansonsten wird diese Zahl Korrigiert
+        Diese Funktion zaehlt die Anzahl der Karten und aendert die Anzahl in der Datei.
+        Voraussetzung: Deck muss geladen sein
         """
-        pass #TODO: count_cards
+        datei = open(self.__deck_dir + self.__deck, "r", encoding='utf8')
+        inhalt = datei.readlines()
+        anzahlKarten = len(inhalt[1:])
+        datei.close()
+        firstLine = inhalt[0].split(self.__file_separator)
+        firstLine[4] = str(anzahlKarten)
+        inhalt[0]=firstLine[0]
+        for elem in firstLine[1:]:
+            inhalt[0] += self.__file_separator + elem
+        datei = open(self.__deck_dir + self.__deck, "w", encoding='utf8')
+        datei.writelines(inhalt)
     
     def card_create(self, Seite1, Seite2, doppelseitig = 1):
         """
         Diese Funktion fuegt die Karte hinzu
         Voraussetzung: Deck muss geladen sein
         """
-        datei = open(self.__deck_dir + self.__deck, "a")
+        datei = open(self.__deck_dir + self.__deck, "a", encoding='utf8')
         datei.write(Seite1 + self.__file_separator + Seite2 + self.__file_separator + str(doppelseitig) + self.__file_separator + self.__deck_begin_statistik + "\n")
         datei.close()
         self.__deck_count_cards()
@@ -338,11 +347,11 @@ class funktion:
         Diese Funktion loescht die Karte
         Voraussetzung: Deck muss geladen sein
         """
-        datei = open(self.__deck_dir + self.__deck, "r")
+        datei = open(self.__deck_dir + self.__deck, "r", encoding='utf8')
         inhalt = datei.readlines()
         inhalt = inhalt[:card_id]+ inhalt[card_id+1:]
         datei.close()
-        datei = open(self.__deck_dir + self.__deck, "w")
+        datei = open(self.__deck_dir + self.__deck, "w", encoding='utf8')
         datei.writelines(inhalt)
         datei.close()
         self.__deck_count_cards
@@ -402,27 +411,8 @@ class funktion:
 
 
 if __name__=="__main__":
-    #Klasse initialisieren
-    f = funktion()
-    
-    #Decklisten aufrufen
-    print(f.deck_list())
-    print(f.deck_list_info())
-    
-    #erstellen, umbenennen und loeschen von Kartenstapel
-    #f.deck_create("Test", "Testdecke", "Testdeck")
-    #f.deck_create("Test", "Testdecke", "Testdeck")
-    #print(f.deck_list())
-    #f.deck_rename(f.deck_list()[-1], "Tolles Testdeck")
-    #f.deck_change_kategorie(f.deck_list()[-1], "Echt tolles Deck")
-    #f.deck_new_timestamp("Tolles Testdeck")
-    #print(f.deck_list())
-    #f.deck_delete(f.deck_list()[-1])
-    #f.deck_delete(f.deck_list()[-1])
-    #print(f.deck_list())
-    
-    f.deck_load(f.deck_list()[0])
-    print(f.deck_info())
-    print(f.deck_cards())
-    f.card_create("Test1", "Test2")
+    """
+    Testumgebung
+    """
+    acc = funktion()
     
