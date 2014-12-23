@@ -22,7 +22,9 @@ import random
  |  deck_hascard() :: gibt zurueck (true/false), ob das aktuelle Kartendeck noch zulernende Karten hat   | -       |
  |  deck_cards() :: gibt alle Karten eines Kartenstapels zurueck (mit id)                                | -       |
  |  card_create(str:seite1, str:seite2) :: fuegt zum aktuellen Kartestapel eine Karte hinzu              | -       |
- |  card_delete(str:id) :: loescht eine Karte                                                            | -       |
+ |  card_delete(int:id) :: loescht eine Karte                                                            | -       |
+ |  card_change(int:id, str:Seite1 = "", str:Seite2 = "") :: aendert den Karteninhalt                    | TODO 4  | #add
+ |  card_toggle_double-sided(int:id) :: aendert von Doppelseitig auf einseitg und andersherum            | TODO 5  | #add
  |  random_card() :: gibt eine zufaellige Karte aus dem geladenen Kartenstapel zurueck und loescht diese | -       |
  |  last_card() :: gibt die zuletzt ausgegebene Karte zurueck                                            | -       |
  |  card_correct(str:answer) :: gibt zuruck, ob die Anwort richtig ist                                   | -       |
@@ -162,6 +164,9 @@ class funktion:
         name|timestamp|kategorie|beschreibung
         und updatet die Deck-Liste
         """
+        name = self.__str_valid(name)
+        kategorie = self.__str_valid(kategorie)
+        description = self.__str_valid(description)
         self.__deck_list_update()
         dateiname = name+self.__card_suffix
         #Erstellen des Dateinamens
