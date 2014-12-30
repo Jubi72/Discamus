@@ -23,8 +23,8 @@ import random
  |  deck_cards() :: gibt alle Karten eines Kartenstapels zurueck (mit id)                                | -       |
  |  card_create(str:seite1, str:seite2) :: fuegt zum aktuellen Kartestapel eine Karte hinzu              | -       |
  |  card_delete(int:id) :: loescht eine Karte                                                            | -       |
- |  card_change(int:id, str:Seite1 = "", str:Seite2 = "") :: aendert den Karteninhalt                    | TODO 4  | #add
- |  card_toggle_double-sided(int:id) :: aendert von Doppelseitig auf einseitg und andersherum            | TODO 5  | #add
+ |  card_change(int:id, str:Seite1 = "", str:Seite2 = "") :: aendert den Karteninhalt                    | -       |
+ |  card_toggle_double_sided(int:id) :: aendert von Doppelseitig auf einseitg und andersherum            | -       |
  |  random_card() :: gibt eine zufaellige Karte aus dem geladenen Kartenstapel zurueck und loescht diese | -       |
  |  last_card() :: gibt die zuletzt ausgegebene Karte zurueck                                            | -       |
  |  card_correct(str:answer) :: gibt zuruck, ob die Anwort richtig ist                                   | -       |
@@ -361,6 +361,49 @@ class funktion:
         datei.close()
         self.__deck_count_cards
     
+    def card_change(self, card_id, site1 = "", site2 = ""):
+        #TODO: String valid machen
+        """
+        Diese Funktion aendert den inhalt der Karten (jenachdem, welche angegeben wurde).
+        Bei leerem String wird nichts geaendert.
+        Voraussetzung: Deck muss geladen sein.
+        """
+        datei = open(self.__deck_dir + self.__deck, "r", encoding='utf8')
+        inhalt = datei.readlines()
+        datei.close()
+        karte = inhalt[card_id].split(self.__file_separator)
+        if not site1 == "":
+            karte[0] = site1
+        if not site2 == "":
+            karte[1] = site2
+        inhalt[card_id] = ""
+        for elem in karte:
+            inhalt[card_id] += elem + self.__file_separator
+        inhalt[card_id] = inhalt[card_id][:-2]
+        datei = open(self.__deck_dir + self.__deck, "w", encoding='utf8')
+        datei.writelines(inhalt)
+        datei.close()
+    
+    def card_toggle_double_sided(self, card_id):
+        """
+        Diese Funktion aendert die Lernrichtung von Karten auf beide Richtungen oder eine Richtung
+        """
+        datei = open(self.__deck_dir + self.__deck, "r", encoding='utf8')
+        inhalt = datei.readlines()
+        datei.close()
+        karte = inhalt[card_id].split(self.__file_separator)
+        if karte[2] == "0":
+            karte[2] = "1"
+        else:
+            karte[2] = "0"
+        inhalt[card_id] = ""
+        for elem in karte:
+            inhalt[card_id] += elem + self.__file_separator
+        inhalt[card_id] = inhalt[card_id][:-2]
+        datei = open(self.__deck_dir + self.__deck, "w", encoding='utf8')
+        datei.writelines(inhalt)
+        datei.close()
+    
     def random_card(self):
         """
         Diese Funktion waehlt aus dem aktuellen Deck eine zufaellige Karte aus,
@@ -420,4 +463,13 @@ if __name__=="__main__":
     Testumgebung
     """
     acc = funktion()
+    acc.deck_load(acc.deck_list()[0])
+    acc.card_create("Hallo", "Welt", 1)
+    print(acc.deck_cards())
+    acc.card_change(len(acc.deck_cards()), "Teste", "Dich")
+    print(acc.deck_cards())
+    acc.card_delete(len(acc.deck_cards()))
+    print(acc.deck_cards())
+    acc.card_toggle_double_sided(len(acc.deck_cards()))
+    #print(acc.deck_cards())
     
