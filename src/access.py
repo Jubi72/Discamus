@@ -6,32 +6,32 @@ import random
  + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +
  | Anleitung, fuer die Nutzung der Funktionen der Klasse                                                 |
  | Autor: Manuel                                                                                         |
- + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - + - - - - +
- | config() :: gibt die Einstellung, die in der config.cfg gespeichert sind zurueck                      | TODO 3  |
- | deck_list() :: gibt alle Decks zurueck                                                                | -       |
- | deck_list_info() :: gibt alle Decks mit den Infos zurueck                                             | -       |
- | deck_create(str:name, str:kategorie, str:description) :: erstellt ein Kartenstapel                    | -       |
- | deck_delete(str:dateiname) :: loescht ein Kartenstapel                                                | -       |
- | deck_load(str:dateiname) :: Laden eines Kartenstapels, notwendig um dieses zu nutzen                  | -       |
- |  deck_rename(str:newName) :: benennt ein Kartenstapel um                                              | -       |
- |  deck_change_kategorie(str:newKategorie)                                                              | -       |
- |  deck_change_description(str:newDescription)                                                          | -       |
- |  deck_statistik()                                                                                     | TODO 1  |
- |  deck_statistik_reset()                                                                               | TODO 2  |
- |  deck_info() :: gibt die Infos des aktuellen Kartenstapels zurueck                                    | -       |
- |  deck_hascard() :: gibt zurueck (true/false), ob das aktuelle Kartendeck noch zulernende Karten hat   | -       |
- |  deck_cards() :: gibt alle Karten eines Kartenstapels zurueck (mit id)                                | -       |
- |  card_create(str:seite1, str:seite2) :: fuegt zum aktuellen Kartestapel eine Karte hinzu              | -       |
- |  card_delete(int:id) :: loescht eine Karte                                                            | -       |
- |  card_change(int:id, str:Seite1 = "", str:Seite2 = "") :: aendert den Karteninhalt                    | -       |
- |  card_toggle_double_sided(int:id) :: aendert von Doppelseitig auf einseitg und andersherum            | -       |
- |  random_card() :: gibt eine zufaellige Karte aus dem geladenen Kartenstapel zurueck und loescht diese | -       |
- |  last_card() :: gibt die zuletzt ausgegebene Karte zurueck                                            | -       |
- |  card_correct(str:answer) :: gibt zuruck, ob die Anwort richtig ist                                   | -       |
- + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - + - - - - +
+ + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +
+ | config() :: gibt die Einstellung, die in der config.cfg gespeichert sind zurueck                      | #TODO:
+ | deck_list() :: gibt alle Decks zurueck                                                                |
+ | deck_list_info() :: gibt alle Decks mit den Infos zurueck                                             |
+ | deck_create(str:name, str:kategorie, str:description) :: erstellt ein Kartenstapel                    |
+ | deck_delete(str:dateiname) :: loescht ein Kartenstapel                                                |
+ | deck_load(str:dateiname) :: Laden eines Kartenstapels, notwendig um dieses zu nutzen                  |
+ |  deck_rename(str:newName) :: benennt ein Kartenstapel um                                              |
+ |  deck_change_kategorie(str:newKategorie)                                                              |
+ |  deck_change_description(str:newDescription)                                                          |
+ |  deck_statistik() ::gibt die falsch gentworteten karten zurueck                                       |
+ |  deck_statistik_reset()                                                                               |
+ |  deck_info() :: gibt die Infos des aktuellen Kartenstapels zurueck                                    |
+ |  deck_hascard() :: gibt zurueck (true/false), ob das aktuelle Kartendeck noch zulernende Karten hat   |
+ |  deck_cards() :: gibt alle Karten eines Kartenstapels zurueck (mit id)                                |
+ |  card_create(str:seite1, str:seite2) :: fuegt zum aktuellen Kartestapel eine Karte hinzu              |
+ |  card_delete(int:id) :: loescht eine Karte                                                            |
+ |  card_change(int:id, str:Seite1 = "", str:Seite2 = "") :: aendert den Karteninhalt                    |
+ |  card_toggle_double_sided(int:id) :: aendert von Doppelseitig auf einseitg und andersherum            |
+ |  random_card() :: gibt eine zufaellige Karte aus dem geladenen Kartenstapel zurueck und loescht diese |
+ |  last_card() :: gibt die zuletzt ausgegebene Karte zurueck                                            |
+ |  card_correct(str:answer) :: gibt zuruck, ob die Anwort richtig ist                                   |
+ + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +
 """
 
-# -*- coding: utf-8 -*-
+"# -*- coding: utf-8 -*-"
 class funktion:
     def __init__(self):
         self.__deck = str() #Name der Datei des geladenden Decks
@@ -45,6 +45,7 @@ class funktion:
         
         self.__file_separator = "|" *2 #der Separator in den Dateien
         self.__deck_begin_statistik = "00" #Mit welcher Statistik die einzelenen Karten beginnen
+        self.__deck_statistik_max_len = 10
         
         #Dateinamen, Ordnernamen, etc
         #Stammverzeichnis
@@ -75,7 +76,7 @@ class funktion:
         """
         Diese Funktion aendert den String so, dass er nicht die Funktion des Programmes beeintraechtigt
         """
-        valid_str = String.replace("|", "\\|")
+        valid_str = String.replace("|", "<|>")
         return valid_str
     
     def __str_make_normal(self, String):
@@ -83,7 +84,7 @@ class funktion:
         Diese Funktion ist die Gegenfunktion von self.__str_make_valid(...)
         Der String wird wieder fuer den Benutzer lesbar gemacht.
         """
-        normal_str = String.replace("\\|", "|")
+        normal_str = String.replace("<|>", "|")
         return normal_str
     
     def __str_make_valid_filename(self, string):
@@ -106,7 +107,7 @@ class funktion:
         newString[cellNumber] = newCellContent
         newLine = newString[0]
         for elem in newString[1:]:
-            newLine+=self.__file_separator+elem
+            newLine+=self.__file_separator+str(elem)
         return newLine
     
     def __deck_list_update(self):
@@ -170,11 +171,11 @@ class funktion:
             for j in range(len(karte)):
                 karte[j] = self.__str_make_normal(karte[j])
             self.__deck_cards.append([i+1,karte[:-1]])
-            self.__deck_cards_learned.append([0,i+1,karte])
+            self.__deck_cards_learned.append([karte[0],karte[1],"",karte[-1]])
             self.__deck_cards_learn.append([i+1, karte[0],karte[1]])
             if karte[2]=="1":
                 self.__deck_cards_learn.append([i+1,karte[1],karte[0]])
-            
+        print(self.__deck_cards_learned)
 
     def deck_list(self):
         """
@@ -320,6 +321,7 @@ class funktion:
         inhalt = datei.readlines()
         datei.close()
         inhalt[0] = self.__file_string_change_cell(inhalt[0], newDescription, 3)
+        datei=open(self.__deck_dir + self.__deck, "w", encoding='utf8')
         datei.writelines(inhalt)
         datei.close()
     
@@ -327,20 +329,52 @@ class funktion:
         """
         Diese Funktion gibt die Statistik des Deckes zurueck
         """
-        pass
+        self.__deck_statistik_generate()
+        bad_list = list()
+        for elem in self.__deck_cards_learned:
+            if not elem[2]=="":
+                bad_list.append(elem[2])
+        return bad_list    
     
     def deck_statistik_reset(self):
         """
         Diese Funktion resetet die Statistik des aktuellen Decks
         """
-        pass
+        datei = open(self.__deck_dir + self.__deck, mode="r", encoding='utf-8')
+        inhalt = datei.readlines()
+        datei.close()
+        newInhalt = [self.__file_string_change_cell(inhalt[0], 0, 5)+"\n"]
+        for i in range(len(self.__deck_cards_learned)):
+            newInhalt.append(self.__file_string_change_cell(inhalt[i+1], 0, 3)+"\n")
+        datei = open(self.__deck_dir + self.__deck, mode="w", encoding='utf-8')
+        datei.writelines(newInhalt)
+        datei.close()
     
     def __deck_statistik_generate(self):
         """
-        Diese Funktion generiert eine Neue Statistik aus der Liste self.__deck_cards_learne.
+        Diese Funktion generiert eine neue Statistik aus der Liste self.__deck_cards_learned.
         """
-        pass
-    
+        result_correct=0
+        result_ges=0
+        for elem in self.__deck_cards_learned:
+            if len(elem[-1]) > self.__deck_statistik_max_len:
+                elem[-1] = elem[-1][-self.__deck_statistik_max_len:]
+            for result in elem[-1]:
+                if result == "1":
+                    result_correct += 1
+                result_ges += 1
+        deck_result = (100 * result_correct)//result_ges
+        datei = open(self.__deck_dir + self.__deck, mode="r", encoding='utf-8')
+        inhalt = datei.readlines()
+        datei.close()
+        newInhalt = [self.__file_string_change_cell(inhalt[0], deck_result, 5)+"\n"]
+        for i in range(len(self.__deck_cards_learned)):
+            newInhalt.append(self.__file_string_change_cell(inhalt[i+1], self.__deck_cards_learned[i][-1], 3)+"\n")
+        
+        datei = open(self.__deck_dir + self.__deck, mode="w", encoding='utf-8')
+        datei.writelines(newInhalt)
+        datei.close()
+
     def deck_info(self):
         """
         Diese Funktion gibt die Infos des Decks zurueck
@@ -353,11 +387,11 @@ class funktion:
         Diese Funktion gibt zurueck, ob es noch zulernende Karten gibt
         Voraussetzung: Deck muss geladen sein
         """
-        #TODO: Statistik speichern, falls keine Karten vorhanden sind.
         if len(self.__deck_cards_learn)>0:
             return True
         else:
             self.__deck_new_timestamp()
+            self.__deck_statistik_generate()
             return False
     
     def deck_cards(self):
@@ -377,13 +411,10 @@ class funktion:
         inhalt = datei.readlines()
         anzahlKarten = len(inhalt[1:])
         datei.close()
-        firstLine = inhalt[0].split(self.__file_separator)
-        firstLine[4] = str(anzahlKarten)
-        inhalt[0]=firstLine[0]
-        for elem in firstLine[1:]:
-            inhalt[0] += self.__file_separator + elem
+        inhalt[0] = self.__file_string_change_cell(inhalt[0], str(anzahlKarten), 4)
         datei = open(self.__deck_dir + self.__deck, "w", encoding='utf8')
         datei.writelines(inhalt)
+        datei.close()
     
     def card_create(self, Seite1, Seite2, doppelseitig = 1):
         """
@@ -483,9 +514,10 @@ class funktion:
         if not self.__deck_card_answered:
             self.__deck_card_answered = True
             if answer_correct:
-                self.__deck_cards_learned[self.last_card(0)][-1] += "1"
+                self.__deck_cards_learned[self.__last_card[0]-1][-1] += "1"
             else:
-                self.__deck_cards_learned[self.last_card(0)][-1] += "0"
+                self.__deck_cards_learned[self.__last_card[0]-1][-1] += "0"
+                self.__deck_cards_learned[self.__last_card[0]-1][2] =[self.__last_card[1], self.__last_card[2], answer]
         return answer_correct
             
         
@@ -511,3 +543,12 @@ if __name__=="__main__":
     """
     Testumgebung
     """
+    acc = funktion()
+    acc.deck_load(acc.deck_list()[0])
+    print(acc.deck_info())
+    print(acc.random_card())
+    while acc.deck_hascards():
+        acc.random_card()
+        acc.card_correct("Stuttgart")
+    print(acc.deck_statistik())
+    
