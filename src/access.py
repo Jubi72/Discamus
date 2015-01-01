@@ -13,7 +13,7 @@ import random
  | deck_create(str:name, str:kategorie, str:description) :: erstellt ein Kartenstapel                    | -       |
  | deck_delete(str:dateiname) :: loescht ein Kartenstapel                                                | -       |
  | deck_load(str:dateiname) :: Laden eines Kartenstapels, notwendig um dieses zu nutzen                  | -       |
- | deck_rename(str:newName) :: benennt ein Kartenstapel um                                               | -       |
+ |  deck_rename(str:newName) :: benennt ein Kartenstapel um                                              | -       |
  |  deck_change_kategorie(str:newKategorie)                                                              | -       |
  |  deck_change_description(str:newDescription)                                                          | -       |
  |  deck_statistik()                                                                                     | TODO 1  |
@@ -43,7 +43,7 @@ class funktion:
         self.__last_card = str() #letzte gelernte Karte
         self.__deck_cards_learned = list() #Liste gelernter Karten mit Angabe, ob diese richtig oder falsch geloest wurde
         
-        self.__file_separator = "||" #der Separator in den Dateien
+        self.__file_separator = "|" *2 #der Separator in den Dateien
         self.__deck_begin_statistik = "00" #Mit welcher Statistik die einzelenen Karten beginnen
         
         #Dateinamen, Ordnernamen, etc
@@ -63,17 +63,51 @@ class funktion:
 
     #Grundfunktionen, noetig fuer das Programm:
     
-    def __str_valid(self, String, max_len=0):
+    def __string_lenght(self, String, min_length, max_length):
         """
-        Diese Funktion prueft, ob der uebergebene String nur aus zulaessigen Zeichen besteht
-        (Bei lenge 0 darf der String beliebig lang sein)
+        Funktion prueft, ob der String die richtige Laenge hat
         """
-        if(0<max_len<len(String)):
-            return False
-        for character in String:
-            if not 32<=ord(character)<=122:
-                return False
-        return True
+        if(min_length<=len(String)<=max_length):
+            return True
+        return False
+    
+    def __str_make_valid(self, String):
+        """
+        Diese Funktion aendert den String so, dass er nicht die Funktion des Programmes beeintraechtigt
+        """
+        valid_str = String.replace("|", "\\|")
+        return valid_str
+    
+    def __str_make_normal(self, String):
+        """
+        Diese Funktion ist die Gegenfunktion von self.__str_make_valid(...)
+        Der String wird wieder fuer den Benutzer lesbar gemacht.
+        """
+        normal_str = String.replace("\\|", "|")
+        return normal_str
+    
+    def __str_make_valid_filename(self, string):
+        """
+        Diese Funktion entfernt alle unzulaessigen Zeichen aus eines Dateinamen aus dem String
+        """
+        dateiname = string.replace("\\","")
+        dateiname = dateiname.replace("/","")
+        dateiname = dateiname.replace(":","")
+        dateiname = dateiname.replace("*","")
+        dateiname = dateiname.replace("?","")
+        dateiname = dateiname.replace("\"","")
+        dateiname = dateiname.replace("<","")
+        dateiname = dateiname.replace(">","")
+        dateiname = dateiname.replace("|","")
+        return dateiname
+    
+    def __file_string_change_cell(self, string, newCellContent, cellNumber):
+        newString = string.split(self.__file_separator)
+        newString[cellNumber] = newCellContent
+        newLine = newString[0]
+        for elem in newString[1:]:
+            newLine+=self.__file_separator+elem
+        return newLine
     
     def __deck_list_update(self):
         """
@@ -81,7 +115,7 @@ class funktion:
         """
         self.__deck_list=[]
         for datei in os.listdir(self.__deck_dir):
-            if len(datei)>4 and datei[-len(self.__card_suffix):-1]+datei[-1]==self.__card_suffix:
+            if len(datei)>len(self.__card_suffix) and datei[-len(self.__card_suffix):-1]+datei[-1]==self.__card_suffix:
                 self.__deck_list.append(datei)
  
     def __einrueckenZahl(self, zahl, laenge):
@@ -112,6 +146,8 @@ class funktion:
         datei = open(self.__deck_dir+dateiname, "r", encoding='utf8')
         inhalt = datei.readlines()[0]
         info = inhalt.split(self.__file_separator)
+        for i in range(len(info)):
+            info[i] = self.__str_make_normal(info[i])
         datei.close()
         info[-1]=info[-1].replace("\n", "")
         return info
@@ -131,6 +167,8 @@ class funktion:
         for i in range(len(karten)):
             karte = karten[i].split(self.__file_separator)
             karte[-1]=karte[-1][:-1] #Entfernen des \n am Ende des Strings
+            for j in range(len(karte)):
+                karte[j] = self.__str_make_normal(karte[j])
             self.__deck_cards.append([i+1,karte[:-1]])
             self.__deck_cards_learned.append([0,i+1,karte])
             self.__deck_cards_learn.append([i+1, karte[0],karte[1]])
@@ -157,25 +195,25 @@ class funktion:
         return self.__deck_list_info    
         
     def deck_create(self, name, kategorie, description):
-        #TODO: String auf funktionsfaehigkeit ueberpruefen
         """
         Diese Funktion erstellt eine Datei, mit dem namen "name.rna" her, fals noetig: "name_x.rna"
         und dem Inhalt:
-        name|timestamp|kategorie|beschreibung
+        name||kategorie||timestamp||beschreibung
         und updatet die Deck-Liste
         """
-        name = self.__str_valid(name)
-        kategorie = self.__str_valid(kategorie)
-        description = self.__str_valid(description)
         self.__deck_list_update()
-        dateiname = name+self.__card_suffix
         #Erstellen des Dateinamens
+        dateiname = self.__str_make_valid_filename(name)+self.__card_suffix
+        #dopplungen vermeiden
         if self.__deck_list.count(dateiname)>0:
             i=2
-            dateiname = name+"_"+str(i)+self.__card_suffix
+            dateiname = self.__str_make_valid_filename(name)+"_"+str(i)+self.__card_suffix
             while self.__deck_list.count(dateiname)>0:
                 i+=1
-                dateiname = name+"_"+str(i)+self.__card_suffix
+                dateiname = self.__str_make_valid_filename(name)+"_"+str(i)+self.__card_suffix
+        name = self.__str_make_valid(name)
+        kategorie = self.__str_make_valid(kategorie)
+        description = self.__str_make_valid(description)
         #Schreiben in die Datei
         datei = open(self.__deck_dir+dateiname, "w", encoding='utf8')
         timestamp = self.__timestamp()
@@ -222,57 +260,66 @@ class funktion:
         Benennt das geladene Deck um.
         Voraussetzung: Deck muss geladen sein.
         """
+        newName = self.__str_make_valid(newName)
         if not self.__deck == newName+self.__card_suffix:
             self.__deck_list_update()
             name = newName
-            newName += self.__card_suffix
+            newName = self.__str_make_valid_filename(name)+ self.__card_suffix
             #Erstellen des Dateinamens
             if self.__deck_list.count(newName)>0:
                 i=2
-                newName = name+"_" + str(i) + self.__card_suffix
+                newName = self.__str_make_valid_filename(name)+"_" + str(i) + self.__card_suffix
                 while self.__deck_list.count(newName)>0:
                     i+=1
-                    newName = name+"_" + str(i) + self.__card_suffix
+                    newName = self.__str_make_valid_filename(name)+"_" + str(i) + self.__card_suffix
             os.rename(self.__deck_dir + self.__deck, self.__deck_dir + newName)
             datei=open(self.__deck_dir + newName, "r", encoding='utf8')
             inhalt = datei.readlines()
             datei.close()
-            inhalt[0]= name + inhalt[0][inhalt[0].find(self.__file_separator):]
+            inhalt[0]= self.__file_string_change_cell(inhalt[0], name, 0)#name + inhalt[0][inhalt[0].find(self.__file_separator):]
             datei = open(self.__deck_dir + newName,"w", encoding='utf8')
             datei.writelines(inhalt)
             datei.close()
+            self.__deck = newName
             self.__deck_list_update()
 
     #Laden des Deckes
     
     def deck_change_kategorie(self, newKategorie):
+        """
+        Diese Funktion aendert die Kategorie des geladenen Deckes zur uebergebenen Kategorie
+        """
+        newKategorie = self.__str_make_valid(newKategorie)
         datei=open(self.__deck_dir + self.__deck, "r", encoding='utf8')
         inhalt = datei.readlines()
         datei.close()
-        inhalt[0]= inhalt[0][:inhalt[0].find(self.__file_separator)+1] + newKategorie + inhalt[0][inhalt[0].find(self.__file_separator,inhalt[0].find(self.__file_separator)+1):]
+        inhalt[0]=self.__file_string_change_cell(inhalt[0], newKategorie, 1) 
         datei = open(self.__deck_dir + self.__deck,"w", encoding='utf8')
         datei.writelines(inhalt)
         datei.close()
     
-    def deck_new_timestamp(self):
-        datei=open(self.__deck_dir + self.__deck + self.__card_suffix, "r", encoding='utf8')
+    def __deck_new_timestamp(self):
+        """
+        Diese Funktinon erneuert den Zeitstempel des geladenen Deckes.
+        """
+        datei=open(self.__deck_dir + self.__deck, "r", encoding='utf8')
         inhalt = datei.readlines()
         datei.close()
-        inhalt[0] =   inhalt[0][:inhalt[0].find(self.__file_separator, inhalt[0].find(self.__file_separator)+1)+1] \
-                    + self.__timestamp() \
-                    + inhalt[0][ inhalt[0].find(self.__file_separator, inhalt[0].find(self.__file_separator, inhalt[0].find(self.__file_separator)+1)+1):]
-        datei = open(self.__deck_dir + self.__deck + self.__card_suffix,"w", encoding='utf8')
+        inhalt[0] =   self.__file_string_change_cell(inhalt[0], self.__timestamp(),2)
+        datei = open(self.__deck_dir + self.__deck,"w", encoding='utf8')
         datei.writelines(inhalt)
         datei.close()
         
-    def deck_change_description(self, newKategorie):
-        datei=open(self.__deck_dir + self.__deck + self.__card_suffix, "r", encoding='utf8')
+    def deck_change_description(self, newDescription):
+        """
+        Diese Funktion aendert die Beschreibung der geladenen Kategorie in die uebergebene Beschreibung.
+        Voraussetzung: Deck muss geladen sein.
+        """
+        newDescription = self.__str_make_valid(newDescription)
+        datei=open(self.__deck_dir + self.__deck, "r", encoding='utf8')
         inhalt = datei.readlines()
         datei.close()
-        inhalt[0] =   inhalt[0][:inhalt[0].find(self.__file_separator, inhalt[0].find(self.__file_separator, inhalt[0].find(self.__file_separator)+1)+1)+1] \
-                    + newKategorie \
-                    + inhalt[0][inhalt[0].find(self.__file_separator, inhalt[0].find(self.__file_separator, inhalt[0].find(self.__file_separator, inhalt[0].find(self.__file_separator)+1)+1)+1):]
-        datei = open(self.__deck_dir + self.__deck + self.__card_suffix,"w", encoding='utf8')
+        inhalt[0] = self.__file_string_change_cell(inhalt[0], newDescription, 3)
         datei.writelines(inhalt)
         datei.close()
     
@@ -306,6 +353,7 @@ class funktion:
         Diese Funktion gibt zurueck, ob es noch zulernende Karten gibt
         Voraussetzung: Deck muss geladen sein
         """
+        #TODO: Statistik speichern, falls keine Karten vorhanden sind.
         if len(self.__deck_cards_learn)>0:
             return True
         else:
@@ -342,6 +390,8 @@ class funktion:
         Diese Funktion fuegt die Karte hinzu
         Voraussetzung: Deck muss geladen sein
         """
+        Seite1 = self.__str_make_valid(Seite1)
+        Seite2 = self.__str_make_valid(Seite2)
         datei = open(self.__deck_dir + self.__deck, "a", encoding='utf8')
         datei.write(Seite1 + self.__file_separator + Seite2 + self.__file_separator + str(doppelseitig) + self.__file_separator + self.__deck_begin_statistik + "\n")
         datei.close()
@@ -362,7 +412,6 @@ class funktion:
         self.__deck_count_cards
     
     def card_change(self, card_id, site1 = "", site2 = ""):
-        #TODO: String valid machen
         """
         Diese Funktion aendert den inhalt der Karten (jenachdem, welche angegeben wurde).
         Bei leerem String wird nichts geaendert.
@@ -373,9 +422,9 @@ class funktion:
         datei.close()
         karte = inhalt[card_id].split(self.__file_separator)
         if not site1 == "":
-            karte[0] = site1
+            karte[0] = self.__str_make_valid(site1)
         if not site2 == "":
-            karte[1] = site2
+            karte[1] = self.__str_make_valid(site2)
         inhalt[card_id] = ""
         for elem in karte:
             inhalt[card_id] += elem + self.__file_separator
@@ -462,14 +511,3 @@ if __name__=="__main__":
     """
     Testumgebung
     """
-    acc = funktion()
-    acc.deck_load(acc.deck_list()[0])
-    acc.card_create("Hallo", "Welt", 1)
-    print(acc.deck_cards())
-    acc.card_change(len(acc.deck_cards()), "Teste", "Dich")
-    print(acc.deck_cards())
-    acc.card_delete(len(acc.deck_cards()))
-    print(acc.deck_cards())
-    acc.card_toggle_double_sided(len(acc.deck_cards()))
-    #print(acc.deck_cards())
-    
