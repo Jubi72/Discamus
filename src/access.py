@@ -7,7 +7,8 @@ import random
  | Anleitung, fuer die Nutzung der Funktionen der Klasse                                                 |
  | Autor: Manuel                                                                                         |
  + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +
- | config() :: gibt die Einstellung, die in der config.cfg gespeichert sind zurueck                      | #TODO:
+ | set_config(str:var, int/var:value) :: speichert den value in einer Datei ab                           |
+ | get_config(str:var) :: liesst aus einer Datei einen Wert aus                                          |
  | deck_list() :: gibt alle Decks zurueck                                                                |
  | deck_list_info() :: gibt alle Decks mit den Infos zurueck                                             |
  | deck_create(str:name, str:kategorie, str:description) :: erstellt ein Kartenstapel                    |
@@ -17,7 +18,7 @@ import random
  |  deck_change_kategorie(str:newKategorie)                                                              |
  |  deck_change_description(str:newDescription)                                                          |
  |  deck_statistik() ::gibt die falsch gentworteten karten zurueck                                       |
- |  deck_statistik_reset()                                                                               |
+ |  deck_statistik_reset() :: setzt die Statistik zurueck                                                |
  |  deck_info() :: gibt die Infos des aktuellen Kartenstapels zurueck                                    |
  |  deck_hascard() :: gibt zurueck (true/false), ob das aktuelle Kartendeck noch zulernende Karten hat   |
  |  deck_cards() :: gibt alle Karten eines Kartenstapels zurueck (mit id)                                |
@@ -31,9 +32,10 @@ import random
  + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +
 """
 
-"# -*- coding: utf-8 -*-"
+# -*- coding: utf-8 -*-
 class funktion:
     def __init__(self):
+        self.__pruefe_dateipfade()
         self.__deck = str() #Name der Datei des geladenden Decks
         self.__deck_list = list() #Liste der Decks
         self.__deck_cards_loaded = False #Ob schon die Karten des Deckes geladen wurden.
@@ -56,7 +58,7 @@ class funktion:
         self.__deck_dir = self.__data_dir + "stapel\\"
         self.__config_dir = self.__data_dir + "config\\"
         #            Dateien unter config
-        self.__config_file = self.__config_dir + "general.cfg"
+        self.__config_suffix = ".cfg"
         
         #Dateiendungen
         self.__card_suffix = ".rna"
@@ -116,7 +118,7 @@ class funktion:
         """
         self.__deck_list=[]
         for datei in os.listdir(self.__deck_dir):
-            if len(datei)>len(self.__card_suffix) and datei[-len(self.__card_suffix):-1]+datei[-1]==self.__card_suffix:
+            if len(datei)>=len(self.__card_suffix) and datei[-len(self.__card_suffix):-1]+datei[-1]==self.__card_suffix:
                 self.__deck_list.append(datei)
  
     def __einrueckenZahl(self, zahl, laenge):
@@ -171,7 +173,7 @@ class funktion:
             for j in range(len(karte)):
                 karte[j] = self.__str_make_normal(karte[j])
             self.__deck_cards.append([i+1,karte[:-1]])
-            self.__deck_cards_learned.append([karte[0],karte[1],"",karte[-1]])
+            self.__deck_cards_learned.append([karte[0],karte[1],[],karte[-1]])
             self.__deck_cards_learn.append([i+1, karte[0],karte[1]])
             if karte[2]=="1":
                 self.__deck_cards_learn.append([i+1,karte[1],karte[0]])
@@ -332,7 +334,7 @@ class funktion:
         self.__deck_statistik_generate()
         bad_list = list()
         for elem in self.__deck_cards_learned:
-            if not elem[2]=="":
+            if not elem[2]==[]:
                 bad_list.append(elem[2])
         return bad_list    
     
@@ -511,6 +513,7 @@ class funktion:
             answer_correct = True
         else:
             answer_correct = False
+        self.__deck_statistik_generate()
         if not self.__deck_card_answered:
             self.__deck_card_answered = True
             if answer_correct:
@@ -523,32 +526,46 @@ class funktion:
         
         
     
-    def config(self):
+    def set_config(self, var, value):
         """
-        Diese Funktion gibt die Konfigationen aus der config datei zurueck oder die Standardeistellungen
+        Diese Funktion schreibt den value in die Konfigurationsdatei hinein
         """
-        pass
+        datei = open(self.__config_dir + var +self.__config_suffix, "w")
+        datei.write(str(value))
+        
+    def get_config(self, var):
+        """
+        Diese Funktion liesst einen Wert aus Konfigurationsdatei heraus
+        Falls die Variable nicht existiert, wird 0 zurueckgegeben
+        """
+        try:
+            datei = open(self.__config_dir + var + self.__config_suffix)
+            value = datei.read()
+            try:    return int(value)
+            except: return value
+        except:
+            return
     
-    def pruefe_dateipfade(self):
+    def __pruefe_dateipfade(self):
         """
         Diese Funktion prueft, ob alle noetigen Dateipfade existieren, wenn nicht, werden diese hier erstllt
         noetige Dateipfade:
         """
-        pass
-
-
-
+        if not os.path.isdir(self.__root_dir):
+            os.mkdir(self.__root_dir)
+        if not os.path.isdir(self.__data_dir):
+            os.mkdir(self.__data_dir)
+        if not os.path.isdir(self.__deck_dir):
+            os.mkdir(self.__deck_dir)
+        if not os.path.isdir(self.__config_dir):
+            os.mkdir(self.__config_dir)
 
 if __name__=="__main__":
     """
     Testumgebung
     """
     acc = funktion()
-    acc.deck_load(acc.deck_list()[0])
-    print(acc.deck_info())
-    print(acc.random_card())
-    while acc.deck_hascards():
-        acc.random_card()
-        acc.card_correct("Stuttgart")
-    print(acc.deck_statistik())
-    
+    acc.set_config("test", 1)
+    print(acc.get_config("test"))
+    print(acc.deck_list())
+    print(acc.deck_list_info())
