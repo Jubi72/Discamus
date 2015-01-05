@@ -35,7 +35,6 @@ import random
 # -*- coding: utf-8 -*-
 class funktion:
     def __init__(self):
-        self.__pruefe_dateipfade()
         self.__deck = str() #Name der Datei des geladenden Decks
         self.__deck_list = list() #Liste der Decks
         self.__deck_cards_loaded = False #Ob schon die Karten des Deckes geladen wurden.
@@ -63,6 +62,7 @@ class funktion:
         #Dateiendungen
         self.__card_suffix = ".rna"
         
+        self.__pruefe_dateipfade()
 
     #Grundfunktionen, noetig fuer das Programm:
     
@@ -78,7 +78,7 @@ class funktion:
         """
         Diese Funktion aendert den String so, dass er nicht die Funktion des Programmes beeintraechtigt
         """
-        valid_str = String.replace("|", "<|>")
+        valid_str = String.replace(self.__file_separator[0], "<"+self.__file_separator[0]+">")
         return valid_str
     
     def __str_make_normal(self, String):
@@ -86,7 +86,7 @@ class funktion:
         Diese Funktion ist die Gegenfunktion von self.__str_make_valid(...)
         Der String wird wieder fuer den Benutzer lesbar gemacht.
         """
-        normal_str = String.replace("<|>", "|")
+        normal_str = String.replace("<"+self.__file_separator[0]+">", self.__file_separator[0])
         return normal_str
     
     def __str_make_valid_filename(self, string):
@@ -342,12 +342,13 @@ class funktion:
         """
         Diese Funktion resetet die Statistik des aktuellen Decks
         """
+        self.__deck_cards_load()
         datei = open(self.__deck_dir + self.__deck, mode="r", encoding='utf-8')
         inhalt = datei.readlines()
         datei.close()
         newInhalt = [self.__file_string_change_cell(inhalt[0], 0, 5)+"\n"]
         for i in range(len(self.__deck_cards_learned)):
-            newInhalt.append(self.__file_string_change_cell(inhalt[i+1], 0, 3)+"\n")
+            newInhalt.append(self.__file_string_change_cell(inhalt[i+1], self.__deck_begin_statistik, 3)+"\n")
         datei = open(self.__deck_dir + self.__deck, mode="w", encoding='utf-8')
         datei.writelines(newInhalt)
         datei.close()
@@ -565,7 +566,3 @@ if __name__=="__main__":
     Testumgebung
     """
     acc = funktion()
-    acc.set_config("test", 1)
-    print(acc.get_config("test"))
-    print(acc.deck_list())
-    print(acc.deck_list_info())
