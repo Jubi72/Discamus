@@ -120,6 +120,11 @@ class funktion:
         for datei in os.listdir(self.__deck_dir):
             if len(datei)>=len(self.__card_suffix) and datei[-len(self.__card_suffix):-1]+datei[-1]==self.__card_suffix:
                 self.__deck_list.append(datei)
+        
+        self.__deck_list_info=[]
+        for deck in self.__deck_list:
+            deck_info=self.__deck_load_info(deck)
+            self.__deck_list_info.append(deck_info[:3]+deck_info[4:])
  
     def __einrueckenZahl(self, zahl, laenge):
         """
@@ -177,26 +182,88 @@ class funktion:
             self.__deck_cards_learn.append([i+1, karte[0],karte[1]])
             if karte[2]=="1":
                 self.__deck_cards_learn.append([i+1,karte[1],karte[0]])
-        print(self.__deck_cards_learned)
-
-    def deck_list(self):
+    
+    def __quick_sort_verkleiner(self, liste, sort):
+        """
+        Unterfunktion von Quicksort
+        """
+        liste_kleiner=[]
+        liste_groesser=[]
+        if len(liste)>0:
+            pivot=liste[0]
+        else:
+            pivot=str()
+        if sort>0:
+            for elem in liste[1:]:
+                if elem[abs(sort)].lower()<pivot[abs(sort)].lower():
+                    liste_kleiner.append(elem)
+                else:
+                    liste_groesser.append(elem)
+        else:
+            for elem in liste[1:]:
+                if elem[abs(sort)].lower()>pivot[abs(sort)].lower():
+                    liste_kleiner.append(elem)
+                else:
+                    liste_groesser.append(elem)
+        return [liste_kleiner,pivot,liste_groesser]
+    
+    def __quick_sort(self, liste, sort):
+        """
+        Quicksort (schnelles Sortierverfahren)
+        """
+        if liste==[]:
+            return []
+        else:
+            elems=self.__quick_sort_verkleiner(liste, sort)
+            kleiner=self.__quick_sort(elems[0], sort)
+            groesser=self.__quick_sort(elems[2], sort)
+            return kleiner + [elems[1]] + groesser
+    
+    def __deck_list_sort(self, sort, info = True):
+        """
+        Diese Funktion Sortiert die Liste. Positive Zahlen vorwaerts, negative Zahlen rueckwaerts.
+        Zahlen von 1-6 (-1 - -5)
+        1 Name
+        2 Kategorie
+        3 Timestamp
+        4 Karten
+        5 Lernstand
+        """
+        full_deck_list=[]
+        for i in range(len(self.__deck_list)):
+            full_deck_list.append([self.__deck_list[i]]+self.__deck_list_info[i][:])
+        full_deck_list = self.__quick_sort(full_deck_list, sort)
+        self.__deck_list_info_sort = []
+        self.__deck_list_sort = []
+        for elem in full_deck_list:
+            self.__deck_list_sort += [elem[0]]
+            self.__deck_list_info_sort += [elem [1:]]
+        if info:
+            return self.__deck_list_info_sort
+        else:
+            return self.__deck_list_sort
+    
+    def deck_list(self, sort=0):
         """
         Diese Funktion gibt die Liste aller Kartenstapel zurueck
         """
-        self.__deck_list_update()      
-        return self.__deck_list
+        self.__deck_list_update()
+        if sort==0:
+            return self.__deck_list
+        else:
+            return self.__deck_list_sort(sort, False)
     
-    def deck_list_info(self):
+    def deck_list_info(self, sort=0):
         """
         Diese Funktion gibt die Liste aller Kartenstapel mit Infos zurueck
-        Liste: [[dateiname, [name, timestamp, kategorie, AnzahlKarten], ...]
+        Liste: [[name,kategorie, timestamp, AnzahlKarten, Lernstand], ...]
         """
         self.__deck_list_update()
-        self.__deck_list_info=[]
-        for deck in self.__deck_list:
-            self.__deck_list_info.append([deck]+self.__deck_load_info(deck))
-        return self.__deck_list_info    
-        
+        if sort==0:
+            return self.__deck_list_info
+        else:
+            return self.__deck_list_sort(sort)
+    
     def deck_create(self, name, kategorie, description):
         """
         Diese Funktion erstellt eine Datei, mit dem namen "name.rna" her, fals noetig: "name_x.rna"
@@ -238,7 +305,7 @@ class funktion:
         self.__deck_list_update()
         if dateiname in self.__deck_list:
             os.remove(self.__deck_dir+dateiname)
-        self.__deck_list_update()        
+        self.__deck_list_update()
 
     def deck_load(self, dateiname):
         #Wenn man mit einem Kartenstapel arbeiten moechte, muss man diese Funktion aufrufen
@@ -279,15 +346,13 @@ class funktion:
             datei=open(self.__deck_dir + newName, "r", encoding='utf8')
             inhalt = datei.readlines()
             datei.close()
-            inhalt[0]= self.__file_string_change_cell(inhalt[0], name, 0)#name + inhalt[0][inhalt[0].find(self.__file_separator):]
+            inhalt[0]= self.__file_string_change_cell(inhalt[0], name, 0)
             datei = open(self.__deck_dir + newName,"w", encoding='utf8')
             datei.writelines(inhalt)
             datei.close()
             self.__deck = newName
             self.__deck_list_update()
 
-    #Laden des Deckes
-    
     def deck_change_kategorie(self, newKategorie):
         """
         Diese Funktion aendert die Kategorie des geladenen Deckes zur uebergebenen Kategorie
@@ -492,6 +557,7 @@ class funktion:
         Diese Funktion waehlt aus dem aktuellen Deck eine zufaellige Karte aus,
         speichert sie (als letzte Karte) und loescht diese aus der __deck_card_learn und gibt diese aus.
         """
+        self.__deck_new_timestamp()
         if not self.__deck_cards_loaded:
             self.__deck_cards_load()
         self.__deck_card_answered = False
@@ -566,3 +632,5 @@ if __name__=="__main__":
     Testumgebung
     """
     acc = funktion()
+    print(acc.deck_list_info(-2))
+    
