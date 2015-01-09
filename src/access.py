@@ -125,7 +125,7 @@ class funktion:
         for deck in self.__deck_list:
             deck_info=self.__deck_load_info(deck)
             self.__deck_list_info.append(deck_info[:3]+deck_info[4:])
- 
+
     def __einrueckenZahl(self, zahl, laenge):
         """
         Diese Funktion schreibt in einem String vor die eingegebene Zahl so viele Nullen,
@@ -219,7 +219,7 @@ class funktion:
             groesser=self.__quick_sort(elems[2], sort)
             return kleiner + [elems[1]] + groesser
     
-    def __deck_list_sort(self, sort, info = True):
+    def __deck_sort(self, sort, info = True):
         """
         Diese Funktion Sortiert die Liste. Positive Zahlen vorwaerts, negative Zahlen rueckwaerts.
         Zahlen von 1-6 (-1 - -5)
@@ -251,7 +251,7 @@ class funktion:
         if sort==0:
             return self.__deck_list
         else:
-            return self.__deck_list_sort(sort, False)
+            return self.__deck_sort(sort, False)
     
     def deck_list_info(self, sort=0):
         """
@@ -262,7 +262,7 @@ class funktion:
         if sort==0:
             return self.__deck_list_info
         else:
-            return self.__deck_list_sort(sort)
+            return self.__deck_sort(sort)
     
     def deck_create(self, name, kategorie, description):
         """
@@ -290,7 +290,6 @@ class funktion:
         datei.write(                         name\
                     +self.__file_separator + kategorie\
                     +self.__file_separator + timestamp\
-                    +self.__file_separator + kategorie\
                     +self.__file_separator + description\
                     +self.__file_separator + "0"\
                     +self.__file_separator + "0"\
@@ -305,6 +304,15 @@ class funktion:
         self.__deck_list_update()
         if dateiname in self.__deck_list:
             os.remove(self.__deck_dir+dateiname)
+        self.__deck_list_update()
+        
+    def deck_delete_loaded(self):
+        """
+        Diese Funktion loescht das geladene Deck und updatet die Deck-Liste
+        """
+        self.__deck_list_update()
+        if self.__deck in self.__deck_list:
+            os.remove(self.__deck_dir+self.__deck)
         self.__deck_list_update()
 
     def deck_load(self, dateiname):
@@ -632,5 +640,6 @@ if __name__=="__main__":
     Testumgebung
     """
     acc = funktion()
-    print(acc.deck_list_info(-2))
-    
+    acc.deck_create("Name", "Kategorie", "Bescheibung")
+    acc.deck_create("Name", "Kategorie", "Bescheibung")
+    acc.deck_create("Name", "Kategorie", "Bescheibung")
