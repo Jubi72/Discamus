@@ -44,7 +44,7 @@ class gui:
     def __einruecken(self, text, length):
         text=str(text)
         if len(text)>length:
-            text = text[:length]
+            text = text[:length-1]+"\u2026"
         while(len(text)<length+2):
             text+=" "
         return text
@@ -72,7 +72,9 @@ class gui:
     
     def __lernen_begin(self, event=0):
         if self.__load():
-            self.__hide_menu()    
+            self.__hide_menu()
+        else:
+            self.__mainmenu_error_no_deck_selected()    
 
     def __mainmenu_question_hide(self, event=0):
         self.__mainmenu_question.pack_forget()
@@ -81,29 +83,62 @@ class gui:
         self.__mainmenu_question_buttons_1.pack_forget()
         self.__mainmenu_question_buttons_2.pack_forget()
     
+    def __mainmenu_error_no_deck_selected(self, event=0):
+        self.__mainmenu_question_hide()
+        self.__mainmenu_question_label.config(text="Fehler:\nKein Kartenstapel\nausgew\xe4hlt.")
+        self.__mainmenu_question_buttons_2.config(text="OK", command=self.__mainmenu_question_hide)
+        self.__mainmenu_question.pack(side="bottom", pady=7)
+        self.__mainmenu_question_buttons.pack(side="bottom", pady=5)
+        self.__mainmenu_question_buttons_2.pack(side="left", padx=self.__label_width*2//3)
+        self.__mainmenu_question_label.pack(side="top",pady=5)
+        
+        pass #TODO
+    
     def __mainmenu_loeschen_deck(self, event=0):
-        if(self.__load()):
-            self.__acc.deck_delete_loaded()
+        self.__acc.deck_delete_loaded()
         self.__mainmenu_question_hide()
         self.__mainmenu_decks_list_listbox_update()
         #TODO: bind Esc verlasssen
     
+    def __mainmenu_deck_reset(self, event=0):
+        self.__acc.deck_statistik_reset()
+        self.__mainmenu_question_hide()
+    
     def __mainmenu_loeschen(self, event=0):
-        self.__mainmenu_question_label.config(text="Wollen Sie den\nKartenstapel\nwirklich l\xf6schen?")
-        self.__mainmenu_question_buttons_1.config(text="Ja", command=self.__mainmenu_loeschen_deck)
-        self.__mainmenu_question_buttons_2.config(text="Nein", command=self.__mainmenu_question_hide)
-        self.__mainmenu_question.pack(side="bottom", pady=7)
-        self.__mainmenu_question_buttons.pack(side="bottom", pady=5)
-        self.__mainmenu_question_buttons_1.pack(side="left", padx=self.__label_width*2//3)
-        self.__mainmenu_question_buttons_2.pack(side="left", padx=self.__label_width*2//3)
-        self.__mainmenu_question_label.pack(side="top",pady=5)
-        #TODO: bind Esc Mainmenu question_hide
+        self.__mainmenu_question_hide()
+        if(self.__load()):
+            self.__mainmenu_question_label.config(text="Wollen Sie den\nKartenstapel\n\""+ self.__einruecken(self.__acc.deck_info()[0],17)[:-2] +"\"\nwirklich l\xf6schen?")
+            self.__mainmenu_question_buttons_1.config(text="Ja", command=self.__mainmenu_loeschen_deck)
+            self.__mainmenu_question_buttons_2.config(text="Nein", command=self.__mainmenu_question_hide)
+            self.__mainmenu_question.pack(side="bottom", pady=7)
+            self.__mainmenu_question_buttons.pack(side="bottom", pady=5)
+            self.__mainmenu_question_buttons_1.pack(side="left", padx=self.__label_width*2//3)
+            self.__mainmenu_question_buttons_2.pack(side="left", padx=self.__label_width*2//3)
+            self.__mainmenu_question_label.pack(side="top",pady=5)
+            #TODO: bind Esc Mainmenu question_hide
+        else:
+            self.__mainmenu_error_no_deck_selected()
     
-    def __mainmenu_hinzufuegen(self, event):
+    def __mainmenu_kategorie_change(self, event=0):
         pass #TODO:
     
-    def __mainmenu_statistik_reset(self, event):
+    def __mainmenu_hinzufuegen(self, event=0):
         pass #TODO:
+    
+    def __mainmenu_statistik_reset(self, event=0):
+        self.__mainmenu_question_hide()
+        if(self.__load()):
+            self.__mainmenu_question_label.config(text="Wollen Sie vom\nKartenstapel\n\""+ self.__einruecken(self.__acc.deck_info()[0],17)[:-2] +"\"\nden Fortschritt\n wirklich\nzur\xfccksetzen?")
+            self.__mainmenu_question_buttons_1.config(text="Ja", command=self.__mainmenu_deck_reset)
+            self.__mainmenu_question_buttons_2.config(text="Nein", command=self.__mainmenu_question_hide)
+            self.__mainmenu_question.pack(side="bottom", pady=7)
+            self.__mainmenu_question_buttons.pack(side="bottom", pady=5)
+            self.__mainmenu_question_buttons_1.pack(side="left", padx=self.__label_width*2//3)
+            self.__mainmenu_question_buttons_2.pack(side="left", padx=self.__label_width*2//3)
+            self.__mainmenu_question_label.pack(side="top",pady=5)
+            #TODO: bind Esc Mainmenu question_hide
+        else:
+            self.__mainmenu_error_no_deck_selected()
         
     def __create_window(self):
         """
@@ -186,11 +221,11 @@ class gui:
         self.__mainmenu_decks_list_listbox.bind("<Double-Button>", self.__lernen_begin)
         
         #Rechts
-        self.__mainmenu_options_1 = tkinter.Button(self.__mainmenu_options, text= "Lernen",     font=(self.__text_font, 18), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width, command=self.__lernen_begin)
-        self.__mainmenu_options_2 = tkinter.Button(self.__mainmenu_options, text= "Testen",     font=(self.__text_font, 18), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width)
+        self.__mainmenu_options_1 = tkinter.Button(self.__mainmenu_options, text= "Lernen",        font=(self.__text_font, 18), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width, command=self.__lernen_begin)
+        self.__mainmenu_options_2 = tkinter.Button(self.__mainmenu_options, text= "Testen",        font=(self.__text_font, 18), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width)
         self.__mainmenu_options_3 = tkinter.Button(self.__mainmenu_options, text= "Hinzuf\xfcgen", font=(self.__text_font, 18), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width)
-        self.__mainmenu_options_4 = tkinter.Button(self.__mainmenu_options, text= "Bearbeiten", font=(self.__text_font, 18), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width)
-        self.__mainmenu_options_5 = tkinter.Button(self.__mainmenu_options, text= "L\xf6schen", font=(self.__text_font, 18), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width, command=self.__mainmenu_loeschen)
+        self.__mainmenu_options_4 = tkinter.Button(self.__mainmenu_options, text= "Bearbeiten",    font=(self.__text_font, 18), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width)
+        self.__mainmenu_options_5 = tkinter.Button(self.__mainmenu_options, text= "L\xf6schen",    font=(self.__text_font, 18), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width, command=self.__mainmenu_loeschen)
         self.__button_normal_binds(self.__mainmenu_options_1)
         self.__button_normal_binds(self.__mainmenu_options_2)
         self.__button_normal_binds(self.__mainmenu_options_3)
@@ -199,7 +234,7 @@ class gui:
         
         self.__mainmenu_question_buttons_1 = tkinter.Button(self.__mainmenu_question_buttons, font=(self.__text_font, 18), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width//3)
         self.__mainmenu_question_buttons_2 = tkinter.Button(self.__mainmenu_question_buttons, font=(self.__text_font, 18), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width//3)
-        self.__mainmenu_question_label = tkinter.Label(self.__mainmenu_question, text="1",font=(self.__text_font, 18), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width)
+        self.__mainmenu_question_label = tkinter.Label(self.__mainmenu_question, font=(self.__text_font, 18), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width)
         
     def __show_mainmenu(self):
         if self.__menu == "":
@@ -219,12 +254,11 @@ class gui:
             self.__mainmenu_decks_list_head_5.pack(side="right")
             self.__mainmenu_decks_list_listbox.pack(side="bottom")
             self.__mainmenu_decks_scrollbar_1.pack(side="right",fill="y")
-            self.__mainmenu_options_1.pack(side="top", pady=5, padx=10)
-            self.__mainmenu_options_2.pack(side="top", pady=5, padx=10)
-            self.__mainmenu_options_3.pack(side="top", pady=5, padx=10)
-            self.__mainmenu_options_4.pack(side="top", pady=5, padx=10)
-            self.__mainmenu_options_5.pack(side="top", pady=5, padx=10)
-            
+            self.__mainmenu_options_1.pack(side="top", pady=2, padx=10)
+            self.__mainmenu_options_2.pack(side="top", pady=2, padx=10)
+            self.__mainmenu_options_3.pack(side="top", pady=2, padx=10)
+            self.__mainmenu_options_4.pack(side="top", pady=2, padx=10)
+            self.__mainmenu_options_5.pack(side="top", pady=2, padx=10)
     
     def __hide_mainmenu(self):
         self.__menu = ""
@@ -245,7 +279,7 @@ class gui:
         self.__mainmenu_decks_list.pack_forget()
         self.__mainmenu_decks_scrollbar.pack_forget()
         self.__mainmenu.pack_forget()
-        self.__mainmenu_question.pack_forget()
+        self.__mainmenu_question_hide()
 
     def __hide_menu(self):
         if self.__menu=="mainmenu":
