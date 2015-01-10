@@ -432,6 +432,7 @@ class funktion:
         """
         result_correct=0
         result_ges=0
+        deck_result=0
         for elem in self.__deck_cards_learned:
             if len(elem[-1]) > self.__deck_statistik_max_len:
                 elem[-1] = elem[-1][-self.__deck_statistik_max_len:]
@@ -439,7 +440,8 @@ class funktion:
                 if result == "1":
                     result_correct += 1
                 result_ges += 1
-        deck_result = (100 * result_correct)//result_ges
+        if result_ges>0:
+            deck_result = (100 * result_correct)//result_ges
         datei = open(self.__deck_dir + self.__deck, mode="r", encoding='utf-8')
         inhalt = datei.readlines()
         datei.close()
@@ -463,6 +465,8 @@ class funktion:
         Diese Funktion gibt zurueck, ob es noch zulernende Karten gibt
         Voraussetzung: Deck muss geladen sein
         """
+        if not self.__deck_cards_loaded:
+            self.__deck_cards_load()
         if len(self.__deck_cards_learn)>0:
             return True
         else:
@@ -562,7 +566,7 @@ class funktion:
     
     def random_card(self):
         """
-        Diese Funktion waehlt aus dem aktuellen Deck eine zufaellige Karte aus,
+        Diese Funktion waehlt aus dem aktuellen Deck eine zufaellige Karte aus (nur eine Seite),
         speichert sie (als letzte Karte) und loescht diese aus der __deck_card_learn und gibt diese aus.
         """
         self.__deck_new_timestamp()
@@ -571,13 +575,13 @@ class funktion:
         self.__deck_card_answered = False
         self.__last_card = random.choice(self.__deck_cards_learn)
         self.__deck_cards_learn.remove(self.__last_card)
-        return self.__last_card[1:]
+        return self.__last_card[1]
 
     def last_card(self):
         """
         Diese Funktion gibt die letzte Karte
         """
-        return self.__last_card[1:]
+        return self.__last_card[1]
     
     def card_correct(self, answer):
         """
