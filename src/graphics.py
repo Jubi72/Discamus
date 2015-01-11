@@ -168,12 +168,19 @@ class gui:
         except:
             return False
 
+    def __mainmenu_decks_list_listbox_sort(self, elem):
+        if self.__acc.get_config("sort")==elem:
+            self.__acc.set_config("sort", -elem)
+        else:
+            self.__acc.set_config("sort", elem)
+        self.__mainmenu_decks_list_listbox_update()
+
     def __mainmenu_decks_list_listbox_update(self):
         sort = self.__acc.get_config("sort")
         if sort==None:
             self.__acc.set_config("sort", 0)
             sort=0
-        liste = self.__acc.deck_list_info()
+        liste = self.__acc.deck_list_info(self.__acc.get_config("sort"))
         self.__mainmenu_decks_list_listbox.delete(0, "end")
         for elem in liste:
             self.__mainmenu_decks_list_listbox.insert("end", \
@@ -336,6 +343,12 @@ class gui:
         self.__mainmenu_decks_list_head_3 = tkinter.Label(self.__mainmenu_decks_list_head, text= self.__einruecken_hinten("Datum",10)[:-1],font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__frame_bgcolor, relief = "flat", takefocus=False, anchor="w", padx=0, pady=0, borderwidth=0)
         self.__mainmenu_decks_list_head_4 = tkinter.Label(self.__mainmenu_decks_list_head, text= "Karten",                          font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__frame_bgcolor, relief = "flat", takefocus=False, anchor="w", padx=0, pady=0, borderwidth=0)
         self.__mainmenu_decks_list_head_5 = tkinter.Label(self.__mainmenu_decks_list_head, text= "  %",                             font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__frame_bgcolor, relief = "flat", takefocus=False, anchor="w", padx=0, pady=0, borderwidth=0)
+        
+        self.__mainmenu_decks_list_head_1.bind("<Button-1>",lambda event:self.__mainmenu_decks_list_listbox_sort(1))
+        self.__mainmenu_decks_list_head_2.bind("<Button-1>",lambda event:self.__mainmenu_decks_list_listbox_sort(2))
+        self.__mainmenu_decks_list_head_3.bind("<Button-1>",lambda event:self.__mainmenu_decks_list_listbox_sort(3))
+        self.__mainmenu_decks_list_head_4.bind("<Button-1>",lambda event:self.__mainmenu_decks_list_listbox_sort(4))
+        self.__mainmenu_decks_list_head_5.bind("<Button-1>",lambda event:self.__mainmenu_decks_list_listbox_sort(5))
         
         self.__mainmenu_decks_list_listbox = tkinter.Listbox(self.__mainmenu_decks_list, font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__frame_bgcolor, width = 66, height = self.__listbox_elems, bd=0)
         self.__mainmenu_decks_list_listbox.config(selectbackground=self.__label_bgcolor_onmouse,selectforeground=self.__text_fgcolor_onmouse)
