@@ -1,12 +1,22 @@
 import tkinter
 import access
 
+#FINISH: mainmenu #TODO: Sortieren
+#FINISH: exitmenu
+
+#TODO: lernmenu
+#TODO: testmenu
+#TODO: deckoptionsmenu
+#TODO: optionmenu
+#TODO: hilfsmenu
+
 class gui:
     def __init__(self):
         self.__acc=access.funktion()
         self.__set_vars()
         self.__create_window()
         self.__create_mainmenu()
+        self.__create_testmenu()
         self.__create_exitmenu()
         self.__show_window()
         self.__show_mainmenu()
@@ -58,11 +68,49 @@ class gui:
     # - - - - - - - - Wechsel zuwischen Menues - - - - - - - -
     
     def __lernen_begin(self, event=0):
+        """
+        Voraussetzung: Menu muss mainmenu sein.
+        """
         if self.__load():
-            self.__hide_menu()
-            #TODO: zeige_lernmenu()
+            if self.__acc.deck_hascards():
+                self.__hide_menu()
+                #TODO: show_lernmenu()
+            else:
+                self.__mainmenu_error_deck_no_cards()
         else:
             self.__mainmenu_error_no_deck_selected()    
+
+    def __testen_begin(self, event=0):
+        if self.__load():
+            if self.__acc.deck_hascards():
+                self.__hide_menu()
+                self.__show_testmenu()
+            else:
+                self.__mainmenu_error_deck_no_cards()
+        else:
+            self.__mainmenu_error_no_deck_selected()
+
+    def __testmenu_answered(self, event=0):
+        self.__acc.card_correct(self.__testmenu_answer_entry)
+        if self.__acc.deck_hascards():
+            self.__testmenu_newCard()
+        else:
+            #TODO: Zeige Statistik
+            pass
+
+    def __goto_deckoptions(self, event=0):
+        """
+        Voraussetzung: Menu muss mainmenu sein.
+        """
+        if self.__load():
+            self.__hide_mainmenu()
+            #TODO: show_deckoptions()
+        else:
+            self.__mainmenu_error_no_deck_selected() 
+
+    def __goto_mainmenu(self, event=0):
+        self.__hide_menu()
+        self.__show_exitmenu()
 
     def __exit(self, event=0):
         self.__hide_menu()
@@ -95,6 +143,7 @@ class gui:
         self.__button_normal_binds(self.__bottom_menu_1)
         self.__button_normal_binds(self.__bottom_menu_2)
         self.__button_normal_binds(self.__bottom_menu_3)
+        #self.__root.wm_protocol("WM_DELETE_WINDOW", self.__exit)
     
     def __show_window(self):
         self.__head.pack(side="top", pady=0)
@@ -146,6 +195,16 @@ class gui:
         self.__mainmenu_question_entry_3.pack_forget()
         self.__mainmenu_question_buttons_1.config(width = self.__label_width//3)
         self.__mainmenu_question_buttons_2.config(width = self.__label_width//3)
+    
+    def __mainmenu_error_deck_no_cards(self):
+        self.__mainmenu_question_hide()
+        self.__mainmenu_question_label.config(text="Fehler:\nDer Kartenstapel\nist leer.")
+        self.__mainmenu_question_buttons_2.config(text="OK", command=self.__mainmenu_question_hide)
+        self.__mainmenu_question.pack(side="bottom", pady=7)
+        self.__mainmenu_question_buttons.pack(side="bottom", pady=5)
+        self.__mainmenu_question_buttons_2.pack(side="left", padx=self.__label_width*2//3)
+        self.__mainmenu_question_buttons_2.focus_set()
+        self.__mainmenu_question_label.pack(side="top",pady=5)
     
     def __mainmenu_error_no_deck_selected(self, event=0):
         self.__mainmenu_question_hide()
@@ -288,9 +347,9 @@ class gui:
         
         #Rechts
         self.__mainmenu_options_1 = tkinter.Button(self.__mainmenu_options, text= "Lernen",        font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width, command=self.__lernen_begin)
-        self.__mainmenu_options_2 = tkinter.Button(self.__mainmenu_options, text= "Testen",        font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width)
+        self.__mainmenu_options_2 = tkinter.Button(self.__mainmenu_options, text= "Testen",        font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width, command=self.__testen_begin)
         self.__mainmenu_options_3 = tkinter.Button(self.__mainmenu_options, text= "Hinzuf\xfcgen", font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width, command=self.__mainmenu_hinzufuegen)
-        self.__mainmenu_options_4 = tkinter.Button(self.__mainmenu_options, text= "Bearbeiten",    font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width)
+        self.__mainmenu_options_4 = tkinter.Button(self.__mainmenu_options, text= "Bearbeiten",    font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width, command=self.__goto_deckoptions)
         self.__mainmenu_options_5 = tkinter.Button(self.__mainmenu_options, text= "L\xf6schen",    font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width, command=self.__mainmenu_loeschen)
         self.__button_normal_binds(self.__mainmenu_options_1)
         self.__button_normal_binds(self.__mainmenu_options_2)
@@ -354,6 +413,64 @@ class gui:
         self.__mainmenu.pack_forget()
         self.__mainmenu_question_hide()
     
+    #- - - - - - - - Lernmenu - - - - - - - -
+    #TODO: Ueberspringnungsbutton (anders als beim Testen) 
+    
+    #- - - - - - - - Testmenu - - - - - - - -
+    def __create_testmenu(self):
+        self.__bgtest_color = "ridge"
+        self.__testmenu = tkinter.Frame(self.__root, bg=self.__bgcolor, relief=self.__bgtest_color)
+        self.__testmenu_frame = tkinter.Frame(self.__testmenu)
+        self.__testmenu_question = tkinter.Frame(self.__testmenu_frame,bg=self.__bgcolor, relief=self.__bgtest_color)
+        self.__testmenu_answer = tkinter.Frame(self.__testmenu_frame,bg=self.__bgcolor, relief=self.__bgtest_color)
+        self.__testmenu_buttons = tkinter.Frame(self.__testmenu_frame)
+        
+        self.__testmenu_question_label = tkinter.Label(self.__testmenu_question, font=(self.__text_font, self.__text_height*2), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width=self.__label_width*2)
+        self.__testmenu_answer_entry   = tkinter.Entry(self.__testmenu_answer, font=(self.__text_font, self.__text_height*2), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width=self.__label_width*2)
+        self.__testmenu_answer_button  = tkinter.Button(self.__testmenu_buttons, text = "OK", font=(self.__text_font, self.__text_height*2), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width=self.__label_width*2, command = self.__testmenu_answered)
+        
+    def __show_testmenu(self):
+        if self.__menu=="":
+            self.__menu = "testmenu"
+            self.__testmenu.pack(pady=10)
+            self.__testmenu_frame.pack()
+            self.__testmenu_question.pack()
+            self.__testmenu_question_label.config(text=self.__acc.random_card())
+            self.__testmenu_question_label.pack()
+            self.__testmenu_answer.pack()
+            self.__testmenu_answer_entry.pack()
+            
+            self.__testmenu_buttons.pack()
+            self.__testmenu_answer_button.pack()
+
+    def __hide_testmenu(self):
+        self.__last_menu = self.__menu
+        self.__menu=""
+        self.__testmenu.pack_forget()
+        self.__testmenu_frame.pack_forget()
+        self.__testmenu_question.pack_forget()
+        self.__testmenu_question_label.pack_forget()
+        self.__testmenu_answer.pack_forget()
+        self.__testmenu_answer_entry.pack_forget()
+        
+    def __testmenu_newCard(self, event=0):
+        pass
+    
+    def __testmenu_lastCard(self, event=0):
+        pass
+    
+    def __show_testmenu_lastCard(self):
+        if self.__menu=="":
+            self.__last_menu=self.__menu
+            self.__menu = "testmenu"
+            self.__testmenu.pack(pady=10)
+            self.__testmenu_frame.pack()
+            self.__testmenu_question.pack()
+            self.__testmenu_question_label.config(text=self.__acc.last_card())
+            self.__testmenu_question_label.pack()
+            self.__testmenu_answer.pack()
+            self.__testmenu_answer_entry.pack()
+    
     #- - - - - - - - Exitmenu - - - - - - - -
     def __create_exitmenu(self):
         self.__exitmenu = tkinter.Frame(self.__root,bg=self.__bgcolor, relief="flat", pady=self.__root.winfo_screenheight()//2-150)
@@ -367,14 +484,15 @@ class gui:
         self.__exitmenu_button_2 = tkinter.Button(self.__exitmenu_frame_buttons, text= "Nein",      font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width//2, command=self.__exit_back)
         
     def __show_exitmenu(self):
-        self.__menu="exitmenu"
-        self.__exitmenu.pack()
-        self.__exitmenu_frame.pack()
-        self.__exitmenu_frame_text.pack()
-        self.__exitmenu_text_message.pack(padx=10, pady=10)
-        self.__exitmenu_frame_buttons.pack()
-        self.__exitmenu_button_1.pack(side="left", padx=10, pady=10)
-        self.__exitmenu_button_2.pack(side="left", padx=10, pady=10)
+        if self.__menu=="":
+            self.__menu="exitmenu"
+            self.__exitmenu.pack()
+            self.__exitmenu_frame.pack()
+            self.__exitmenu_frame_text.pack()
+            self.__exitmenu_text_message.pack(padx=10, pady=10)
+            self.__exitmenu_frame_buttons.pack()
+            self.__exitmenu_button_1.pack(side="left", padx=10, pady=10)
+            self.__exitmenu_button_2.pack(side="left", padx=10, pady=10)
         
     def __hide_exitmenu(self):
         self.__menu=""
@@ -393,11 +511,16 @@ class gui:
         """
         if self.__last_menu == "mainmenu":
             self.__show_mainmenu()
+        elif self.__last_menu == "testmenu":
+            self.__show_testmenu_lastCard()
 
     def __hide_menu(self):
         if self.__menu=="mainmenu":
             self.__hide_mainmenu()
-        if self.__menu=="exitmenu":
+        elif self.__menu=="testmenu":
+            self.__hide_testmenu()
+        elif self.__menu=="exitmenu":
             self.__hide_exitmenu()
+        
     
 gui = gui()
