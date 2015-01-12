@@ -39,7 +39,7 @@ class gui:
         self.__text_fgcolor_onmouse  = "black"
         self.__menu = ""
         self.__last_menu = ""
-        self.__listbox_elems = 20
+        self.__listbox_elems = int()
         self.__text_height=int()
         
     # - - - - - - - - Laenge von Strings veraendern - - - - - - - -
@@ -134,7 +134,7 @@ class gui:
         self.__header = tkinter.Label (self.__root, text= "Discamus", font=(self.__text_font, 30), fg=self.__text_fgcolor, bg="orange", width = self.__root.winfo_screenwidth())
         self.__label_width = 20# self.__root.winfo_screenwidth()//60
         self.__text_height=self.__root.winfo_screenwidth()//80# self.__label_width*22//24
-        self.__listbox_elems=(self.__root.winfo_screenheight()-250)//self.__text_height
+        self.__listbox_elems=(self.__root.winfo_screenheight()-200)//(self.__text_height+10)
         self.__bottom = tkinter.Frame(self.__root, bg=self.__frame_bgcolor, bd = 5, relief = "flat")
         self.__bottom_menu = tkinter.Frame(self.__bottom, bg=self.__frame_bgcolor)
         self.__bottom_menu_1 = tkinter.Button(self.__bottom_menu, text= "Optionen",  font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width)
@@ -189,6 +189,8 @@ class gui:
                     self.__einruecken_hinten(elem[2][6:8]+"."+elem[2][4:6]+"."+elem[2][0:4],10)[:-1]+\
                     self.__einruecken_vorne(elem[3], 4)+" "+\
                     self.__einruecken_vorne(elem[4], 4))
+        if len(self.__acc.deck_list())>self.__listbox_elems:
+            self.__mainmenu_decks_scrollbar.pack(side="right", fill="y")
     
     def __mainmenu_question_hide(self, event=0):
         self.__mainmenu_question.pack_forget()
@@ -356,7 +358,7 @@ class gui:
         self.__mainmenu_decks_list_head_4.bind("<Button-1>",lambda event:self.__mainmenu_decks_list_listbox_sort(4))
         self.__mainmenu_decks_list_head_5.bind("<Button-1>",lambda event:self.__mainmenu_decks_list_listbox_sort(5))
         
-        self.__mainmenu_decks_list_listbox = tkinter.Listbox(self.__mainmenu_decks_list, font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__frame_bgcolor, width = 66, height = self.__listbox_elems, bd=0)
+        self.__mainmenu_decks_list_listbox = tkinter.Listbox(self.__mainmenu_decks_list, font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__frame_bgcolor, width = 66, height = self.__listbox_elems, bd=0, activestyle="dotbox")
         self.__mainmenu_decks_list_listbox.config(selectbackground=self.__label_bgcolor_onmouse,selectforeground=self.__text_fgcolor_onmouse)
         self.__mainmenu_decks_scrollbar_1 = tkinter.Scrollbar(self.__mainmenu_decks_scrollbar)
         self.__mainmenu_decks_scrollbar_1.config(command=self.__mainmenu_decks_list_listbox.yview)
@@ -392,8 +394,8 @@ class gui:
             self.__mainmenu.pack(pady=20)
             self.__mainmenu_decks.pack(side="top")
             self.__mainmenu_decks_list.pack(side="left")
-            if len(self.__acc.deck_list())>self.__listbox_elems:
-                self.__mainmenu_decks_scrollbar.pack(side="right", fill="y")
+            print(len(self.__acc.deck_list()), self.__listbox_elems)
+            self.__mainmenu_decks_scrollbar_1.pack(side="right",fill="y")
             self.__mainmenu_options.pack(side="top", pady=20)
             self.__mainmenu_decks_list_listbox_update()
             self.__mainmenu_decks_list_head.pack(side="top")
@@ -403,7 +405,6 @@ class gui:
             self.__mainmenu_decks_list_head_4.pack(side="left")
             self.__mainmenu_decks_list_head_5.pack(side="right")
             self.__mainmenu_decks_list_listbox.pack(side="bottom")
-            self.__mainmenu_decks_scrollbar_1.pack(side="right",fill="y")
             self.__mainmenu_options_1.pack(side="top", pady=2, padx=10)
             self.__mainmenu_options_2.pack(side="top", pady=2, padx=10)
             self.__mainmenu_options_3.pack(side="top", pady=2, padx=10)
