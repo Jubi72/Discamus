@@ -583,6 +583,12 @@ class funktion:
         """
         return self.__last_card[1]
     
+    def last_card_answer(self):
+        """
+        Diese Funktion gibt die Antwort der letzten Karte zurueck
+        """
+        return self.__last_card[2]
+    
     def card_correct(self, answer):
         """
         Diese Funktion prueft die Antwort auf die Korrektheit (True oder False)
