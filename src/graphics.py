@@ -193,6 +193,7 @@ class gui:
     def __mainmenu_question_hide(self, event=0):
         self.__mainmenu_question.pack_forget()
         self.__mainmenu_question_label.pack_forget()
+        self.__mainmenu_question_label_frame.pack_forget()
         self.__mainmenu_question_buttons.pack_forget()
         self.__mainmenu_question_buttons_1.pack_forget()
         self.__mainmenu_question_buttons_2.pack_forget()
@@ -205,23 +206,25 @@ class gui:
     
     def __mainmenu_error_deck_no_cards(self):
         self.__mainmenu_question_hide()
-        self.__mainmenu_question_label.config(text="Fehler:\nDer Kartenstapel\nist leer.")
+        self.__mainmenu_question_label.config(text="Fehler:\nDer Kartenstapel ist leer.", wraplength=self.__label_width*15)
         self.__mainmenu_question_buttons_2.config(text="OK", command=self.__mainmenu_question_hide)
         self.__mainmenu_question.pack(side="bottom", pady=7)
+        self.__mainmenu_question_label_frame.pack(side="top", fill="y",padx=0)
+        self.__mainmenu_question_label.pack(side="left",pady=5)
         self.__mainmenu_question_buttons.pack(side="bottom", pady=5)
         self.__mainmenu_question_buttons_2.pack(side="left", padx=self.__label_width*2//3)
         self.__mainmenu_question_buttons_2.focus_set()
-        self.__mainmenu_question_label.pack(side="top",pady=5)
     
     def __mainmenu_error_no_deck_selected(self, event=0):
         self.__mainmenu_question_hide()
-        self.__mainmenu_question_label.config(text="Fehler:\nKein Kartenstapel\nausgew\xe4hlt.")
+        self.__mainmenu_question_label.config(text="Fehler:\nKein Kartenstapel ausgew\xe4hlt.",wraplength=self.__label_width*15)
         self.__mainmenu_question_buttons_2.config(text="OK", command=self.__mainmenu_question_hide)
         self.__mainmenu_question.pack(side="bottom", pady=7)
         self.__mainmenu_question_buttons.pack(side="bottom", pady=5)
         self.__mainmenu_question_buttons_2.pack(side="left", padx=self.__label_width*2//3)
         self.__mainmenu_question_buttons_2.focus_set()
-        self.__mainmenu_question_label.pack(side="top",pady=5)
+        self.__mainmenu_question_label_frame.pack(side="top", fill="y")
+        self.__mainmenu_question_label.pack(side="left",pady=5)
     
     def __mainmenu_loeschen_deck(self, event=0):
         self.__acc.deck_delete_loaded()
@@ -269,14 +272,15 @@ class gui:
     def __mainmenu_loeschen(self, event=0):
         self.__mainmenu_question_hide()
         if(self.__load()):
-            self.__mainmenu_question_label.config(text="Wollen Sie den\nKartenstapel\n\""+ self.__text_kuerzen(self.__acc.deck_info()[0],17) +"\"\nwirklich l\xf6schen?")
+            self.__mainmenu_question_label.config(text="Wollen Sie den Kartenstapel \""+ self.__text_kuerzen(self.__acc.deck_info()[0],17) +"\" wirklich l\xf6schen?", wraplength=self.__label_width*15)
             self.__mainmenu_question_buttons_1.config(text="Ja", command=self.__mainmenu_loeschen_deck)
             self.__mainmenu_question_buttons_2.config(text="Nein", command=self.__mainmenu_question_hide)
             self.__mainmenu_question.pack(side="bottom", pady=7)
             self.__mainmenu_question_buttons.pack(side="bottom", pady=5)
             self.__mainmenu_question_buttons_1.pack(side="left", padx=self.__label_width*2//3)
             self.__mainmenu_question_buttons_2.pack(side="left", padx=self.__label_width*2//3)
-            self.__mainmenu_question_label.pack(side="top",pady=0)
+            self.__mainmenu_question_label_frame.pack(side="top", fill="y")
+            self.__mainmenu_question_label.pack(side="left",pady=5)
             #self.__mainmenu_question.bind("<Escape>", self.__mainmenu_question_hide)
             #self.__mainmenu_question.bind("<Return>", self.__mainmenu_loeschen_deck)
             #TODO: bind Esc Mainmenu question_hide
@@ -296,7 +300,8 @@ class gui:
             self.__mainmenu_question_buttons.pack(side="bottom", pady=5)
             self.__mainmenu_question_buttons_1.pack(side="left", padx=self.__label_width*2//3)
             self.__mainmenu_question_buttons_2.pack(side="left", padx=self.__label_width*2//3)
-            self.__mainmenu_question_label.pack(side="top",pady=5)
+            self.__mainmenu_question_label_frame.pack(side="top", fill="y")
+            self.__mainmenu_question_label.pack(side="left",pady=5)
             #TODO: bind Esc Mainmenu question_hide
         else:
             self.__mainmenu_error_no_deck_selected()
@@ -325,16 +330,17 @@ class gui:
         
     def __create_mainmenu(self):
         #Frames
-        self.__mainmenu                 = tkinter.Frame(self.__root,                                            bd = 5, relief = "flat")
-        self.__mainmenu_decks           = tkinter.Frame(self.__mainmenu,               bg=self.__frame_bgcolor, bd = 5, relief = "flat")
-        self.__mainmenu_decks_list      = tkinter.Frame(self.__mainmenu_decks,         bg=self.__frame_bgcolor, bd = 5, relief = "flat")
-        self.__mainmenu_decks_list_head = tkinter.Frame(self.__mainmenu_decks_list,    bg=self.__frame_bgcolor, bd = 5, relief = "flat")
-        self.__mainmenu_decks_scrollbar = tkinter.Frame(self.__mainmenu_decks_list,    bg=self.__frame_bgcolor, bd = 5, relief = "flat")
-        self.__mainmenu_options_question= tkinter.Frame(self.__mainmenu_decks)
-        self.__mainmenu_options         = tkinter.Frame(self.__mainmenu_decks,         bg=self.__frame_bgcolor, bd = 5, relief = "flat")
-        self.__mainmenu_question        = tkinter.Frame(self.__mainmenu_decks,         bg=self.__label_bgcolor, bd = 5, relief = "flat" )
-        self.__mainmenu_question_buttons= tkinter.Frame(self.__mainmenu_question,      bg=self.__label_bgcolor)
-        self.__mainmenu_question_entry  = tkinter.Frame(self.__mainmenu_question,      bg=self.__label_bgcolor)
+        self.__mainmenu                      = tkinter.Frame(self.__root,                                            bd = 5, relief = "flat")
+        self.__mainmenu_decks                = tkinter.Frame(self.__mainmenu,               bg=self.__frame_bgcolor, bd = 5, relief = "flat")
+        self.__mainmenu_decks_list           = tkinter.Frame(self.__mainmenu_decks,         bg=self.__frame_bgcolor, bd = 5, relief = "flat")
+        self.__mainmenu_decks_list_head      = tkinter.Frame(self.__mainmenu_decks_list,    bg=self.__frame_bgcolor, bd = 5, relief = "flat")
+        self.__mainmenu_decks_scrollbar      = tkinter.Frame(self.__mainmenu_decks_list,    bg=self.__frame_bgcolor, bd = 5, relief = "flat")
+        self.__mainmenu_options_question     = tkinter.Frame(self.__mainmenu_decks)
+        self.__mainmenu_options              = tkinter.Frame(self.__mainmenu_decks,         bg=self.__frame_bgcolor, bd = 5, relief = "flat")
+        self.__mainmenu_question             = tkinter.Frame(self.__mainmenu_decks,         bg=self.__label_bgcolor, bd = 5, relief = "flat" )
+        self.__mainmenu_question_label_frame = tkinter.Frame(self.__mainmenu_question, bg=self.__label_bgcolor)
+        self.__mainmenu_question_buttons     = tkinter.Frame(self.__mainmenu_question,      bg=self.__label_bgcolor)
+        self.__mainmenu_question_entry       = tkinter.Frame(self.__mainmenu_question,      bg=self.__label_bgcolor)
         
         
         #Links
@@ -376,7 +382,7 @@ class gui:
         self.__mainmenu_question_entry_3 = tkinter.Entry(self.__mainmenu_question_entry, font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width)
         self.__mainmenu_question_buttons_1 = tkinter.Button(self.__mainmenu_question_buttons, font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width//3)
         self.__mainmenu_question_buttons_2 = tkinter.Button(self.__mainmenu_question_buttons, font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width//3)
-        self.__mainmenu_question_label = tkinter.Label(self.__mainmenu_question, font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width)
+        self.__mainmenu_question_label = tkinter.Label(self.__mainmenu_question_label_frame, font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width)
         
         
         
@@ -438,9 +444,9 @@ class gui:
         self.__testmenu_answer = tkinter.Frame(self.__testmenu_frame,bg=self.__bgcolor, relief=self.__bgtest_color)
         self.__testmenu_buttons = tkinter.Frame(self.__testmenu_frame)
         
-        self.__testmenu_question_label = tkinter.Label(self.__testmenu_question, font=(self.__text_font, self.__text_height*2), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width=self.__label_width*2)
-        self.__testmenu_answer_entry   = tkinter.Entry(self.__testmenu_answer, font=(self.__text_font, self.__text_height*2), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width=self.__label_width*2)
-        self.__testmenu_answer_button  = tkinter.Button(self.__testmenu_buttons, text = "OK", font=(self.__text_font, self.__text_height*2), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width=self.__label_width*2, command = self.__testmenu_answered)
+        self.__testmenu_question_label = tkinter.Label(self.__testmenu_question, font=(self.__text_font, self.__text_height*2), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width=self.__text_height*2)
+        self.__testmenu_answer_entry   = tkinter.Entry(self.__testmenu_answer, font=(self.__text_font, self.__text_height*2), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width=self.__text_height*2)
+        self.__testmenu_answer_button  = tkinter.Button(self.__testmenu_buttons, text = "OK", font=(self.__text_font, self.__text_height*2), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width=self.__label_width, command = self.__testmenu_answered)
         
     def __show_testmenu(self):
         if self.__menu=="":
@@ -449,8 +455,8 @@ class gui:
             self.__testmenu_frame.pack()
             self.__testmenu_question.pack()
             self.__testmenu_question_label.config(text=self.__acc.random_card())
-            self.__testmenu_question_label.pack()
-            self.__testmenu_answer.pack()
+            self.__testmenu_question_label.pack(pady=10)
+            self.__testmenu_answer.pack(pady=10)
             self.__testmenu_answer_entry.pack()
             
             self.__testmenu_buttons.pack()
@@ -460,11 +466,6 @@ class gui:
         self.__last_menu = self.__menu
         self.__menu=""
         self.__testmenu.pack_forget()
-        self.__testmenu_frame.pack_forget()
-        self.__testmenu_question.pack_forget()
-        self.__testmenu_question_label.pack_forget()
-        self.__testmenu_answer.pack_forget()
-        self.__testmenu_answer_entry.pack_forget()
         
     def __testmenu_newCard(self, event=0):
         pass
