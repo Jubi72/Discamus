@@ -46,7 +46,8 @@ class funktion:
         
         self.__file_separator = "|" *2 #der Separator in den Dateien
         self.__deck_begin_statistik = "00" #Mit welcher Statistik die einzelenen Karten beginnen
-        self.__deck_statistik_max_len = 10
+        self.__deck_statistik_max_len = 6
+        self.__deck_card_id=int()
         
         #Dateinamen, Ordnernamen, etc
         #Stammverzeichnis
@@ -160,6 +161,13 @@ class funktion:
         info[-1]=info[-1].replace("\n", "")
         return info
     
+    def __calc_statistik(self, string):
+        percent=0
+        if len(string)>0:
+            percent=string.count("1")*100//len(string)
+        return percent
+            
+    
     def __deck_cards_load(self):
         """
         Diese Funktion laed die Karten aus der Datei in die Listen
@@ -177,11 +185,16 @@ class funktion:
             karte[-1]=karte[-1][:-1] #Entfernen des \n am Ende des Strings
             for j in range(len(karte)):
                 karte[j] = self.__str_make_normal(karte[j])
-            self.__deck_cards.append([i+1,karte[:-1]])
+            self.__deck_cards.append([karte[0]]+[karte[1]]+[self.__calc_statistik(karte[3])])
             self.__deck_cards_learned.append([karte[0],karte[1],[],karte[-1]])
-            self.__deck_cards_learn.append([i+1, karte[0],karte[1]])
+            if karte[2]=="0":
+                self.__deck_cards_learn.append([i, karte[0],karte[1]])
             if karte[2]=="1":
-                self.__deck_cards_learn.append([i+1,karte[1],karte[0]])
+                self.__deck_cards_learn.append([i, karte[1],karte[0]])
+            if karte[2]=="2":
+                self.__deck_cards_learn.append([i, karte[0],karte[1]])
+                self.__deck_cards_learn.append([i, karte[1],karte[0]])
+                
     
     def __quick_sort_verkleiner(self, liste, sort):
         """
@@ -259,6 +272,25 @@ class funktion:
         Liste: [[name,kategorie, timestamp, AnzahlKarten, Lernstand], ...]
         """
         self.__deck_list_update()
+        if sort==0:
+            return self.__deck_list_info
+        else:
+            return self.__deck_sort(sort)
+        
+    def deck_list_noUpdate(self, sort=0):
+        """
+        Diese Funktion gibt die Liste aller Kartenstapel zurueck
+        """
+        if sort==0:
+            return self.__deck_list
+        else:
+            return self.__deck_sort(sort, False)
+    
+    def deck_list_info_noUpdate(self, sort=0):
+        """
+        Diese Funktion gibt die Liste aller Kartenstapel mit Infos zurueck
+        Liste: [[name,kategorie, timestamp, AnzahlKarten, Lernstand], ...]
+        """
         if sort==0:
             return self.__deck_list_info
         else:
@@ -508,21 +540,25 @@ class funktion:
         datei.close()
         self.__deck_count_cards()
         
-    def card_delete(self, card_id):
+    def deck_card_load(self, card_id):
+        self.__deck_card_id = card_id
+    
+    
+    def card_delete(self):
         """
         Diese Funktion loescht die Karte
         Voraussetzung: Deck muss geladen sein
         """
         datei = open(self.__deck_dir + self.__deck, "r", encoding='utf8')
         inhalt = datei.readlines()
-        inhalt = inhalt[:card_id]+ inhalt[card_id+1:]
+        inhalt = inhalt[:self.__deck_card_id+1]+ inhalt[self.__deck_card_id+2:]
         datei.close()
         datei = open(self.__deck_dir + self.__deck, "w", encoding='utf8')
         datei.writelines(inhalt)
         datei.close()
         self.__deck_count_cards
     
-    def card_change(self, card_id, site1 = "", site2 = ""):
+    def card_change(self, site1 = "", site2 = ""):
         """
         Diese Funktion aendert den inhalt der Karten (jenachdem, welche angegeben wurde).
         Bei leerem String wird nichts geaendert.
@@ -531,35 +567,47 @@ class funktion:
         datei = open(self.__deck_dir + self.__deck, "r", encoding='utf8')
         inhalt = datei.readlines()
         datei.close()
-        karte = inhalt[card_id].split(self.__file_separator)
+        karte = inhalt[self.__deck_card_id+1].split(self.__file_separator)
         if not site1 == "":
             karte[0] = self.__str_make_valid(site1)
         if not site2 == "":
             karte[1] = self.__str_make_valid(site2)
-        inhalt[card_id] = ""
+        inhalt[self.__deck_card_id+1] = ""
         for elem in karte:
-            inhalt[card_id] += elem + self.__file_separator
-        inhalt[card_id] = inhalt[card_id][:-2]
+            inhalt[self.__deck_card_id+1] += elem + self.__file_separator
+        inhalt[self.__deck_card_id+1] = inhalt[self.__deck_card_id+1][:-2]
         datei = open(self.__deck_dir + self.__deck, "w", encoding='utf8')
         datei.writelines(inhalt)
         datei.close()
     
-    def card_toggle_double_sided(self, card_id):
+    def card_lernSide_all(self, setValue):
         """
-        Diese Funktion aendert die Lernrichtung von Karten auf beide Richtungen oder eine Richtung
+        Diese Funktion aendert die Lernrichtung von Karten auf "setValue"
+        setValue: 0 [Seite1,Seite2], 1 [Seite2, Seite1], 2 [Seite1, Seite2] [Seite2, Seite1]
         """
         datei = open(self.__deck_dir + self.__deck, "r", encoding='utf8')
         inhalt = datei.readlines()
         datei.close()
-        karte = inhalt[card_id].split(self.__file_separator)
-        if karte[2] == "0":
-            karte[2] = "1"
-        else:
-            karte[2] = "0"
-        inhalt[card_id] = ""
+        for i in range(1,len(inhalt)):
+            inhalt[i]=self.__file_string_change_cell(inhalt[i], setValue, 2)
+        datei = open(self.__deck_dir + self.__deck, "w", encoding='utf8')
+        datei.writelines(inhalt)
+        datei.close()
+    
+    def card_lernSide(self, setValue):
+        """
+        Diese Funktion aendert die Lernrichtung von Karten auf "setValue"
+        setValue: 0 [Seite1,Seite2], 1 [Seite2, Seite1], 2 [Seite1, Seite2] [Seite2, Seite1]
+        """
+        datei = open(self.__deck_dir + self.__deck, "r", encoding='utf8')
+        inhalt = datei.readlines()
+        datei.close()
+        karte = inhalt[self.__deck_card_id+1].split(self.__file_separator)
+        karte[2] = setValue
+        inhalt[self.__deck_card_id+1] = ""
         for elem in karte:
-            inhalt[card_id] += elem + self.__file_separator
-        inhalt[card_id] = inhalt[card_id][:-2]
+            inhalt[self.__deck_card_id+1] += elem + self.__file_separator
+        inhalt[self.__deck_card_id+1] = inhalt[self.__deck_card_id+1][:-2]
         datei = open(self.__deck_dir + self.__deck, "w", encoding='utf8')
         datei.writelines(inhalt)
         datei.close()
