@@ -108,7 +108,7 @@ class gui:
             else:
                 self.__goto_mainmenu()
         else:
-            self.__testmenu_give_answer()
+            self.__lernmenu_give_answer()
 
     def __testmenu_answered(self, event=0):
         self.__acc.card_correct(self.__testmenu_answer_entry.get())
@@ -167,7 +167,7 @@ class gui:
     
     def __show_window(self):
         self.__head.pack(side="top", pady=0)
-        self.__header.pack()
+        self.__header.pack(pady=0)
         self.__bottom.pack(side="bottom", fill="x")
         self.__bottom_menu.pack(side="bottom")
         self.__bottom_menu_1.pack(side="left", padx=20, pady=5)
@@ -456,7 +456,7 @@ class gui:
             self.__lernmenu_titel.pack(pady=10)
             self.__lernmenu_titel_label.pack()
             self.__lernmenu_question.pack()
-            self.__lernmenu_question_label.config(text=self.__acc.random_card())
+            self.__lernmenu_question_label.config(text=self.__text_kuerzen(self.__acc.random_card(),33))
             self.__lernmenu_question_label.pack(pady=10)
             self.__lernmenu_answer.pack(pady=10)
             self.__lernmenu_answer_entry.pack()
@@ -470,7 +470,7 @@ class gui:
         self.__menu=""
         self.__lernmenu.pack_forget()
     
-    def __testmenu_give_answer(self):
+    def __lernmenu_give_answer(self):
         self.__lernmenu_answer_button_1.config(command=self.__lernmenu_lastCard())
         self.__lernmenu_answer_entry.insert("end", "Antwort: " + self.__acc.last_card_answer())
     
@@ -507,7 +507,7 @@ class gui:
         self.__testmenu_answer = tkinter.Frame(self.__testmenu_frame,bg=self.__frame_bgcolor)
         self.__testmenu_buttons = tkinter.Frame(self.__testmenu_frame, bg=self.__frame_bgcolor)
         
-        self.__lernmenu_titel_label    = tkinter.Label(self.__lernmenu_titel,font=(self.__text_font, self.__text_height*2), fg=self.__text_fgcolor, bg=self.__frame_bgcolor)
+        self.__testmenu_titel_label    = tkinter.Label(self.__testmenu_titel,font=(self.__text_font, self.__text_height*2), fg=self.__text_fgcolor, bg=self.__frame_bgcolor)
         self.__testmenu_question_label = tkinter.Label(self.__testmenu_question, font=(self.__text_font, self.__text_height*2), fg=self.__text_fgcolor, bg=self.__frame_bgcolor, width=self.__text_height*2)
         self.__testmenu_answer_entry   = tkinter.Entry(self.__testmenu_answer, font=(self.__text_font, self.__text_height*2), fg=self.__text_fgcolor, bg=self.__frame_bgcolor, width=self.__text_height*2, justify="center")
         self.__testmenu_answer_button  = tkinter.Button(self.__testmenu_buttons, text = "OK", font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width=self.__label_width, command = self.__testmenu_answered)
@@ -516,12 +516,12 @@ class gui:
         if self.__menu=="":
             self.__menu = "testmenu"
             self.__testmenu.pack(pady=(self.__root.winfo_screenheight()-410)//2)
-            self.__lernmenu_titel_label.config(text=self.__text_kuerzen(self.__acc.deck_info()[0],33))
-            self.__lernmenu_titel.pack(pady=10)
-            self.__lernmenu_titel_label.pack()
+            self.__testmenu_titel_label.config(text=self.__text_kuerzen(self.__acc.deck_info()[0],33))
+            self.__testmenu_titel_label.pack()
+            self.__testmenu_titel.pack(pady=10)
             self.__testmenu_frame.pack(ipadx=30, ipady=10)
             self.__testmenu_question.pack()
-            self.__testmenu_question_label.config(text=self.__acc.random_card())
+            self.__testmenu_question_label.config(text=self.__text_kuerzen(self.__acc.random_card(),33))
             self.__testmenu_question_label.pack(pady=10)
             self.__testmenu_answer.pack(pady=10)
             self.__testmenu_answer_entry.pack()
