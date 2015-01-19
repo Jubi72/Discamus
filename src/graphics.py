@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import tkinter
 import access
 
@@ -32,6 +33,7 @@ class gui:
         """
         self.__bgcolor    = "#F2F2F2"
         self.__second_color = "orange"
+        self.__third_color = "white"
         self.__text_font  = "Courier"
         self.__label_width = int()            #Label-Groesse
         self.__label_bgcolor = "#DDDDDD"   #Label Hintergrundfarbe
@@ -107,6 +109,7 @@ class gui:
                 self.__lernmenu_newCard()
             else:
                 self.__goto_mainmenu()
+                #TODO:self.__goto_statistikmenu()
         else:
             self.__lernmenu_give_answer()
 
@@ -151,12 +154,12 @@ class gui:
         self.__root.attributes("-fullscreen", True)
         self.__root.config(bg=self.__bgcolor)
         self.__head = tkinter.Frame(self.__root, bg=self.__second_color, relief = "flat")
-        self.__header = tkinter.Label (self.__root, text= "Discamus", font=(self.__text_font, 30), fg=self.__text_fgcolor, bg="orange", width = self.__root.winfo_screenwidth())
+        self.__header = tkinter.Label (self.__root, text= "Discamus", font=(self.__text_font, 30), fg=self.__text_fgcolor, bg=self.__second_color, width = self.__root.winfo_screenwidth())
         self.__label_width = 20# self.__root.winfo_screenwidth()//60
         self.__text_height=self.__root.winfo_screenwidth()//80# self.__label_width*22//24
         self.__listbox_elems=int((self.__root.winfo_screenheight()-225)//(self.__text_height*1.5))
-        self.__bottom = tkinter.Frame(self.__root, bg=self.__frame_bgcolor, bd = 5, relief = "flat")
-        self.__bottom_menu = tkinter.Frame(self.__bottom, bg=self.__frame_bgcolor)
+        self.__bottom = tkinter.Frame(self.__root, bg=self.__third_color, bd = 5, relief = "flat")
+        self.__bottom_menu = tkinter.Frame(self.__bottom, bg=self.__third_color)
         self.__bottom_menu_1 = tkinter.Button(self.__bottom_menu, text= "Optionen",  font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width)
         self.__bottom_menu_2 = tkinter.Button(self.__bottom_menu, text= "Hilfe",     font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width)
         self.__bottom_menu_3 = tkinter.Button(self.__bottom_menu, text= "Verlassen", font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width, command=self.__exit)
@@ -166,8 +169,8 @@ class gui:
         #self.__root.wm_protocol("WM_DELETE_WINDOW", self.__exit)
     
     def __show_window(self):
-        self.__head.pack(side="top", pady=0)
-        self.__header.pack(pady=0)
+        self.__head.pack(side="top", fill="x")
+        self.__header.pack()
         self.__bottom.pack(side="bottom", fill="x")
         self.__bottom_menu.pack(side="bottom")
         self.__bottom_menu_1.pack(side="left", padx=20, pady=5)
@@ -437,10 +440,12 @@ class gui:
         self.__lernmenu_question = tkinter.Frame(self.__lernmenu_frame,bg=self.__frame_bgcolor)
         self.__lernmenu_answer = tkinter.Frame(self.__lernmenu_frame,bg=self.__frame_bgcolor)
         self.__lernmenu_buttons = tkinter.Frame(self.__lernmenu_frame, bg=self.__frame_bgcolor)
+        self.__lernmenu_info = tkinter.Frame(self.__lernmenu_frame, bg=self.__frame_bgcolor)
         
         self.__lernmenu_titel_label      = tkinter.Label(self.__lernmenu_titel,font=(self.__text_font, self.__text_height*2), fg=self.__text_fgcolor, bg=self.__frame_bgcolor)
         self.__lernmenu_question_label   = tkinter.Label(self.__lernmenu_question, font=(self.__text_font, self.__text_height*2), fg=self.__text_fgcolor, bg=self.__frame_bgcolor, width=self.__text_height*2)
         self.__lernmenu_answer_entry     = tkinter.Entry(self.__lernmenu_answer  , font=(self.__text_font, self.__text_height*2), fg=self.__text_fgcolor, bg=self.__frame_bgcolor, width=self.__text_height*2, justify="center")
+        self.__lernmenu_info_label       = tkinter.Label(self.__lernmenu_info, font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__frame_bgcolor)
         self.__lernmenu_answer_button_1  = tkinter.Button(self.__lernmenu_buttons, text = "OK", font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width=self.__label_width, command = self.__lernmenu_answered)
         self.__lernmenu_answer_button_2  = tkinter.Button(self.__lernmenu_buttons, text = "\xdcberspringen", font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width=self.__label_width, command = self.__lernmenu_newCard)
         
@@ -460,10 +465,15 @@ class gui:
             self.__lernmenu_question_label.pack(pady=10)
             self.__lernmenu_answer.pack(pady=10)
             self.__lernmenu_answer_entry.pack()
-            self.__lernmenu_buttons.pack(side="top", padx=30)
+            self.__lernmenu_info.pack(side="left", padx=30)
+            self.__lernmenu_info_label.config(text=str(self.__acc.numberOfCardsLearned())+"/"+str(self.__acc.numberOfCards()))
+            self.__lernmenu_info_label.pack(side="left")
+            self.__lernmenu_buttons.pack(side="right", padx=30)
             self.__lernmenu_answer_button_2.pack(side="right", padx=10)
             self.__lernmenu_answer_button_1.config(command=self.__lernmenu_answered)
             self.__lernmenu_answer_button_1.pack(side="right", padx=10)
+            self.__lernmenu_answer_entry.config(state='normal')
+            self.__lernmenu_answer_entry.bind("<Return>", self.__lernmenu_answered)
 
     def __hide_lernmenu(self):
         self.__last_menu = self.__menu
@@ -471,28 +481,37 @@ class gui:
         self.__lernmenu.pack_forget()
     
     def __lernmenu_give_answer(self):
-        self.__lernmenu_answer_button_1.config(command=self.__lernmenu_lastCard())
+        self.__lernmenu_answer_button_1.config(command=self.__lernmenu_lastCard)
+        self.__lernmenu_answer_entry.delete(0, "end")
         self.__lernmenu_answer_entry.insert("end", "Antwort: " + self.__acc.last_card_answer())
+        self.__lernmenu_answer_entry.config(state='disabled')
     
     def __lernmenu_newCard(self, event=0):
         if self.__acc.deck_hascards():
             self.__lernmenu_question_label.config(text=self.__acc.random_card())
             self.__lernmenu_answer_button_1.config(command=self.__lernmenu_answered)
             self.__lernmenu_answer_entry.pack()
+            self.__lernmenu_answer_entry.config(state='normal')
+            self.__lernmenu_info_label.config(text=str(self.__acc.numberOfCardsLearned())+"/"+str(self.__acc.numberOfCards()))
             self.__lernmenu_answer_entry.delete(0, "end")
         else:
             self.__goto_mainmenu()
+            #TODO: self.__goto_statistikmenu()
     
     def __lernmenu_lastCard(self, event=0):
+        self.__lernmenu_answer_button_1.config(command=self.__lernmenu_answered)
+        self.__lernmenu_answer_entry.config(state='normal')
         self.__lernmenu_answer_entry.delete(0, "end")
     
     def __show_lernmenu_lastCard(self):
         self.__last_menu=self.__menu
         self.__menu = "lernmenu"
+        self.__lernmenu_answer_button_1.config(command=self.__lernmenu_answered)
         self.__lernmenu.pack(pady=(self.__root.winfo_screenheight()-410)//2)
         self.__lernmenu_frame.pack()
         self.__lernmenu_question.pack()
         self.__lernmenu_question_label.config(text=self.__acc.last_card())
+        self.__lernmenu_answer_entry.config(state='normal')
         self.__lernmenu_answer_entry.delete(0,"end")
         self.__lernmenu_question_label.pack()
         self.__lernmenu_answer.pack()
@@ -506,27 +525,34 @@ class gui:
         self.__testmenu_question = tkinter.Frame(self.__testmenu_frame,bg=self.__frame_bgcolor)
         self.__testmenu_answer = tkinter.Frame(self.__testmenu_frame,bg=self.__frame_bgcolor)
         self.__testmenu_buttons = tkinter.Frame(self.__testmenu_frame, bg=self.__frame_bgcolor)
+        self.__testmenu_info = tkinter.Frame(self.__testmenu_frame, bg=self.__frame_bgcolor)
         
         self.__testmenu_titel_label    = tkinter.Label(self.__testmenu_titel,font=(self.__text_font, self.__text_height*2), fg=self.__text_fgcolor, bg=self.__frame_bgcolor)
         self.__testmenu_question_label = tkinter.Label(self.__testmenu_question, font=(self.__text_font, self.__text_height*2), fg=self.__text_fgcolor, bg=self.__frame_bgcolor, width=self.__text_height*2)
         self.__testmenu_answer_entry   = tkinter.Entry(self.__testmenu_answer, font=(self.__text_font, self.__text_height*2), fg=self.__text_fgcolor, bg=self.__frame_bgcolor, width=self.__text_height*2, justify="center")
+        self.__testmenu_info_label     = tkinter.Label(self.__testmenu_info, font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__frame_bgcolor)
         self.__testmenu_answer_button  = tkinter.Button(self.__testmenu_buttons, text = "OK", font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width=self.__label_width, command = self.__testmenu_answered)
+
         
     def __show_testmenu(self):
         if self.__menu=="":
             self.__menu = "testmenu"
             self.__testmenu.pack(pady=(self.__root.winfo_screenheight()-410)//2)
+            self.__testmenu_frame.pack(ipadx=30, ipady=10)
+            self.__testmenu_titel.pack(pady=10)
             self.__testmenu_titel_label.config(text=self.__text_kuerzen(self.__acc.deck_info()[0],33))
             self.__testmenu_titel_label.pack()
-            self.__testmenu_titel.pack(pady=10)
-            self.__testmenu_frame.pack(ipadx=30, ipady=10)
             self.__testmenu_question.pack()
             self.__testmenu_question_label.config(text=self.__text_kuerzen(self.__acc.random_card(),33))
             self.__testmenu_question_label.pack(pady=10)
             self.__testmenu_answer.pack(pady=10)
             self.__testmenu_answer_entry.pack()
+            self.__testmenu_info.pack(side="left", padx=30)
+            self.__testmenu_info_label.config(text=str(self.__acc.numberOfCardsLearned())+"/"+str(self.__acc.numberOfCards()))
+            self.__testmenu_info_label.pack(side="left")
             self.__testmenu_buttons.pack(side="right", padx=30)
             self.__testmenu_answer_button.pack(side="right")
+            self.__testmenu_answer_entry.bind("<Return>", self.__testmenu_answered)
 
     def __hide_testmenu(self):
         self.__last_menu = self.__menu
@@ -535,6 +561,7 @@ class gui:
         
     def __testmenu_newCard(self, event=0):
         self.__testmenu_question_label.config(text=self.__acc.random_card())
+        self.__testmenu_info_label.config(text=str(self.__acc.numberOfCardsLearned())+"/"+str(self.__acc.numberOfCards()))
         self.__testmenu_answer_entry.delete(0, "end")
     
     def __testmenu_lastCard(self, event=0):
@@ -545,12 +572,6 @@ class gui:
             self.__last_menu=self.__menu
             self.__menu = "testmenu"
             self.__testmenu.pack(pady=(self.__root.winfo_screenheight()-410)//2)
-            self.__testmenu_frame.pack()
-            self.__testmenu_question.pack()
-            self.__testmenu_question_label.config(text=self.__acc.last_card())
-            self.__testmenu_question_label.pack()
-            self.__testmenu_answer.pack()
-            self.__testmenu_answer_entry.pack()
     
     #- - - - - - - - Deckmenu - - - - - - - -
     def __load_card(self, event=0):
@@ -566,10 +587,18 @@ class gui:
         liste = self.__acc.deck_cards()
         self.__deckmenu_decks_list_listbox.delete(0, "end")
         for elem in liste:
+            if elem[2]=="0":
+                richtung = "\u2192 "
+            elif elem[2]=="1":
+                richtung = "\u2190 "
+            elif elem[2]=="2":
+                richtung = "\u2194 "
+            
             self.__deckmenu_decks_list_listbox.insert("end", \
                     self.__einruecken_hinten(elem[0], 18)+\
+                    richtung+\
                     self.__einruecken_hinten(elem[1], 18)+\
-                    self.__einruecken_vorne(elem[2], 4))
+                    self.__einruecken_vorne(elem[3], 4))
         if len(self.__acc.deck_cards())>self.__listbox_elems:
             self.__deckmenu_decks_scrollbar_1.pack(side="right", fill="y")
         else:
@@ -620,14 +649,14 @@ class gui:
         
         
         #Links
-        self.__deckmenu_decks_list_head_1 = tkinter.Label(self.__deckmenu_decks_list_head, text= self.__einruecken_hinten("Seite 1",18),      font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__frame_bgcolor, relief = "flat", takefocus=False, anchor="w", padx=0, pady=0, borderwidth=0) 
+        self.__deckmenu_decks_list_head_1 = tkinter.Label(self.__deckmenu_decks_list_head, text= self.__einruecken_hinten("Seite 1",20),      font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__frame_bgcolor, relief = "flat", takefocus=False, anchor="w", padx=0, pady=0, borderwidth=0) 
         self.__deckmenu_decks_list_head_2 = tkinter.Label(self.__deckmenu_decks_list_head, text= self.__einruecken_hinten("Seite 2",18), font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__frame_bgcolor, relief = "flat", takefocus=False, anchor="w", padx=0, pady=0, borderwidth=0)
         self.__deckmenu_decks_list_head_3 = tkinter.Label(self.__deckmenu_decks_list_head, text= "  % ",                                 font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__frame_bgcolor, relief = "flat", takefocus=False, anchor="w", padx=0, pady=0, borderwidth=0)
         #self.__deckmenu_decks_list_head_1.bind("<Button-1>",lambda event:self.__deckmenu_decks_list_listbox_sort(1))
         #self.__deckmenu_decks_list_head_2.bind("<Button-1>",lambda event:self.__deckmenu_decks_list_listbox_sort(2))
         #self.__deckmenu_decks_list_head_3.bind("<Button-1>",lambda event:self.__deckmenu_decks_list_listbox_sort(3))
         
-        self.__deckmenu_decks_list_listbox = tkinter.Listbox(self.__deckmenu_decks_list, font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__frame_bgcolor, width = 44, height = self.__listbox_elems, bd=0, activestyle="dotbox")
+        self.__deckmenu_decks_list_listbox = tkinter.Listbox(self.__deckmenu_decks_list, font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__frame_bgcolor, width = 46, height = self.__listbox_elems, bd=0, activestyle="dotbox")
         self.__deckmenu_decks_list_listbox.config(selectbackground=self.__label_bgcolor_onmouse,selectforeground=self.__text_fgcolor_onmouse)
         self.__deckmenu_decks_scrollbar_1 = tkinter.Scrollbar(self.__deckmenu_decks_scrollbar)
         self.__deckmenu_decks_scrollbar_1.config(command=self.__deckmenu_decks_list_listbox.yview)
@@ -762,6 +791,5 @@ class gui:
             self.__hide_deckmenu()
         elif self.__menu=="exitmenu":
             self.__hide_exitmenu()
-        
-    
+
 gui = gui()

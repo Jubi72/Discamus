@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 import time
 import random
@@ -32,7 +33,6 @@ import random
  + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +
 """
 
-# -*- coding: utf-8 -*-
 class funktion:
     def __init__(self):
         self.__deck = str() #Name der Datei des geladenden Decks
@@ -48,6 +48,7 @@ class funktion:
         self.__deck_begin_statistik = "00" #Mit welcher Statistik die einzelenen Karten beginnen
         self.__deck_statistik_max_len = 6
         self.__deck_card_id=int()
+        self.__numberOfCards=0
         
         #Dateinamen, Ordnernamen, etc
         #Stammverzeichnis
@@ -180,20 +181,23 @@ class funktion:
         self.__deck_cards_learn = list()
         self.__deck_cards_learned = list()
         self.__deck_cards_loaded = True
+        self.__numberOfCards=0
         for i in range(len(karten)):
             karte = karten[i].split(self.__file_separator)
             karte[-1]=karte[-1][:-1] #Entfernen des \n am Ende des Strings
             for j in range(len(karte)):
                 karte[j] = self.__str_make_normal(karte[j])
-            self.__deck_cards.append([karte[0]]+[karte[1]]+[self.__calc_statistik(karte[3])])
+            self.__deck_cards.append([karte[0]]+[karte[1]]+[karte[2]]+[self.__calc_statistik(karte[3])])
             self.__deck_cards_learned.append([karte[0],karte[1],[],karte[-1]])
+            self.__numberOfCards+=1
             if karte[2]=="0":
                 self.__deck_cards_learn.append([i, karte[0],karte[1]])
-            if karte[2]=="1":
+            elif karte[2]=="1":
                 self.__deck_cards_learn.append([i, karte[1],karte[0]])
-            if karte[2]=="2":
+            elif karte[2]=="2":
                 self.__deck_cards_learn.append([i, karte[0],karte[1]])
                 self.__deck_cards_learn.append([i, karte[1],karte[0]])
+                self.__numberOfCards+=1
                 
     
     def __quick_sort_verkleiner(self, liste, sort):
@@ -612,6 +616,12 @@ class funktion:
         datei.writelines(inhalt)
         datei.close()
     
+    def numberOfCards(self):
+        return self.__numberOfCards
+    
+    def numberOfCardsLearned(self):
+        return self.__numberOfCards-len(self.__deck_cards_learn)
+    
     def random_card(self):
         """
         Diese Funktion waehlt aus dem aktuellen Deck eine zufaellige Karte aus (nur eine Seite),
@@ -698,6 +708,3 @@ if __name__=="__main__":
     Testumgebung
     """
     acc = funktion()
-    acc.deck_create("Name", "Kategorie", "Bescheibung")
-    acc.deck_create("Name", "Kategorie", "Bescheibung")
-    acc.deck_create("Name", "Kategorie", "Bescheibung")
