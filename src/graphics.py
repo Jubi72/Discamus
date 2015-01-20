@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import tkinter
 import access
+from tkinter import PhotoImage
+#from PIL import ImageTk
 
 #FINISH: mainmenu
 #FINISH: exitmenu
@@ -16,6 +18,7 @@ class gui:
         self.__acc=access.funktion()
         self.__set_vars()
         self.__create_window()
+        self.__set_images()
         self.__create_mainmenu()
         self.__create_lernmenu()
         self.__create_testmenu()
@@ -45,6 +48,13 @@ class gui:
         self.__last_menu = ""
         self.__listbox_elems = int()
         self.__text_height=int()
+        
+    def __set_images(self):
+        self.__img_add    = PhotoImage(file=self.__acc.get_img_dir()+"add.gif")
+        self.__img_arrow  = PhotoImage(file=self.__acc.get_img_dir()+"arrow.gif")
+        self.__img_del    = PhotoImage(file=self.__acc.get_img_dir()+"del.gif")
+        self.__img_ok     = PhotoImage(file=self.__acc.get_img_dir()+"ok.gif")
+    
     def __button_enter(self, button):
         button.config(bg=self.__label_bgcolor_onmouse, fg=self.__text_fgcolor_onmouse)
 
@@ -126,7 +136,7 @@ class gui:
         Voraussetzung: Menu muss mainmenu sein.
         """
         if self.__load():
-            self.__hide_mainmenu()
+            self.__hide_menu()
             self.__show_deckmenu()
         else:
             self.__mainmenu_error_no_deck_selected() 
@@ -393,7 +403,6 @@ class gui:
             self.__mainmenu.pack(pady=20)
             self.__mainmenu_decks.pack(side="top")
             self.__mainmenu_decks_list.pack(side="left")
-            print(len(self.__acc.deck_list()), self.__listbox_elems)
             self.__mainmenu_decks_scrollbar.pack(side="right",fill="y")
             self.__mainmenu_options.pack(side="top", pady=20)
             self.__mainmenu_decks_list_listbox_update()
@@ -506,22 +515,13 @@ class gui:
     def __show_lernmenu_lastCard(self):
         self.__last_menu=self.__menu
         self.__menu = "lernmenu"
-        self.__lernmenu_answer_button_1.config(command=self.__lernmenu_answered)
         self.__lernmenu.pack(pady=(self.__root.winfo_screenheight()-410)//2)
-        self.__lernmenu_frame.pack()
-        self.__lernmenu_question.pack()
-        self.__lernmenu_question_label.config(text=self.__acc.last_card())
-        self.__lernmenu_answer_entry.config(state='normal')
-        self.__lernmenu_answer_entry.delete(0,"end")
-        self.__lernmenu_question_label.pack()
-        self.__lernmenu_answer.pack()
-        self.__lernmenu_answer_entry.pack()
     
     #- - - - - - - - Testmenu - - - - - - - -
     def __create_testmenu(self):
         self.__testmenu = tkinter.Frame(self.__root, bg=self.__bgcolor)
         self.__testmenu_frame = tkinter.Frame(self.__testmenu, bg=self.__frame_bgcolor)
-        self.__testmenu_titel = tkinter.Frame(self.__lernmenu_frame, bg=self.__frame_bgcolor)
+        self.__testmenu_titel = tkinter.Frame(self.__testmenu_frame, bg=self.__frame_bgcolor)
         self.__testmenu_question = tkinter.Frame(self.__testmenu_frame,bg=self.__frame_bgcolor)
         self.__testmenu_answer = tkinter.Frame(self.__testmenu_frame,bg=self.__frame_bgcolor)
         self.__testmenu_buttons = tkinter.Frame(self.__testmenu_frame, bg=self.__frame_bgcolor)
@@ -605,47 +605,72 @@ class gui:
             self.__deckmenu_decks_scrollbar_1.pack_forget()
 
     def __deckmenu_question_hide(self, event=0):
-        self.__deckmenu_question.pack_forget()
-        self.__deckmenu_question_label.pack_forget()
-        self.__deckmenu_question_label_frame.pack_forget()
-        self.__deckmenu_question_buttons.pack_forget()
-        self.__deckmenu_question_buttons_1.pack_forget()
-        self.__deckmenu_question_buttons_2.pack_forget()
-        self.__deckmenu_question_entry.pack_forget()
-        self.__deckmenu_question_entry_1.pack_forget()
-        self.__deckmenu_question_entry_2.pack_forget()
-        self.__deckmenu_question_entry_3.pack_forget()
-        self.__deckmenu_question_buttons_1.config(width = self.__label_width//3)
-        self.__deckmenu_question_buttons_2.config(width = self.__label_width//3)
+        pass
 
     def __deckmenu_error_no_deck_selected(self, event=0):
-        self.__deckmenu_question_hide()
-        self.__deckmenu_question_label.config(text="Fehler:\nKein Kartenstapel ausgew\xe4hlt.",wraplength=self.__label_width*15)
-        self.__deckmenu_question_buttons_2.config(text="OK", command=self.__deckmenu_question_hide)
-        self.__deckmenu_question.pack(side="bottom", pady=7)
-        self.__deckmenu_question_buttons.pack(side="bottom", pady=5)
-        self.__deckmenu_question_buttons_2.pack(side="left", padx=self.__label_width*2//3)
-        self.__deckmenu_question_buttons_2.focus_set()
-        self.__deckmenu_question_label_frame.pack(side="top", fill="y")
-        self.__deckmenu_question_label.pack(side="left",pady=5)
-        
+        pass
+    
     def __deckmenu_deck_reset(self, event=0):
         self.__acc.deck_statistik_reset()
         self.__deckmenu_question_hide()
-
+        self.__deckmenu_decks_list_listbox_update()
+    
+    #DECKMENU_NAME
+    def __deckmenu_deckoptions_name_bearbeiten_fertig(self, event=0):
+        self.__deckmenu_deckoptions_name_entry.config(state='readonly')
+        self.__deckmenu_deckoptions_name_button_bearbeiten.pack(padx=17)
+        self.__deckmenu_deckoptions_name_button_abbrechen.pack_forget()
+        self.__deckmenu_deckoptions_name_button_ok.pack_forget()
+        self.__acc.deck_rename(self.__deckmenu_deckoptions_name_entry.get())
+    
+    def __deckmenu_deckoptions_name_bearbeiten_abbrechen(self, event=0):
+        self.__deckmenu_deckoptions_name_entry.delete(0,'end')
+        self.__deckmenu_deckoptions_name_entry.insert(0, self.__acc.deck_info()[0])
+        self.__deckmenu_deckoptions_name_entry.config(state='readonly')
+        self.__deckmenu_deckoptions_name_button_bearbeiten.pack(padx=17)
+        self.__deckmenu_deckoptions_name_button_abbrechen.pack_forget()
+        self.__deckmenu_deckoptions_name_button_ok.pack_forget()
+    
+    def __deckmenu_deckoptions_name_bearbeiten(self, event=0):
+        self.__deckmenu_deckoptions_name_entry.config(state='normal', bg="white")
+        self.__deckmenu_deckoptions_name_button_bearbeiten.pack_forget()
+        self.__deckmenu_deckoptions_name_button_ok.pack(side="left")
+        self.__deckmenu_deckoptions_name_button_abbrechen.pack(side="left")
+        
+    #KATEGORIE_NAME
+    def __deckmenu_deckoptions_kategorie_bearbeiten_fertig(self, event=0):
+        self.__deckmenu_deckoptions_kategorie_entry.config(state='readonly')
+        self.__deckmenu_deckoptions_kategorie_button_bearbeiten.pack(padx=17)
+        self.__deckmenu_deckoptions_kategorie_button_abbrechen.pack_forget()
+        self.__deckmenu_deckoptions_kategorie_button_ok.pack_forget()
+        self.__acc.deck_change_kategorie(self.__deckmenu_deckoptions_kategorie_entry.get())
+    
+    def __deckmenu_deckoptions_kategorie_bearbeiten_abbrechen(self, event=0):
+        self.__deckmenu_deckoptions_kategorie_entry.delete(0,'end')
+        self.__deckmenu_deckoptions_kategorie_entry.insert(0, self.__acc.deck_info()[1])
+        self.__deckmenu_deckoptions_kategorie_entry.config(state='readonly')
+        self.__deckmenu_deckoptions_kategorie_button_bearbeiten.pack(padx=17)
+        self.__deckmenu_deckoptions_kategorie_button_abbrechen.pack_forget()
+        self.__deckmenu_deckoptions_kategorie_button_ok.pack_forget()
+    
+    def __deckmenu_deckoptions_kategorie_bearbeiten(self, event=0):
+        self.__deckmenu_deckoptions_kategorie_entry.config(state='normal', bg="white")
+        self.__deckmenu_deckoptions_kategorie_button_bearbeiten.pack_forget()
+        self.__deckmenu_deckoptions_kategorie_button_ok.pack(side="left")
+        self.__deckmenu_deckoptions_kategorie_button_abbrechen.pack(side="left")
+        
     def __create_deckmenu(self):
         #Frames
-        self.__deckmenu                      = tkinter.Frame(self.__root,                                            bd = 5, relief = "flat")
-        self.__deckmenu_decks                = tkinter.Frame(self.__deckmenu,               bg=self.__frame_bgcolor, bd = 5, relief = "flat")
-        self.__deckmenu_decks_list           = tkinter.Frame(self.__deckmenu_decks,         bg=self.__frame_bgcolor, bd = 5, relief = "flat")
-        self.__deckmenu_decks_list_head      = tkinter.Frame(self.__deckmenu_decks_list,    bg=self.__frame_bgcolor, bd = 5, relief = "flat")
-        self.__deckmenu_decks_scrollbar      = tkinter.Frame(self.__deckmenu_decks_list,    bg=self.__frame_bgcolor, bd = 5, relief = "flat")
-        self.__deckmenu_options_question     = tkinter.Frame(self.__deckmenu_decks)
-        self.__deckmenu_options              = tkinter.Frame(self.__deckmenu_decks,         bg=self.__frame_bgcolor, bd = 5, relief = "flat")
-        self.__deckmenu_question             = tkinter.Frame(self.__deckmenu_decks,         bg=self.__label_bgcolor, bd = 5, relief = "flat" )
-        self.__deckmenu_question_label_frame = tkinter.Frame(self.__deckmenu_question,      bg=self.__label_bgcolor)
-        self.__deckmenu_question_buttons     = tkinter.Frame(self.__deckmenu_question,      bg=self.__label_bgcolor)
-        self.__deckmenu_question_entry       = tkinter.Frame(self.__deckmenu_question,      bg=self.__label_bgcolor)
+        self.__deckmenu                             = tkinter.Frame(self.__root,                                            bd = 5, relief = "flat")
+        self.__deckmenu_decks                       = tkinter.Frame(self.__deckmenu,               bg=self.__frame_bgcolor, bd = 5, relief = "flat")
+        self.__deckmenu_decks_list                  = tkinter.Frame(self.__deckmenu_decks,         bg=self.__frame_bgcolor, bd = 5, relief = "flat")
+        self.__deckmenu_decks_list_head             = tkinter.Frame(self.__deckmenu_decks_list,    bg=self.__frame_bgcolor, bd = 5, relief = "flat")
+        self.__deckmenu_decks_scrollbar             = tkinter.Frame(self.__deckmenu_decks_list,    bg=self.__frame_bgcolor, bd = 5, relief = "flat")
+        
+        self.__deckmenu_deckoptions                 = tkinter.Frame(self.__deckmenu_decks,bg=self.__frame_bgcolor, bd = 5, relief = "flat")
+        self.__deckmenu_deckoptions_name            = tkinter.Frame(self.__deckmenu_deckoptions,bg=self.__frame_bgcolor, bd = 5, relief = "flat")
+        self.__deckmenu_deckoptions_kategorie       = tkinter.Frame(self.__deckmenu_deckoptions,bg=self.__frame_bgcolor, bd = 5, relief = "flat")
+        self.__deckmenu_deckoptions_beschreibung    = tkinter.Frame(self.__deckmenu_deckoptions,bg=self.__frame_bgcolor, bd = 5, relief = "flat")
         
         
         #Links
@@ -666,68 +691,65 @@ class gui:
         self.__deckmenu_decks_list_listbox.bind("<Double-Button>", self.__lernen_begin)
         
         #Rechts
-        self.__deckmenu_options_1 = tkinter.Button(self.__deckmenu_options, text= "Lernen",        font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width)
-        self.__deckmenu_options_2 = tkinter.Button(self.__deckmenu_options, text= "Testen",        font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width)
-        self.__deckmenu_options_3 = tkinter.Button(self.__deckmenu_options, text= "Hinzuf\xfcgen", font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width)
-        self.__deckmenu_options_4 = tkinter.Button(self.__deckmenu_options, text= "Bearbeiten",    font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width)
-        self.__deckmenu_options_5 = tkinter.Button(self.__deckmenu_options, text= "L\xf6schen",    font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width)
         
-        self.__button_normal_binds(self.__deckmenu_options_1)
-        self.__button_normal_binds(self.__deckmenu_options_2)
-        self.__button_normal_binds(self.__deckmenu_options_3)
-        self.__button_normal_binds(self.__deckmenu_options_4)
-        self.__button_normal_binds(self.__deckmenu_options_5)
-        
-        
-        self.__deckmenu_question_entry_1 = tkinter.Entry(self.__deckmenu_question_entry, font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width)
-        self.__deckmenu_question_entry_2 = tkinter.Entry(self.__deckmenu_question_entry, font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width)
-        self.__deckmenu_question_entry_3 = tkinter.Entry(self.__deckmenu_question_entry, font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width)
-        self.__deckmenu_question_buttons_1 = tkinter.Button(self.__deckmenu_question_buttons, font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width//3)
-        self.__deckmenu_question_buttons_2 = tkinter.Button(self.__deckmenu_question_buttons, font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width//3)
-        self.__deckmenu_question_label = tkinter.Label(self.__deckmenu_question_label_frame, font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width)
-        
-        self.__button_normal_binds(self.__deckmenu_question_buttons_1)
-        self.__button_normal_binds(self.__deckmenu_question_buttons_2)
-        
-        
-    def __show_deckmenu(self):
+        #DECKMENU_NAME
+        self.__deckmenu_deckoptions_name_label                     = tkinter.Label(self.__deckmenu_deckoptions_name,text=self.__einruecken_hinten("Name",10), bg=self.__frame_bgcolor, fg=self.__text_fgcolor, font=(self.__text_font, self.__text_height))
+        self.__deckmenu_deckoptions_name_entry                     = tkinter.Entry(self.__deckmenu_deckoptions_name, font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width)
+        self.__deckmenu_deckoptions_name_button_bearbeiten         = tkinter.Button(self.__deckmenu_deckoptions_name, bg=self.__frame_bgcolor, command=self.__deckmenu_deckoptions_name_bearbeiten,           image=self.__img_arrow, height=32, width=32, relief="flat", activebackground="white", activeforeground="white", bd=0)
+        self.__deckmenu_deckoptions_name_button_abbrechen          = tkinter.Button(self.__deckmenu_deckoptions_name, bg=self.__frame_bgcolor, command=self.__deckmenu_deckoptions_name_bearbeiten_abbrechen, image=self.__img_del,   height=32, width=32, relief="flat", activebackground="white", activeforeground="white", bd=0)
+        self.__deckmenu_deckoptions_name_button_ok                 = tkinter.Button(self.__deckmenu_deckoptions_name, bg=self.__frame_bgcolor, command=self.__deckmenu_deckoptions_name_bearbeiten_fertig,    image=self.__img_ok,    height=32, width=32, relief="flat", activebackground="white", activeforeground="white", bd=0)
+        #DECKMENU_KATEGORIE
+        self.__deckmenu_deckoptions_kategorie_label                = tkinter.Label(self.__deckmenu_deckoptions_kategorie,text=self.__einruecken_hinten("Kategorie",10), bg=self.__frame_bgcolor, fg=self.__text_fgcolor, font=(self.__text_font, self.__text_height))
+        self.__deckmenu_deckoptions_kategorie_entry                = tkinter.Entry(self.__deckmenu_deckoptions_kategorie, font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width)
+        self.__deckmenu_deckoptions_kategorie_button_bearbeiten    = tkinter.Button(self.__deckmenu_deckoptions_kategorie, bg=self.__frame_bgcolor, command=self.__deckmenu_deckoptions_kategorie_bearbeiten,           image=self.__img_arrow, height=32, width=32, relief="flat", activebackground="white", activeforeground="white", bd=0)
+        self.__deckmenu_deckoptions_kategorie_button_abbrechen     = tkinter.Button(self.__deckmenu_deckoptions_kategorie, bg=self.__frame_bgcolor, command=self.__deckmenu_deckoptions_kategorie_bearbeiten_abbrechen, image=self.__img_del,   height=32, width=32, relief="flat", activebackground="white", activeforeground="white", bd=0)
+        self.__deckmenu_deckoptions_kategorie_button_ok            = tkinter.Button(self.__deckmenu_deckoptions_kategorie, bg=self.__frame_bgcolor, command=self.__deckmenu_deckoptions_kategorie_bearbeiten_fertig,    image=self.__img_ok,    height=32, width=32, relief="flat", activebackground="white", activeforeground="white", bd=0)
+ 
+    def __show_deckmenu(self, neuladen=True):
         if self.__menu == "":
             self.__menu = "deckmenu"
             self.__deckmenu.pack(pady=20)
             self.__deckmenu_decks.pack(side="top")
             self.__deckmenu_decks_list.pack(side="left")
-            print(len(self.__acc.deck_list()), self.__listbox_elems)
             self.__deckmenu_decks_scrollbar.pack(side="right",fill="y")
-            self.__deckmenu_options.pack(side="top", pady=20)
             self.__deckmenu_decks_list_listbox_update()
             self.__deckmenu_decks_list_head.pack(side="top")
             self.__deckmenu_decks_list_head_1.pack(side="left")
             self.__deckmenu_decks_list_head_2.pack(side="left")
             self.__deckmenu_decks_list_head_3.pack(side="right")
             self.__deckmenu_decks_list_listbox.pack(side="bottom")
-            self.__deckmenu_options_1.pack(side="top", pady=2, padx=10)
-            self.__deckmenu_options_2.pack(side="top", pady=2, padx=10)
-            self.__deckmenu_options_3.pack(side="top", pady=2, padx=10)
-            self.__deckmenu_options_4.pack(side="top", pady=2, padx=10)
-            self.__deckmenu_options_5.pack(side="top", pady=2, padx=10)
+            self.__deckmenu_deckoptions.pack(side="top")
+            #DECKMENU_NAME
+            self.__deckmenu_deckoptions_name.pack(side="top")
+            self.__deckmenu_deckoptions_name_label.pack(side="left")
+            self.__deckmenu_deckoptions_name_entry.pack(side="left")
+            self.__deckmenu_deckoptions_kategorie.pack(side="top")
+            self.__deckmenu_deckoptions_beschreibung.pack(side="top")
+            #DECKMENU_KATEGORIE
+            self.__deckmenu_deckoptions_kategorie.pack(side="top")
+            self.__deckmenu_deckoptions_kategorie_label.pack(side="left")
+            self.__deckmenu_deckoptions_kategorie_entry.pack(side="left")
+            self.__deckmenu_deckoptions_kategorie.pack(side="top")
+            self.__deckmenu_deckoptions_beschreibung.pack(side="top")
+            if neuladen:
+                #DECKMENU_NAME
+                self.__deckmenu_deckoptions_name_button_ok.pack_forget()
+                self.__deckmenu_deckoptions_name_button_abbrechen.pack_forget()
+                self.__deckmenu_deckoptions_name_button_bearbeiten.pack(padx=17)
+                self.__deckmenu_deckoptions_name_entry.delete(0,'end')
+                self.__deckmenu_deckoptions_name_entry.insert(0, self.__acc.deck_info()[0])
+                self.__deckmenu_deckoptions_name_entry.config(state='readonly')
+                #DECKMENU_KATEGORIE
+                self.__deckmenu_deckoptions_kategorie_button_ok.pack_forget()
+                self.__deckmenu_deckoptions_kategorie_button_abbrechen.pack_forget()
+                self.__deckmenu_deckoptions_kategorie_button_bearbeiten.pack(padx=17)
+                self.__deckmenu_deckoptions_kategorie_entry.delete(0,'end')
+                self.__deckmenu_deckoptions_kategorie_entry.insert(0, self.__acc.deck_info()[1])
+                self.__deckmenu_deckoptions_kategorie_entry.config(state='readonly')
     
     def __hide_deckmenu(self):
         self.__menu = ""
         self.__last_menu="deckmenu"
-        self.__deckmenu_options_1.pack_forget()
-        self.__deckmenu_options_2.pack_forget()
-        self.__deckmenu_options_3.pack_forget()
-        self.__deckmenu_options_4.pack_forget()
-        self.__deckmenu_options_5.pack_forget()
-        self.__deckmenu_options.pack_forget()
-        self.__deckmenu_decks_list_head_1.pack_forget()
-        self.__deckmenu_decks_list_head_2.pack_forget()
-        self.__deckmenu_decks_list_head_3.pack_forget()
-        self.__deckmenu_decks_list_listbox.pack_forget()
-        self.__deckmenu_decks_scrollbar_1.pack_forget()
-        self.__deckmenu_decks_list_head.pack_forget()
-        self.__deckmenu_decks_list.pack_forget()
-        self.__deckmenu_decks_scrollbar.pack_forget()
         self.__deckmenu.pack_forget()
         self.__deckmenu_question_hide()
     
@@ -778,7 +800,7 @@ class gui:
         elif self.__last_menu == "lernmenu":
             self.__show_lernmenu_lastCard()
         elif self.__last_menu == "deckmenu":
-            self.__show_deckmenu()
+            self.__show_deckmenu(False)
 
     def __hide_menu(self):
         if self.__menu=="mainmenu":
