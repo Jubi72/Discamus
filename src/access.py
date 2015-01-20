@@ -45,8 +45,8 @@ class funktion:
         self.__deck_cards_learned = list() #Liste gelernter Karten mit Angabe, ob diese richtig oder falsch geloest wurde
         
         self.__file_separator = "|" *2 #der Separator in den Dateien
-        self.__deck_begin_statistik = "00" #Mit welcher Statistik die einzelenen Karten beginnen
         self.__deck_statistik_max_len = 6
+        self.__deck_begin_statistik = "0"*self.__deck_statistik_max_len #Mit welcher Statistik die einzelenen Karten beginnen
         self.__deck_card_id=int()
         self.__numberOfCards=0
         
@@ -57,6 +57,7 @@ class funktion:
         self.__data_dir = self.__root_dir + "data\\"
         #        Unterverzeicnhisse von "data"
         self.__deck_dir = self.__data_dir + "stapel\\"
+        self.__img_dir = self.__data_dir + "img\\"
         self.__config_dir = self.__data_dir + "config\\"
         #            Dateien unter config
         self.__config_suffix = ".cfg"
@@ -65,7 +66,19 @@ class funktion:
         self.__card_suffix = ".rna"
         
         self.__pruefe_dateipfade()
-
+    
+    def get_root_dir(self):
+        return self.__root_dir
+    
+    def get_data_dir(self):
+        return self.__data_dir
+    
+    def get_deck_dir(self):
+        return self.__deck_dir
+    
+    def get_img_dir(self):
+        return self.__img_dir
+    
     #Grundfunktionen, noetig fuer das Programm:
     
     def __string_lenght(self, String, min_length, max_length):
@@ -164,8 +177,14 @@ class funktion:
     
     def __calc_statistik(self, string):
         percent=0
+        p=0
+        q=0
         if len(string)>0:
-            percent=string.count("1")*100//len(string)
+            for i in range(0,len(string)):
+                if string[i]=="1":
+                    p+=i+1
+                q+=i+1
+            percent=p*100//q
         return percent
             
     
@@ -303,9 +322,9 @@ class funktion:
     def deck_create(self, name, kategorie, description):
         """
         Diese Funktion erstellt eine Datei, mit dem namen "name.rna" her, fals noetig: "name_x.rna"
-        und dem Inhalt:
-        name||kategorie||timestamp||beschreibung
-        und updatet die Deck-Liste
+        mit dem Inhalt:
+        name||kategorie||timestamp||beschreibung||AnzahlKarten||Lernstand
+        und updatet die Deck-Liste, dazu wird danach sofort das Deck geladen
         """
         self.__deck_list_update()
         #Erstellen des Dateinamens
@@ -332,6 +351,7 @@ class funktion:
                     +"\n")
         datei.close()
         self.__deck_list_update()
+        self.deck_load(dateiname)
     
     def deck_delete(self, dateiname):
         """
@@ -472,10 +492,10 @@ class funktion:
         for elem in self.__deck_cards_learned:
             if len(elem[-1]) > self.__deck_statistik_max_len:
                 elem[-1] = elem[-1][-self.__deck_statistik_max_len:]
-            for result in elem[-1]:
-                if result == "1":
-                    result_correct += 1
-                result_ges += 1
+            for i in range(self.__deck_statistik_max_len):#result in elem[-1]:
+                if elem[-1][i] == "1":
+                    result_correct += 1*(i+1)
+                result_ges += 1*(i+1)
         if result_ges>0:
             deck_result = (100 * result_correct)//result_ges
         datei = open(self.__deck_dir + self.__deck, mode="r", encoding='utf-8')
@@ -666,7 +686,6 @@ class funktion:
                 self.__deck_cards_learned[self.__last_card[0]-1][2] =[self.__last_card[1], self.__last_card[2], answer]
         return answer_correct
             
-        
         
     
     def set_config(self, var, value):
