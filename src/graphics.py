@@ -52,11 +52,12 @@ class gui:
         self.__text_height=int()
         
     def __set_images(self):
-        self.__img_plus   = PhotoImage(file=self.__acc.get_img_dir()+"plus.gif")
+        self.__img_plus   = PhotoImage(file=self.__acc.get_img_dir()+"plus.gif" )
         self.__img_pfeil  = PhotoImage(file=self.__acc.get_img_dir()+"pfeil.gif")
         self.__img_kreuz  = PhotoImage(file=self.__acc.get_img_dir()+"kreuz.gif")
         self.__img_haken  = PhotoImage(file=self.__acc.get_img_dir()+"haken.gif")
         self.__img_stift  = PhotoImage(file=self.__acc.get_img_dir()+"stift.gif")
+        self.__img_home   = PhotoImage(file=self.__acc.get_img_dir()+"home.gif" )
     
     def __button_enter(self, button):
         button.config(bg=self.__label_bgcolor_onmouse, fg=self.__text_fgcolor_onmouse)
@@ -179,16 +180,20 @@ class gui:
         self.__button_normal_binds(self.__bottom_menu_1)
         self.__button_normal_binds(self.__bottom_menu_2)
         self.__button_normal_binds(self.__bottom_menu_3)
+        self.__bottom_menu_home = tkinter.Button(self.__bottom, bg=self.__third_color, height=48, width=48, relief="flat", activebackground="white", activeforeground="white", bd=0, command=self.__goto_mainmenu)
         #self.__root.wm_protocol("WM_DELETE_WINDOW", self.__exit)
     
     def __show_window(self):
         self.__head.pack(side="top", fill="x")
         self.__header.pack()
         self.__bottom.pack(side="bottom", fill="x")
+        self.__bottom_menu_home.pack(side="right")
         self.__bottom_menu.pack(side="bottom")
         self.__bottom_menu_1.pack(side="left", padx=20, pady=5)
         self.__bottom_menu_2.pack(side="left", padx=20, pady=5)
         self.__bottom_menu_3.pack(side="left", padx=20, pady=5)
+        self.__bottom_menu_home.config(image=self.__img_home)
+        
         
     def __destroy_window(self, event=0):
         self.__root.destroy()
@@ -725,20 +730,20 @@ class gui:
         self.__deckmenu_deckoptions_name_label                     = tkinter.Label(self.__deckmenu_deckoptions_name,text=self.__einruecken_hinten("Name",11), bg=self.__frame_bgcolor, fg=self.__text_fgcolor, font=(self.__text_font, self.__text_height))
         self.__deckmenu_deckoptions_name_entry                     = tkinter.Entry(self.__deckmenu_deckoptions_name, font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width)
         self.__deckmenu_deckoptions_name_button_bearbeiten         = tkinter.Button(self.__deckmenu_deckoptions_name, bg=self.__frame_bgcolor, command=self.__deckmenu_deckoptions_name_bearbeiten,           image=self.__img_stift, height=32, width=32, relief="flat", activebackground="white", activeforeground="white", bd=0)
-        self.__deckmenu_deckoptions_name_button_abbrechen          = tkinter.Button(self.__deckmenu_deckoptions_name, bg=self.__frame_bgcolor, command=self.__deckmenu_deckoptions_name_bearbeiten_abbrechen, image=self.__img_kreuz,   height=32, width=32, relief="flat", activebackground="white", activeforeground="white", bd=0)
-        self.__deckmenu_deckoptions_name_button_ok                 = tkinter.Button(self.__deckmenu_deckoptions_name, bg=self.__frame_bgcolor, command=self.__deckmenu_deckoptions_name_bearbeiten_fertig,    image=self.__img_haken,    height=32, width=32, relief="flat", activebackground="white", activeforeground="white", bd=0)
+        self.__deckmenu_deckoptions_name_button_abbrechen          = tkinter.Button(self.__deckmenu_deckoptions_name, bg=self.__frame_bgcolor, command=self.__deckmenu_deckoptions_name_bearbeiten_abbrechen, image=self.__img_kreuz, height=32, width=32, relief="flat", activebackground="white", activeforeground="white", bd=0)
+        self.__deckmenu_deckoptions_name_button_ok                 = tkinter.Button(self.__deckmenu_deckoptions_name, bg=self.__frame_bgcolor, command=self.__deckmenu_deckoptions_name_bearbeiten_fertig,    image=self.__img_haken, height=32, width=32, relief="flat", activebackground="white", activeforeground="white", bd=0)
         #DECKMENU_KATEGORIE
         self.__deckmenu_deckoptions_kategorie_label                = tkinter.Label(self.__deckmenu_deckoptions_kategorie,text=self.__einruecken_hinten("Kategorie",11), bg=self.__frame_bgcolor, fg=self.__text_fgcolor, font=(self.__text_font, self.__text_height))
         self.__deckmenu_deckoptions_kategorie_entry                = tkinter.Entry(self.__deckmenu_deckoptions_kategorie, font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width)
         self.__deckmenu_deckoptions_kategorie_button_bearbeiten    = tkinter.Button(self.__deckmenu_deckoptions_kategorie, bg=self.__frame_bgcolor, command=self.__deckmenu_deckoptions_kategorie_bearbeiten,           image=self.__img_stift, height=32, width=32, relief="flat", activebackground="white", activeforeground="white", bd=0)
-        self.__deckmenu_deckoptions_kategorie_button_abbrechen     = tkinter.Button(self.__deckmenu_deckoptions_kategorie, bg=self.__frame_bgcolor, command=self.__deckmenu_deckoptions_kategorie_bearbeiten_abbrechen, image=self.__img_kreuz,   height=32, width=32, relief="flat", activebackground="white", activeforeground="white", bd=0)
-        self.__deckmenu_deckoptions_kategorie_button_ok            = tkinter.Button(self.__deckmenu_deckoptions_kategorie, bg=self.__frame_bgcolor, command=self.__deckmenu_deckoptions_kategorie_bearbeiten_fertig,    image=self.__img_haken,    height=32, width=32, relief="flat", activebackground="white", activeforeground="white", bd=0)
+        self.__deckmenu_deckoptions_kategorie_button_abbrechen     = tkinter.Button(self.__deckmenu_deckoptions_kategorie, bg=self.__frame_bgcolor, command=self.__deckmenu_deckoptions_kategorie_bearbeiten_abbrechen, image=self.__img_kreuz, height=32, width=32, relief="flat", activebackground="white", activeforeground="white", bd=0)
+        self.__deckmenu_deckoptions_kategorie_button_ok            = tkinter.Button(self.__deckmenu_deckoptions_kategorie, bg=self.__frame_bgcolor, command=self.__deckmenu_deckoptions_kategorie_bearbeiten_fertig,    image=self.__img_haken, height=32, width=32, relief="flat", activebackground="white", activeforeground="white", bd=0)
         #DECKMENU_BESCHREIBUNG
-        self.__deckmenu_deckoptions_beschreibung_label                = tkinter.Label(self.__deckmenu_deckoptions_beschreibung,text=self.__einruecken_hinten("Beschreibung",12)[:-1], bg=self.__frame_bgcolor, fg=self.__text_fgcolor, font=(self.__text_font, self.__text_height))
-        self.__deckmenu_deckoptions_beschreibung_entry                = tkinter.Entry(self.__deckmenu_deckoptions_beschreibung, font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width)
-        self.__deckmenu_deckoptions_beschreibung_button_bearbeiten    = tkinter.Button(self.__deckmenu_deckoptions_beschreibung, bg=self.__frame_bgcolor, command=self.__deckmenu_deckoptions_beschreibung_bearbeiten,           image=self.__img_stift, height=32, width=32, relief="flat", activebackground="white", activeforeground="white", bd=0)
-        self.__deckmenu_deckoptions_beschreibung_button_abbrechen     = tkinter.Button(self.__deckmenu_deckoptions_beschreibung, bg=self.__frame_bgcolor, command=self.__deckmenu_deckoptions_beschreibung_bearbeiten_abbrechen, image=self.__img_kreuz,   height=32, width=32, relief="flat", activebackground="white", activeforeground="white", bd=0)
-        self.__deckmenu_deckoptions_beschreibung_button_ok            = tkinter.Button(self.__deckmenu_deckoptions_beschreibung, bg=self.__frame_bgcolor, command=self.__deckmenu_deckoptions_beschreibung_bearbeiten_fertig,    image=self.__img_haken,    height=32, width=32, relief="flat", activebackground="white", activeforeground="white", bd=0)
+        self.__deckmenu_deckoptions_beschreibung_label             = tkinter.Label(self.__deckmenu_deckoptions_beschreibung,text=self.__einruecken_hinten("Beschreibung",12)[:-1], bg=self.__frame_bgcolor, fg=self.__text_fgcolor, font=(self.__text_font, self.__text_height))
+        self.__deckmenu_deckoptions_beschreibung_entry             = tkinter.Entry(self.__deckmenu_deckoptions_beschreibung, font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width)
+        self.__deckmenu_deckoptions_beschreibung_button_bearbeiten = tkinter.Button(self.__deckmenu_deckoptions_beschreibung, bg=self.__frame_bgcolor, command=self.__deckmenu_deckoptions_beschreibung_bearbeiten,           image=self.__img_stift, height=32, width=32, relief="flat", activebackground="white", activeforeground="white", bd=0)
+        self.__deckmenu_deckoptions_beschreibung_button_abbrechen  = tkinter.Button(self.__deckmenu_deckoptions_beschreibung, bg=self.__frame_bgcolor, command=self.__deckmenu_deckoptions_beschreibung_bearbeiten_abbrechen, image=self.__img_kreuz, height=32, width=32, relief="flat", activebackground="white", activeforeground="white", bd=0)
+        self.__deckmenu_deckoptions_beschreibung_button_ok         = tkinter.Button(self.__deckmenu_deckoptions_beschreibung, bg=self.__frame_bgcolor, command=self.__deckmenu_deckoptions_beschreibung_bearbeiten_fertig,    image=self.__img_haken, height=32, width=32, relief="flat", activebackground="white", activeforeground="white", bd=0)
         
     def __show_deckmenu(self, neuladen=True):
         if self.__menu == "":
@@ -858,5 +863,6 @@ class gui:
             self.__hide_deckmenu()
         elif self.__menu=="exitmenu":
             self.__hide_exitmenu()
+
 
 gui = gui()
