@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import tkinter
 import access
-from tkinter import PhotoImage
 
 #FINISH: mainmenu
 #FINISH: exitmenu
@@ -52,12 +51,12 @@ class gui:
         self.__text_height=int()
         
     def __set_images(self):
-        self.__img_plus   = PhotoImage(file=self.__acc.get_img_dir()+"plus.gif" )
-        self.__img_pfeil  = PhotoImage(file=self.__acc.get_img_dir()+"pfeil.gif")
-        self.__img_kreuz  = PhotoImage(file=self.__acc.get_img_dir()+"kreuz.gif")
-        self.__img_haken  = PhotoImage(file=self.__acc.get_img_dir()+"haken.gif")
-        self.__img_stift  = PhotoImage(file=self.__acc.get_img_dir()+"stift.gif")
-        self.__img_home   = PhotoImage(file=self.__acc.get_img_dir()+"home.gif" )
+        self.__img_plus   = tkinter.PhotoImage(file=self.__acc.get_img_dir()+"plus.gif" )
+        self.__img_pfeil  = tkinter.PhotoImage(file=self.__acc.get_img_dir()+"pfeil.gif")
+        self.__img_kreuz  = tkinter.PhotoImage(file=self.__acc.get_img_dir()+"kreuz.gif")
+        self.__img_haken  = tkinter.PhotoImage(file=self.__acc.get_img_dir()+"haken.gif")
+        self.__img_stift  = tkinter.PhotoImage(file=self.__acc.get_img_dir()+"stift.gif")
+        self.__img_home   = tkinter.PhotoImage(file=self.__acc.get_img_dir()+"home.gif" )
     
     def __button_enter(self, button):
         button.config(bg=self.__label_bgcolor_onmouse, fg=self.__text_fgcolor_onmouse)
@@ -259,6 +258,8 @@ class gui:
         self.__mainmenu_question_buttons.pack(side="bottom", pady=5)
         self.__mainmenu_question_buttons_2.pack(side="left", padx=self.__label_width*2//3)
         self.__mainmenu_question_buttons_2.focus_set()
+        self.__mainmenu_question_buttons_2.bind("<Return>", self.__mainmenu_question_hide)
+        self.__mainmenu_question_buttons_2.bind("<Escape>", self.__mainmenu_question_hide)
     
     def __mainmenu_error_no_deck_selected(self, event=0):
         self.__mainmenu_question_hide()
@@ -268,8 +269,24 @@ class gui:
         self.__mainmenu_question_buttons.pack(side="bottom", pady=5)
         self.__mainmenu_question_buttons_2.pack(side="left", padx=self.__label_width*2//3)
         self.__mainmenu_question_buttons_2.focus_set()
+        self.__mainmenu_question_buttons_2.focus_set()
+        self.__mainmenu_question_buttons_2.bind("<Return>", self.__mainmenu_question_hide)
+        self.__mainmenu_question_buttons_2.bind("<Escape>", self.__mainmenu_question_hide)
         self.__mainmenu_question_label_frame.pack(side="top", fill="y")
         self.__mainmenu_question_label.pack(side="left",pady=5)
+    
+    def __mainmenu_description_show(self, event=0):
+        if(self.__load()):
+            self.__mainmenu_question_hide()
+            self.__mainmenu_question_label.config(text=self.__text_kuerzen(self.__acc.deck_info()[3],100),wraplength=self.__label_width*15)
+            self.__mainmenu_question_buttons_2.config(text="OK", command=self.__mainmenu_question_hide)
+            self.__mainmenu_question.pack(side="bottom", pady=7)
+            self.__mainmenu_question_buttons.pack(side="bottom", pady=5)
+            self.__mainmenu_question_buttons_2.pack(side="left", padx=self.__label_width*2//3)
+            self.__mainmenu_question_buttons_2.bind("<Return>", self.__mainmenu_question_hide)
+            self.__mainmenu_question_buttons_2.bind("<Escape>", self.__mainmenu_question_hide)
+            self.__mainmenu_question_label_frame.pack(side="top", fill="y")
+            self.__mainmenu_question_label.pack(side="left",pady=5)
     
     def __mainmenu_loeschen_deck(self, event=0):
         self.__acc.deck_delete_loaded()
@@ -284,6 +301,17 @@ class gui:
         self.__acc.deck_create(name,kategorie,beschreibung)
         self.__mainmenu_decks_list_listbox_update()
         self.__mainmenu_question_hide()
+        self.__mainmenu_question_entry_1.unbind("<Return>")
+        self.__mainmenu_question_entry_2.unbind("<Return>")
+        self.__mainmenu_question_entry_3.unbind("<Return>")
+        self.__mainmenu_question_buttons_1.unbind("<Return>")
+        self.__mainmenu_question_buttons_2.unbind("<Return>")
+        self.__mainmenu_question_entry_1.unbind("<Escape>")
+        self.__mainmenu_question_entry_2.unbind("<Escape>")
+        self.__mainmenu_question_entry_3.unbind("<Escape>")
+        self.__mainmenu_question_buttons_1.unbind("<Escape>")
+        self.__mainmenu_question_buttons_2.unbind("<Escape>")
+        
     
     def __mainmenu_deck_reset(self, event=0):
         self.__acc.deck_statistik_reset()
@@ -311,9 +339,18 @@ class gui:
         self.__mainmenu_question_buttons.pack(side="bottom", pady=5)
         self.__mainmenu_question_buttons_1.pack(side="left", padx=0)
         self.__mainmenu_question_buttons_2.pack(side="left", padx=0)
+        self.__mainmenu_question_entry_1.bind("<Return>", self.__mainmenu_hinzufuegen_deck)
+        self.__mainmenu_question_entry_2.bind("<Return>", self.__mainmenu_hinzufuegen_deck)
+        self.__mainmenu_question_entry_3.bind("<Return>", self.__mainmenu_hinzufuegen_deck)
+        self.__mainmenu_question_buttons_1.bind("<Return>", self.__mainmenu_hinzufuegen_deck)
+        self.__mainmenu_question_buttons_2.bind("<Return>", self.__mainmenu_hinzufuegen_deck)
+        self.__mainmenu_question_entry_1.bind("<Escape>", self.__mainmenu_question_hide)
+        self.__mainmenu_question_entry_2.bind("<Escape>", self.__mainmenu_question_hide)
+        self.__mainmenu_question_entry_3.bind("<Escape>", self.__mainmenu_question_hide)
+        self.__mainmenu_question_buttons_1.bind("<Escape>", self.__mainmenu_question_hide)
+        self.__mainmenu_question_buttons_2.bind("<Escape>", self.__mainmenu_question_hide)
         
         
-    
     def __mainmenu_loeschen(self, event=0):
         self.__mainmenu_question_hide()
         if(self.__load()):
@@ -326,9 +363,11 @@ class gui:
             self.__mainmenu_question_buttons_2.pack(side="left", padx=self.__label_width*2//3)
             self.__mainmenu_question_label_frame.pack(side="top", fill="y")
             self.__mainmenu_question_label.pack(side="left",pady=5)
-            #self.__mainmenu_question.bind("<Escape>", self.__mainmenu_question_hide)
-            #self.__mainmenu_question.bind("<Return>", self.__mainmenu_loeschen_deck)
-            #TODO: bind Esc Mainmenu question_hide
+            self.__mainmenu_question_buttons_1.focus_set()
+            self.__mainmenu_question_buttons_1.bind("<Return>", self.__mainmenu_loeschen_deck)
+            self.__mainmenu_question_buttons_1.bind("<Escape>", self.__mainmenu_question_hide)
+            self.__mainmenu_question_buttons_2.bind("<Return>", self.__mainmenu_question_hide)
+            self.__mainmenu_question_buttons_2.bind("<Escape>", self.__mainmenu_question_hide)
         else:
             self.__mainmenu_error_no_deck_selected()
 
@@ -354,9 +393,9 @@ class gui:
         self.__mainmenu_options_question     = tkinter.Frame(self.__mainmenu_decks)
         self.__mainmenu_options              = tkinter.Frame(self.__mainmenu_decks,         bg=self.__frame_bgcolor, bd = 5, relief = "flat")
         self.__mainmenu_question             = tkinter.Frame(self.__mainmenu_decks,         bg=self.__label_bgcolor, bd = 5, relief = "flat" )
-        self.__mainmenu_question_label_frame = tkinter.Frame(self.__mainmenu_question, bg=self.__label_bgcolor)
-        self.__mainmenu_question_buttons     = tkinter.Frame(self.__mainmenu_question,      bg=self.__label_bgcolor)
+        self.__mainmenu_question_label_frame = tkinter.Frame(self.__mainmenu_question,      bg=self.__label_bgcolor)
         self.__mainmenu_question_entry       = tkinter.Frame(self.__mainmenu_question,      bg=self.__label_bgcolor)
+        self.__mainmenu_question_buttons     = tkinter.Frame(self.__mainmenu_question,      bg=self.__label_bgcolor)
         
         
         #Links
@@ -426,8 +465,9 @@ class gui:
             #Binds
             self.__mainmenu_decks_list_listbox.bind("<F5>", self.__mainmenu_decks_list_listbox_update)
             self.__mainmenu_decks_list_listbox.bind("<Return>", self.__lernen_begin)
-            self.__mainmenu_decks_list_listbox.bind("<Double-Button>", self.__lernen_begin)
-    
+            self.__mainmenu_decks_list_listbox.bind("<<ListboxSelect>>", self.__mainmenu_description_show)
+            
+
     def __hide_mainmenu(self):
         self.__menu = ""
         self.__last_menu="mainmenu"
@@ -437,6 +477,7 @@ class gui:
         self.__mainmenu_decks_list_listbox.unbind("<F5>")
         self.__mainmenu_decks_list_listbox.unbind("<Return>")
         self.__mainmenu_decks_list_listbox.unbind("<Double-Button>")
+        self.__mainmenu_decks_list_listbox.unbind("<Delete>")
     
     #- - - - - - - - Lernmenu - - - - - - - -
     def __create_lernmenu(self):
