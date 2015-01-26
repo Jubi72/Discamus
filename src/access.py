@@ -526,7 +526,6 @@ class funktion:
         if len(self.__deck_cards_learn)>0:
             return True
         else:
-            self.__deck_new_timestamp()
             self.__deck_statistik_generate()
             return False
     
