@@ -162,7 +162,6 @@ class gui:
         Erstellen des Fensters
         Voraussetzung: Variablen muessen erstellt sein
         """
-        self.__acc = access.funktion()
         self.__root = tkinter.Tk()
         self.__root.attributes("-fullscreen", True)
         self.__root.config(bg=self.__bgcolor)
@@ -234,7 +233,7 @@ class gui:
         else:
             self.__mainmenu_decks_scrollbar_1.pack_forget()
     
-    def __mainmenu_question_hide(self, event=0):
+    def __mainmenu_question_hide(self, event=0,descriptionShow=True):
         self.__mainmenu_question.pack_forget()
         self.__mainmenu_question_label.pack_forget()
         self.__mainmenu_question_label_frame.pack_forget()
@@ -247,9 +246,11 @@ class gui:
         self.__mainmenu_question_entry_3.pack_forget()
         self.__mainmenu_question_buttons_1.config(width = self.__label_width//3)
         self.__mainmenu_question_buttons_2.config(width = self.__label_width//3)
+        if descriptionShow:
+            self.__mainmenu_description_show()
     
     def __mainmenu_error_deck_no_cards(self):
-        self.__mainmenu_question_hide()
+        self.__mainmenu_question_hide(descriptionShow=False)
         self.__mainmenu_question_label.config(text="Fehler:\nDer Kartenstapel ist leer.", wraplength=self.__label_width*15)
         self.__mainmenu_question_buttons_2.config(text="OK", command=self.__mainmenu_question_hide)
         self.__mainmenu_question.pack(side="bottom", pady=7)
@@ -262,7 +263,7 @@ class gui:
         self.__mainmenu_question_buttons_2.bind("<Escape>", self.__mainmenu_question_hide)
     
     def __mainmenu_error_no_deck_selected(self, event=0):
-        self.__mainmenu_question_hide()
+        self.__mainmenu_question_hide(descriptionShow=False)
         self.__mainmenu_question_label.config(text="Fehler:\nKein Kartenstapel ausgew\xe4hlt.",wraplength=self.__label_width*15)
         self.__mainmenu_question_buttons_2.config(text="OK", command=self.__mainmenu_question_hide)
         self.__mainmenu_question.pack(side="bottom", pady=7)
@@ -277,22 +278,23 @@ class gui:
     
     def __mainmenu_description_show(self, event=0):
         if(self.__load()):
-            self.__mainmenu_question_hide()
-            self.__mainmenu_question_label.config(text=self.__text_kuerzen(self.__acc.deck_info()[3],100),wraplength=self.__label_width*15)
-            self.__mainmenu_question_buttons_2.config(text="OK", command=self.__mainmenu_question_hide)
+            self.__mainmenu_question_hide(descriptionShow=False)
+            self.__mainmenu_question_label.config(text=self.__text_kuerzen(self.__acc.deck_info()[0],18)+": "+self.__text_kuerzen(self.__acc.deck_info()[3],100),wraplength=self.__label_width*15)
+            #self.__mainmenu_question_buttons_2.config(text="OK", command=self.__mainmenu_question_hide)
             self.__mainmenu_question.pack(side="bottom", pady=7)
-            self.__mainmenu_question_buttons.pack(side="bottom", pady=5)
-            self.__mainmenu_question_buttons_2.pack(side="left", padx=self.__label_width*2//3)
-            self.__mainmenu_question_buttons_2.bind("<Return>", self.__mainmenu_question_hide)
-            self.__mainmenu_question_buttons_2.bind("<Escape>", self.__mainmenu_question_hide)
+            #self.__mainmenu_question_buttons.pack(side="bottom", pady=5)
+            #self.__mainmenu_question_buttons_2.pack(side="left", padx=self.__label_width*2//3)
+            #self.__mainmenu_question_buttons_2.bind("<Return>", self.__mainmenu_question_hide)
+            #self.__mainmenu_question_buttons_2.bind("<Escape>", self.__mainmenu_question_hide)
             self.__mainmenu_question_label_frame.pack(side="top", fill="y")
             self.__mainmenu_question_label.pack(side="left",pady=5)
+        else:
+            self.__mainmenu_question_hide(descriptionShow=False)
     
     def __mainmenu_loeschen_deck(self, event=0):
         self.__acc.deck_delete_loaded()
         self.__mainmenu_question_hide()
         self.__mainmenu_decks_list_listbox_update()
-        #TODO: bind Esc verlasssen
     
     def __mainmenu_hinzufuegen_deck(self, event=0):
         name=self.__mainmenu_question_entry_1.get()
@@ -318,7 +320,7 @@ class gui:
         self.__mainmenu_question_hide()
     
     def __mainmenu_hinzufuegen(self, event=0):
-        self.__mainmenu_question_hide()
+        self.__mainmenu_question_hide(descriptionShow=False)
         self.__mainmenu_question.pack(side="bottom", pady=5)
         self.__mainmenu_question_entry.pack(side="top", pady=7)
         self.__mainmenu_question_entry_1.delete(0, "end")
@@ -352,7 +354,7 @@ class gui:
         
         
     def __mainmenu_loeschen(self, event=0):
-        self.__mainmenu_question_hide()
+        self.__mainmenu_question_hide(descriptionShow=False)
         if(self.__load()):
             self.__mainmenu_question_label.config(text="Wollen Sie den Kartenstapel \""+ self.__text_kuerzen(self.__acc.deck_info()[0],17) +"\" wirklich l\xf6schen?", wraplength=self.__label_width*15)
             self.__mainmenu_question_buttons_1.config(text="Ja", command=self.__mainmenu_loeschen_deck)
@@ -444,6 +446,7 @@ class gui:
     def __show_mainmenu(self):
         if self.__menu == "":
             self.__menu = "mainmenu"
+            self.__mainmenu_question_hide()
             self.__mainmenu.pack(pady=20)
             self.__mainmenu_decks.pack(side="top")
             self.__mainmenu_decks_list.pack(side="left")
@@ -465,6 +468,8 @@ class gui:
             #Binds
             self.__mainmenu_decks_list_listbox.bind("<F5>", self.__mainmenu_decks_list_listbox_update)
             self.__mainmenu_decks_list_listbox.bind("<Return>", self.__lernen_begin)
+            self.__mainmenu_decks_list_listbox.bind("<Double-Button>", self.__lernen_begin)
+            self.__mainmenu_decks_list_listbox.bind("<Delete>", self.__mainmenu_loeschen)
             self.__mainmenu_decks_list_listbox.bind("<<ListboxSelect>>", self.__mainmenu_description_show)
             
 
@@ -662,6 +667,8 @@ class gui:
         self.__acc.deck_rename(self.__deckmenu_deckoptions_name_entry.get())
         self.__deckmenu_deckoptions_name_entry.unbind("<Return>")
         self.__deckmenu_deckoptions_name_entry.unbind("<Escape>")
+        self.__deckmenu_deckoptions_name_entry.bind("<Double-Button-1>", self.__deckmenu_deckoptions_name_bearbeiten)
+                
     
     def __deckmenu_deckoptions_name_bearbeiten_abbrechen(self, event=0):
         self.__deckmenu_deckoptions_name_entry.delete(0,'end')
@@ -672,6 +679,7 @@ class gui:
         self.__deckmenu_deckoptions_name_button_ok.pack_forget()
         self.__deckmenu_deckoptions_name_entry.unbind("<Return>")
         self.__deckmenu_deckoptions_name_entry.unbind("<Escape>")
+        self.__deckmenu_deckoptions_name_entry.bind("<Double-Button-1>", self.__deckmenu_deckoptions_name_bearbeiten)
     
     def __deckmenu_deckoptions_name_bearbeiten(self, event=0):
         self.__deckmenu_deckoptions_name_entry.config(state='normal', bg="white")
@@ -680,6 +688,8 @@ class gui:
         self.__deckmenu_deckoptions_name_button_abbrechen.pack(side="left")
         self.__deckmenu_deckoptions_name_entry.bind("<Return>", self.__deckmenu_deckoptions_name_bearbeiten_fertig)
         self.__deckmenu_deckoptions_name_entry.bind("<Escape>", self.__deckmenu_deckoptions_name_bearbeiten_abbrechen)
+        self.__deckmenu_deckoptions_name_entry.unbind("<Double-Button-1>")
+        
         
     #DECKMENU_KATEGORIE
     def __deckmenu_deckoptions_kategorie_bearbeiten_fertig(self, event=0):
@@ -690,6 +700,7 @@ class gui:
         self.__acc.deck_change_kategorie(self.__deckmenu_deckoptions_kategorie_entry.get())
         self.__deckmenu_deckoptions_kategorie_entry.unbind("<Return>")
         self.__deckmenu_deckoptions_kategorie_entry.unbind("<Escape>")
+        self.__deckmenu_deckoptions_kategorie_entry.bind("<Double-Button-1>", self.__deckmenu_deckoptions_kategorie_bearbeiten)
     
     def __deckmenu_deckoptions_kategorie_bearbeiten_abbrechen(self, event=0):
         self.__deckmenu_deckoptions_kategorie_entry.delete(0,'end')
@@ -700,6 +711,7 @@ class gui:
         self.__deckmenu_deckoptions_kategorie_button_ok.pack_forget()
         self.__deckmenu_deckoptions_kategorie_entry.unbind("<Return>")
         self.__deckmenu_deckoptions_kategorie_entry.unbind("<Escape>")
+        self.__deckmenu_deckoptions_kategorie_entry.bind("<Double-Button-1>", self.__deckmenu_deckoptions_kategorie_bearbeiten)
     
     def __deckmenu_deckoptions_kategorie_bearbeiten(self, event=0):
         self.__deckmenu_deckoptions_kategorie_entry.config(state='normal', bg="white")
@@ -708,7 +720,8 @@ class gui:
         self.__deckmenu_deckoptions_kategorie_button_abbrechen.pack(side="left")
         self.__deckmenu_deckoptions_kategorie_entry.bind("<Return>", self.__deckmenu_deckoptions_kategorie_bearbeiten_fertig)
         self.__deckmenu_deckoptions_kategorie_entry.bind("<Escape>", self.__deckmenu_deckoptions_kategorie_bearbeiten_abbrechen)
-
+        self.__deckmenu_deckoptions_kategorie_entry.unbind("<Double-Button-1>")
+        
     
     #DECKMENU_BESCHREIBUNG
     def __deckmenu_deckoptions_beschreibung_bearbeiten_fertig(self, event=0):
@@ -719,6 +732,7 @@ class gui:
         self.__acc.deck_change_beschreibung(self.__deckmenu_deckoptions_beschreibung_entry.get())
         self.__deckmenu_deckoptions_beschreibung_entry.unbind("<Return>")
         self.__deckmenu_deckoptions_beschreibung_entry.unbind("<Escape>")
+        self.__deckmenu_deckoptions_beschreibung_entry.bind("<Double-Button-1>", self.__deckmenu_deckoptions_beschreibung_bearbeiten)
     
     def __deckmenu_deckoptions_beschreibung_bearbeiten_abbrechen(self, event=0):
         self.__deckmenu_deckoptions_beschreibung_entry.delete(0,'end')
@@ -727,6 +741,7 @@ class gui:
         self.__deckmenu_deckoptions_beschreibung_button_bearbeiten.pack(padx=17)
         self.__deckmenu_deckoptions_beschreibung_button_abbrechen.pack_forget()
         self.__deckmenu_deckoptions_beschreibung_button_ok.pack_forget()
+        self.__deckmenu_deckoptions_beschreibung_entry.bind("<Double-Button-1>", self.__deckmenu_deckoptions_beschreibung_bearbeiten)
     
     def __deckmenu_deckoptions_beschreibung_bearbeiten(self, event=0):
         self.__deckmenu_deckoptions_beschreibung_entry.config(state='normal', bg="white")
@@ -735,7 +750,7 @@ class gui:
         self.__deckmenu_deckoptions_beschreibung_button_abbrechen.pack(side="left")
         self.__deckmenu_deckoptions_beschreibung_entry.bind("<Return>", self.__deckmenu_deckoptions_beschreibung_bearbeiten_fertig)
         self.__deckmenu_deckoptions_beschreibung_entry.bind("<Escape>", self.__deckmenu_deckoptions_beschreibung_bearbeiten_abbrechen)
-    
+        self.__deckmenu_deckoptions_beschreibung_entry.unbind("<Double-Button-1>")
     
     def __create_deckmenu(self):
         #Frames
@@ -820,6 +835,7 @@ class gui:
                 self.__deckmenu_deckoptions_name_entry.delete(0,'end')
                 self.__deckmenu_deckoptions_name_entry.insert(0, self.__acc.deck_info()[0])
                 self.__deckmenu_deckoptions_name_entry.config(state='readonly')
+                self.__deckmenu_deckoptions_name_entry.bind("<Double-Button-1>", self.__deckmenu_deckoptions_name_bearbeiten)
                 #DECKMENU_KATEGORIE
                 self.__deckmenu_deckoptions_kategorie_button_ok.pack_forget()
                 self.__deckmenu_deckoptions_kategorie_button_abbrechen.pack_forget()
@@ -827,6 +843,7 @@ class gui:
                 self.__deckmenu_deckoptions_kategorie_entry.delete(0,'end')
                 self.__deckmenu_deckoptions_kategorie_entry.insert(0, self.__acc.deck_info()[1])
                 self.__deckmenu_deckoptions_kategorie_entry.config(state='readonly')
+                self.__deckmenu_deckoptions_kategorie_entry.bind("<Double-Button-1>", self.__deckmenu_deckoptions_kategorie_bearbeiten)
                 #KATEGORIE_KATEGORIE
                 self.__deckmenu_deckoptions_beschreibung_button_ok.pack_forget()
                 self.__deckmenu_deckoptions_beschreibung_button_abbrechen.pack_forget()
@@ -834,6 +851,7 @@ class gui:
                 self.__deckmenu_deckoptions_beschreibung_entry.delete(0,'end')
                 self.__deckmenu_deckoptions_beschreibung_entry.insert(0, self.__acc.deck_info()[3])
                 self.__deckmenu_deckoptions_beschreibung_entry.config(state='readonly')
+                self.__deckmenu_deckoptions_beschreibung_entry.bind("<Double-Button-1>", self.__deckmenu_deckoptions_beschreibung_bearbeiten)
                 
 
     def __hide_deckmenu(self):
@@ -841,6 +859,9 @@ class gui:
         self.__last_menu="deckmenu"
         self.__deckmenu.pack_forget()
         self.__deckmenu_question_hide()
+        self.__deckmenu_deckoptions_name_entry.unbind("<Double-Button-1>")
+        self.__deckmenu_deckoptions_kategorie_entry.unbind("<Double-Button-1>")
+        self.__deckmenu_deckoptions_beschreibung_entry.unbind("<Double-Button-1>")
     
     
     
