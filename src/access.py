@@ -66,6 +66,7 @@ class funktion:
         self.__card_suffix = ".rna"
         
         self.__pruefe_dateipfade()
+        #TODO:self.__pruefe alle Dateien
     
     def get_root_dir(self):
         return self.__root_dir
@@ -117,7 +118,12 @@ class funktion:
         dateiname = dateiname.replace("<","")
         dateiname = dateiname.replace(">","")
         dateiname = dateiname.replace("|","")
+        if len(dateiname)>200:
+            dateiname=dateiname[:200]
         return dateiname
+    
+    def __file_valid(self, dateiname):
+        pass
     
     def __file_string_change_cell(self, string, newCellContent, cellNumber):
         newString = string.split(self.__file_separator)
@@ -459,6 +465,7 @@ class funktion:
     def deck_statistik(self):
         """
         Diese Funktion gibt die Statistik des Deckes zurueck
+        [ [Vorderseite1, RichtigeAntwort, gegebeneAntwort], ...]
         """
         self.__deck_statistik_generate()
         bad_list = list()
