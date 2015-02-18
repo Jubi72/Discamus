@@ -750,6 +750,69 @@ class gui:
     
     #TODO: Buttons
     
+    #CARDMENU
+    def __deckmenu_cardmenu_editAll(self, event=0):
+        self.__deckmenu_cardmenu_reload()
+        self.__deckmenu_cardmenu_heading.config(text="Alle bearbeiten")
+        self.__deckmenu_cardmenu_entry_1.config(text="Seite1")
+        self.__deckmenu_cardmenu_entry_2.config(text="Seite2")
+        self.__deckmenu_cardmenu_entry_1.config(state="disabled")
+        self.__deckmenu_cardmenu_entry_2.config(state="disabled")
+        self.__deckmenu_cardmenu_listbox.focus_set()
+
+    def __deckmenu_cardmenu_editAll_speichern(self, event=0):
+        try:
+            x = self.__deckmenu_cardmenu_listbox.curselection()[0]
+            if x>0:
+                if x==1:
+                    x=2
+                else:
+                    x=1
+            self.__acc.card_lernSide_all(x)
+        except:
+            pass
+        
+    def __deckmenu_cardmenu_bearbeiten(self, event=0):
+        self.__deckmenu_cardmenu_reload()
+        try:
+            x = self.__deckmenu_decks_list_listbox.curselection()[0]
+            self.__deckmenu_cardmenu__heading.config(text="Karte bearbeiten")
+            self.__acc.deck_card_load(x)
+        except:
+            pass
+    
+    def __deckmenu_cardmenu_bearbeitung_speichern(self, event=0):
+        try:
+            y = self.__deckmenu_cardmenu_listbox.curselection()[0]
+            self.__acc.card_change(self.__deckmenu_cardmenu_entry_1.get(), self.__deckmenu_cardmenu_entry_1.get(), y)
+        except:
+            self.__acc.card_change(self.__deckmenu_cardmenu_entry_1.get(), self.__deckmenu_cardmenu_entry_1.get())
+        self.__deckmenu_cardmenu_reload()
+    
+    def __deckmenu_cardmenu_hinzufuegen(self, event=0):
+        self.__deckmenu_cardmenu_reload()
+    
+    def __deckmenu_cardmenu_hinzufuegen_createCard(self, event=0):
+        try:
+            x = self.__deckmenu_cardmenu_listbox.curselection()[0]
+        except:
+            x = 0
+        if x>0:
+            if x==1:
+                x=2
+            else:
+                x=1   
+        self.__acc.card_create(self.__deckmenu_cardmenu_entry_1.get(),self.__deckmenu_cardmenu_entry_1.get(), x)
+        self.__deckmenu_cardmenu_reload()
+    
+    def __deckmenu_cardmenu_reload(self, event=0):
+        self.__deckmenu_cardmenu_heading.config(text="Hinzufügen")
+        self.__deckmenu_decks_list_listbox_update()
+        self.__deckmenu_cardmenu_entry_1.config(state="disabled")
+        self.__deckmenu_cardmenu_entry_1.delete(0, "end")
+        self.__deckmenu_cardmenu_entry_2.delete(0, "end")
+        self.__deckmenu_cardmenu_entry_1.focus_set()
+    
     def __create_deckmenu(self):
         #Frames
         self.__deckmenu                             = tkinter.Frame(self.__root,                                            bd = 5, relief = "flat")
@@ -802,12 +865,15 @@ class gui:
         self.__deckmenu_cardoptions_loeschen                       = tkinter.Button(self.__deckmenu_cardoptions, bg=self.__frame_bgcolor, image=self.__img_kreuz, height=32, width=32, relief="flat", activebackground="white", activeforeground="white", bd=0)
         self.__deckmenu_cardoptions_editAll                        = tkinter.Button(self.__deckmenu_cardoptions, text="Alle Bearbeiten",  font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width)
         #KARTE_BEARBEITEN
+        self.__deckmenu_cardmenu_heading                           = tkinter.Label(self.__deckmenu_cardmenu, text=self.__einruecken_hinten("Karten",11), font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__frame_bgcolor)
         self.__deckmenu_cardmenu_entry_1                           = tkinter.Entry   (self.__deckmenu_cardmenu, font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width)
         self.__deckmenu_cardmenu_entry_2                           = tkinter.Entry   (self.__deckmenu_cardmenu, font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width)
         self.__deckmenu_cardmenu_listbox                           = tkinter.Listbox (self.__deckmenu_cardmenu, font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__frame_bgcolor, width = 1, height = 3, bd=0, activestyle="dotbox")
-        self.__deckmenu_cardmenu_listbox.insert("end", "\u2194")
         self.__deckmenu_cardmenu_listbox.insert("end", "\u2192")
+        self.__deckmenu_cardmenu_listbox.insert("end", "\u2194")
         self.__deckmenu_cardmenu_listbox.insert("end", "\u2190")
+        self.__deckmenu_cardmenu_ok                                = tkinter.Button(self.__deckmenu_cardmenu, bg=self.__frame_bgcolor, image=self.__img_haken, height=32, width=32, relief="flat", activebackground="white", activeforeground="white", bd=0, takefocus=False)
+        self.__deckmenu_cardmenu_abbrechen                         = tkinter.Button(self.__deckmenu_cardmenu, bg=self.__frame_bgcolor, image=self.__img_kreuz, height=32, width=32, relief="flat", activebackground="white", activeforeground="white", bd=0, takefocus=False)
         
     def __show_deckmenu(self, neuladen=True):
         if self.__menu == "":
@@ -843,6 +909,9 @@ class gui:
             self.__deckmenu_cardoptions_editAll.pack(side="bottom")
             #KARTEN_MENU
             self.__deckmenu_cardmenu.pack(side="top")
+            self.__deckmenu_cardmenu_heading.pack(side="top")
+            self.__deckmenu_cardmenu_ok.pack(side="top")
+            self.__deckmenu_cardmenu_abbrechen.pack(side="top")
             self.__deckmenu_cardmenu_entry_1.pack(side="left")
             self.__deckmenu_cardmenu_listbox.pack(side="left")
             self.__deckmenu_cardmenu_entry_2.pack(side="left")
@@ -874,13 +943,12 @@ class gui:
                 self.__deckmenu_deckoptions_beschreibung_entry.bind("<Double-Button-1>", self.__deckmenu_deckoptions_beschreibung_bearbeiten)
                 
                 #Buttons TODO:
-                
+                self.__deckmenu_cardmenu_reload()
 
     def __hide_deckmenu(self):
         self.__menu = ""
         self.__last_menu="deckmenu"
         self.__deckmenu.pack_forget()
-        self.__deckmenu_question_hide()
         self.__deckmenu_deckoptions_name_entry.unbind("<Double-Button-1>")
         self.__deckmenu_deckoptions_kategorie_entry.unbind("<Double-Button-1>")
         self.__deckmenu_deckoptions_beschreibung_entry.unbind("<Double-Button-1>")

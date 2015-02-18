@@ -336,10 +336,13 @@ class funktion:
         #Erstellen des Dateinamens
         dateiname = self.__str_make_valid_filename(name)+self.__card_suffix
         #dopplungen vermeiden
-        if self.__deck_list.count(dateiname)>0:
+        deck_list=list()
+        for elem in self.__deck_list:
+            deck_list.append(elem.lower())
+        if deck_list.count(dateiname.lower())>0:
             i=2
             dateiname = self.__str_make_valid_filename(name)+"_"+str(i)+self.__card_suffix
-            while self.__deck_list.count(dateiname)>0:
+            while deck_list.count(dateiname.lower())>0:
                 i+=1
                 dateiname = self.__str_make_valid_filename(name)+"_"+str(i)+self.__card_suffix
         name = self.__str_make_valid(name)
@@ -405,11 +408,14 @@ class funktion:
             self.__deck_list_update()
             name = newName
             newName = self.__str_make_valid_filename(name)+ self.__card_suffix
+            deck_list=list()
+            for elem in self.__deck_list:
+                deck_list.append(elem.lower())
             #Erstellen des Dateinamens
-            if self.__deck_list.count(newName)>0:
+            if deck_list.count(newName.lower())>0:
                 i=2
                 newName = self.__str_make_valid_filename(name)+"_" + str(i) + self.__card_suffix
-                while self.__deck_list.count(newName)>0:
+                while deck_list.count(newName.lower())>0:
                     i+=1
                     newName = self.__str_make_valid_filename(name)+"_" + str(i) + self.__card_suffix
             os.rename(self.__deck_dir + self.__deck, self.__deck_dir + newName)
@@ -716,7 +722,7 @@ class funktion:
     
     def __pruefe_dateipfade(self):
         """
-        Diese Funktion prueft, ob alle noetigen Dateipfade existieren, wenn nicht, werden diese hier erstllt
+        Diese Funktion prueft, ob alle noetigen Dateipfade existieren, wenn nicht, werden diese hier erstellt
         noetige Dateipfade:
         """
         if not os.path.isdir(self.__root_dir):
