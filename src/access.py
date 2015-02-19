@@ -579,6 +579,11 @@ class funktion:
     def deck_card_load(self, card_id):
         self.__deck_card_id = card_id
     
+    def deck_card(self):
+        if not self.__deck_cards_loaded:
+            self.__deck_cards_load()
+            self.__deck_card_loaded=True
+        return self.__deck_cards[self.__deck_card_id][:2]
     
     def card_delete(self):
         """
@@ -594,7 +599,7 @@ class funktion:
         datei.close()
         self.__deck_count_cards
     
-    def card_change(self, site1 = "", site2 = ""):
+    def card_change(self, site1 = "", site2 = "", richtung=-1):
         """
         Diese Funktion aendert den inhalt der Karten (jenachdem, welche angegeben wurde).
         Bei leerem String wird nichts geaendert.
@@ -608,6 +613,8 @@ class funktion:
             karte[0] = self.__str_make_valid(site1)
         if not site2 == "":
             karte[1] = self.__str_make_valid(site2)
+        if not richtung==-1:
+            karte[2] = richtung
         inhalt[self.__deck_card_id+1] = ""
         for elem in karte:
             inhalt[self.__deck_card_id+1] += elem + self.__file_separator
@@ -688,14 +695,14 @@ class funktion:
             answer_correct = True
         else:
             answer_correct = False
-        self.__deck_statistik_generate()
         if not self.__deck_card_answered:
             self.__deck_card_answered = True
             if answer_correct:
-                self.__deck_cards_learned[self.__last_card[0]-1][-1] += "1"
+                self.__deck_cards_learned[self.__last_card[0]][-1] += "1"
             else:
-                self.__deck_cards_learned[self.__last_card[0]-1][-1] += "0"
-                self.__deck_cards_learned[self.__last_card[0]-1][2] =[self.__last_card[1], self.__last_card[2], answer]
+                self.__deck_cards_learned[self.__last_card[0]][-1] += "0"
+                self.__deck_cards_learned[self.__last_card[0]][2] =[self.__last_card[1], self.__last_card[2], answer]
+        self.__deck_statistik_generate()
         return answer_correct
             
         
