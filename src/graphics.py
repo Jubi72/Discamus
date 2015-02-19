@@ -603,6 +603,7 @@ class gui:
         self.__last_menu = self.__menu
         self.__menu=""
         self.__testmenu.pack_forget()
+        self.__testmenu_answer_entry.delete(0, "end")
         
     def __testmenu_newCard(self, event=0):
         self.__testmenu_question_label.config(text=self.__acc.random_card())
