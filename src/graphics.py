@@ -24,6 +24,7 @@ class gui:
         self.__create_testmenu()
         self.__create_deckmenu()
         self.__create_exitmenu()
+        self.__create_hilfsmenu()
         #TODO: destroy_loadingscreen()
         self.__show_window()
         self.__show_mainmenu()
@@ -153,10 +154,18 @@ class gui:
         self.__show_exitmenu()
     
     def __exit_back(self, event=0):
-        self.__hide_exitmenu()
+        self.__hide_menu()
         self.__show_last_menu()
     
+    def __goto_hilfsmenu(self, event=0):
+        self.__hide_menu()
+        self.__show_hilfsmenu()
+        
+    
     # - - - - - - - - FENSTER - - - - - - - - - - - - - - - - - - - - - - -
+    
+    def __destroy_button(self, button):
+        button.pack_forget()
     
     def __create_window(self):
         """
@@ -174,11 +183,12 @@ class gui:
         self.__bottom = tkinter.Frame(self.__root, bg=self.__third_color, bd = 5, relief = "flat")
         self.__bottom_menu = tkinter.Frame(self.__bottom, bg=self.__third_color)
         self.__bottom_menu_1 = tkinter.Button(self.__bottom_menu, text= "Optionen",  font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width)
-        self.__bottom_menu_2 = tkinter.Button(self.__bottom_menu, text= "Hilfe",     font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width)
+        self.__bottom_menu_2 = tkinter.Button(self.__bottom_menu, text= "Hilfe",     font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width, command=self.__goto_hilfsmenu)
         self.__bottom_menu_3 = tkinter.Button(self.__bottom_menu, text= "Verlassen", font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width, command=self.__exit)
         self.__button_normal_binds(self.__bottom_menu_1)
         self.__button_normal_binds(self.__bottom_menu_2)
         self.__button_normal_binds(self.__bottom_menu_3)
+        self.__bottom_menu_1.bind("<Button>",lambda event: self.__destroy_button(self.__bottom_menu_1))
         self.__bottom_menu_home = tkinter.Button(self.__bottom, bg=self.__third_color, height=48, width=48, relief="flat", activebackground="white", activeforeground="white", bd=0, command=self.__goto_mainmenu, takefocus=False)
         #TODO: self.__root.wm_protocol("WM_DELETE_WINDOW", self.__exit) , aber mit weiteren Tastenkombinationen
     
@@ -1012,6 +1022,42 @@ class gui:
         self.__exitmenu_button_1.pack_forget()
         self.__exitmenu_button_2.pack_forget()
     
+    
+    #- - - - - - - - Hilfsmenu - - - - - - - -
+    
+    def __create_hilfsmenu(self):
+        self.__hilfsmenu = tkinter.Frame(self.__root,bg=self.__bgcolor, relief="flat", pady=self.__root.winfo_screenheight()//2-150)
+        self.__hilfsmenu_frame = tkinter.Frame(self.__hilfsmenu, bg=self.__frame_bgcolor, pady=10,padx=10)
+        self.__hilfsmenu_frame_text = tkinter.Frame(self.__hilfsmenu_frame, bg=self.__frame_bgcolor)
+        self.__hilfsmenu_frame_buttons  = tkinter.Frame(self.__hilfsmenu_frame, bg=self.__frame_bgcolor)
+        self.__hilfsmenu_text_message=tkinter.Label(self.__hilfsmenu_frame_text, text="Bitte lesen Sie das Benutzerhandbuch!", bg=self.__frame_bgcolor, fg=self.__text_fgcolor, font=(self.__text_font, self.__text_height))
+        self.__hilfsmenu_button_1 = tkinter.Button(self.__hilfsmenu_frame_buttons, text= "Ok",        font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width//2, command=self.__exit_back)
+        self.__hilfsmenu_button_2 = tkinter.Button(self.__hilfsmenu_frame_buttons, text= "Abbrechen",      font=(self.__text_font, self.__text_height), fg=self.__text_fgcolor, bg=self.__label_bgcolor, width = self.__label_width//2, command=self.__exit_back)
+        self.__button_normal_binds(self.__hilfsmenu_button_1)
+        self.__button_normal_binds(self.__hilfsmenu_button_2)
+        
+    def __show_hilfsmenu(self):
+        if self.__menu=="":
+            self.__menu="hilfsmenu"
+            self.__hilfsmenu.pack()
+            self.__hilfsmenu_frame.pack()
+            self.__hilfsmenu_frame_text.pack()
+            self.__hilfsmenu_text_message.pack(padx=10, pady=10)
+            self.__hilfsmenu_frame_buttons.pack()
+            self.__hilfsmenu_button_1.pack(side="left", padx=10, pady=10)
+            self.__hilfsmenu_button_2.pack(side="left", padx=10, pady=10)
+        
+    def __hide_hilfsmenu(self):
+        self.__menu=""
+        self.__hilfsmenu.pack_forget()
+        self.__hilfsmenu_frame.pack_forget()
+        self.__hilfsmenu_frame_text.pack_forget()
+        self.__hilfsmenu_text_message.pack_forget()
+        self.__hilfsmenu_frame_buttons.pack_forget()
+        self.__hilfsmenu_button_1.pack_forget()
+        self.__hilfsmenu_button_2.pack_forget()
+    
+    
     #- - - - - - - - Alle Menus - - - - - - - -
     
     def __show_last_menu(self):
@@ -1038,6 +1084,7 @@ class gui:
             self.__hide_deckmenu()
         elif self.__menu=="exitmenu":
             self.__hide_exitmenu()
-
+        elif self.__menu=="hilfsmenu":
+            self.__hide_hilfsmenu()
 
 gui = gui()
