@@ -736,7 +736,7 @@ class gui:
         self.__deckmenu_deckoptions_beschreibung_button_bearbeiten.pack(padx=17)
         self.__deckmenu_deckoptions_beschreibung_button_abbrechen.pack_forget()
         self.__deckmenu_deckoptions_beschreibung_button_ok.pack_forget()
-        self.__acc.deck_change_beschreibung(self.__deckmenu_deckoptions_beschreibung_entry.get())
+        self.__acc.deck_change_description(self.__deckmenu_deckoptions_beschreibung_entry.get())
         self.__deckmenu_deckoptions_beschreibung_entry.unbind("<Return>")
         self.__deckmenu_deckoptions_beschreibung_entry.unbind("<Escape>")
         self.__deckmenu_deckoptions_beschreibung_entry.bind("<Double-Button-1>", self.__deckmenu_deckoptions_beschreibung_bearbeiten)
@@ -763,9 +763,10 @@ class gui:
     
     #CARDMENU
     def __deckmenu_cardmenu_delete(self):
-        if self.__load_card():
+        try:
             self.__acc.card_delete()
             self.__deckmenu_cardmenu_reload()
+        except: pass
     
     def __deckmenu_cardmenu_editAll(self, event=0):
         self.__deckmenu_cardmenu_reload()

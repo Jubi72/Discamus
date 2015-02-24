@@ -52,13 +52,13 @@ class funktion:
         
         #Dateinamen, Ordnernamen, etc
         #Stammverzeichnis
-        self.__root_dir = "..\\"
+        self.__root_dir = ""
         #    Unterverzeichnisse
         self.__data_dir = self.__root_dir + "data\\"
         #        Unterverzeicnhisse von "data"
-        self.__deck_dir = self.__data_dir + "stapel\\"
-        self.__img_dir = self.__data_dir + "img\\"
-        self.__config_dir = self.__data_dir + "config\\"
+        self.__deck_dir = self.__root_dir + "stapel\\"
+        self.__img_dir = self.__root_dir + "img\\"
+        self.__config_dir = self.__root_dir + "config\\"
         #            Dateien unter config
         self.__config_suffix = ".cfg"
         
@@ -575,6 +575,7 @@ class funktion:
         datei.write(Seite1 + self.__file_separator + Seite2 + self.__file_separator + str(doppelseitig) + self.__file_separator + self.__deck_begin_statistik + "\n")
         datei.close()
         self.__deck_count_cards()
+        self.__deck_statistik_generate()
         
     def deck_card_load(self, card_id):
         self.__deck_card_id = card_id
@@ -597,7 +598,9 @@ class funktion:
         datei = open(self.__deck_dir + self.__deck, "w", encoding='utf8')
         datei.writelines(inhalt)
         datei.close()
-        self.__deck_count_cards
+        self.__deck_count_cards()
+        self.__statistik_generate()
+        self.__deck_statistik_generate()
     
     def card_change(self, site1 = "", site2 = "", richtung=-1):
         """
@@ -732,10 +735,10 @@ class funktion:
         Diese Funktion prueft, ob alle noetigen Dateipfade existieren, wenn nicht, werden diese hier erstellt
         noetige Dateipfade:
         """
-        if not os.path.isdir(self.__root_dir):
-            os.mkdir(self.__root_dir)
-        if not os.path.isdir(self.__data_dir):
-            os.mkdir(self.__data_dir)
+        #if not os.path.isdir(self.__root_dir):
+        #    os.mkdir(self.__root_dir)
+        #if not os.path.isdir(self.__data_dir):
+        #    os.mkdir(self.__data_dir)
         if not os.path.isdir(self.__deck_dir):
             os.mkdir(self.__deck_dir)
         if not os.path.isdir(self.__config_dir):
