@@ -2,3 +2,7 @@
 .pydevproject
 *.pyc
 *.cfg
+bericht.aux
+bericht.out
+bericht.synctex.gz
+bericht.toc
